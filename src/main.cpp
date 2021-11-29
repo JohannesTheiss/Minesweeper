@@ -3,6 +3,8 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+#include "../inc/Grid.h"
+
 int main(int argc, char *argv[])
 {
     // Define start view
@@ -27,8 +29,9 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
 
     // Connect frontend with backend
-    // Let the frontend only know about the 
-    //engine.rootContext()->setContextProperty("backend", &backend);
+    // Let the frontend only know about the
+    Grid gird;
+    engine.rootContext()->setContextProperty("backend", &gird);
 
     // Load the start view
     engine.load(url);

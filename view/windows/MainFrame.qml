@@ -20,7 +20,42 @@ Window {
     minimumWidth: 1400;
     minimumHeight: 805;
 
-    TextLabel {
-        text: "Minesweeper lol"
+
+    Grid {
+        id: grid
+        anchors.fill: parent
+        //cellWidth: 80; 
+        //cellHeight: 80
+
+        //columns: 7
+        //rows: 13
+
+        columns: 1
+        rows: 14
+
+       // model: backend.grid
+
+
+        Repeater { 
+            id: rep
+
+            model: backend.grid
+
+            /*
+            TextLabel {
+                id: mb
+
+                text: "" + model.modelData
+                //x: model.index * 10
+            }
+            */
+           Button {
+                text: "" + model.modelData
+                onClicked: backend.lol(model.index)
+            }
+
+        }
     }
+
+    
 }
