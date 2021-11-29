@@ -1,0 +1,16 @@
+[Desktop Entry]
+Categories=Application
+Comment[de_DE]=Minesweeper
+Comment=Minesweeper
+Encoding=UTF-8
+Exec=/opt/Minesweeper/bin/minesweeper
+GenericName[de_DE]=Minesweeper
+GenericName=Minesweeper
+Icon=/opt/Minesweeper/view/images/logo-hs.png
+Name[de_DE]=Minesweeper
+Name=Minesweeper
+Path=/opt/Minesweeper
+StartupNotify=true
+Terminal=false
+Type=Application
+Version=1.0

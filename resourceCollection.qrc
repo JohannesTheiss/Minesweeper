@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="Style.qml">view/styles/Style.qml</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file alias="logo-hs.ico">view/images/logo-hs.ico</file>
+        <file alias="logo-hs.png">view/images/logo-hs.png</file>
+    </qresource>
+    <qresource prefix="/text">
+        <file alias="TextLabel.qml">view/components/text/TextLabel.qml</file>
+        <file alias="MessageBox.qml">view/components/text/MessageBox.qml</file>
+    </qresource>
+    <qresource prefix="/includes">
+        <file alias="qmldir">view/includes/qmldir</file>
+    </qresource>
+    <qresource prefix="/windows">
+        <file alias="MainFrame.qml">view/windows/MainFrame.qml</file>
+    </qresource>
+</RCC>
