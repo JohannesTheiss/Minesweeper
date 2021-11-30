@@ -2,9 +2,35 @@
     <qresource prefix="/">
         <file alias="Style.qml">view/styles/Style.qml</file>
     </qresource>
+    <qresource prefix="/cellImages">
+        <file alias="cell.png">view/cellImages/cell.png</file>
+        <file alias="eight.png">view/cellImages/eight.png</file>
+        <file alias="empty.png">view/cellImages/empty.png</file>
+        <file alias="five.png">view/cellImages/five.png</file>
+        <file alias="flag.png">view/cellImages/flag.png</file>
+        <file alias="four.png">view/cellImages/four.png</file>
+        <file alias="mine.png">view/cellImages/mine.png</file>
+        <file alias="mineRed.png">view/cellImages/mineRed.png</file>
+        <file alias="mineX.png">view/cellImages/mineX.png</file>
+        <file alias="one.png">view/cellImages/one.png</file>
+        <file alias="seven.png">view/cellImages/seven.png</file>
+        <file alias="six.png">view/cellImages/six.png</file>
+        <file alias="three.png">view/cellImages/three.png</file>
+        <file alias="two.png">view/cellImages/two.png</file>
+    </qresource>
+    <qresource prefix="/controls">
+        <file alias="IconButton.qml">view/components/controls/IconButton.qml</file>
+        <file alias="ImageButton.qml">view/components/controls/ImageButton.qml</file>
+    </qresource>
     <qresource prefix="/images">
+        <file alias="flagTransparent.png">view/images/flagTransparent.png</file>
         <file alias="logo-hs.ico">view/images/logo-hs.ico</file>
         <file alias="logo-hs.png">view/images/logo-hs.png</file>
+        <file alias="new.png">view/images/new.png</file>
+        <file alias="pause.png">view/images/pause.png</file>
+        <file alias="play.png">view/images/play.png</file>
+        <file alias="stop.png">view/images/stop.png</file>
+        <file alias="timerTransparent.png">view/images/timerTransparent.png</file>
     </qresource>
     <qresource prefix="/text">
         <file alias="TextLabel.qml">view/components/text/TextLabel.qml</file>

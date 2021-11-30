@@ -8,11 +8,10 @@ import "qrc:/includes"
  * text: text that should be shown in the TextLabel     (e.g. text: "Name:";)
  */
 Text {
-    height: Style.defaultHeight;
     font.family: Style.font;
     font.pointSize: Style.textSize;
     color: Style.fontColor;
-    verticalAlignment: Text.AlignVCenter;
+//    verticalAlignment: Text.AlignVCenter;
     clip: true;
     elide: Text.ElideRight;
 }
