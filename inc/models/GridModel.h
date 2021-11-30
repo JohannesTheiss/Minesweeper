@@ -20,8 +20,14 @@ class GridModel : public QObject
     Q_PROPERTY(unsigned int mineCount READ mineCount NOTIFY mineCountChanged)
 
     public:
-        // modified default constructor
-        GridModel();
+        //delete default constructor
+        GridModel() = delete;
+
+        // custom constructor
+        GridModel(const QVector<CellModel *> grid,
+                  const unsigned int rows,
+                  const unsigned int columns,
+                  const unsigned int mineCount);
 
         // default destructor
         ~GridModel() = default;

@@ -17,8 +17,14 @@ class CellModel : public QObject
     Q_PROPERTY(unsigned int surroundingBombs READ surroundingBombs NOTIFY surroundingBombsChanged)
 
     public:
-        // modified default constructor
-        CellModel();
+        // delete default constructor
+        CellModel() = delete;
+
+        // custom constructor
+        CellModel(const bool hidden,
+                  const bool flagged,
+                  const bool isBomb,
+                  unsigned int surroundingBombs);
 
         // default destructor
         ~CellModel() = default;

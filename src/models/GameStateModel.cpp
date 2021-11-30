@@ -3,9 +3,9 @@
 namespace models
 {
 
-GameStateModel::GameStateModel()
-    : mFlagsLeft(0),
-      mTimePlayed(0)
+GameStateModel::GameStateModel(const unsigned int flagsLeft, const unsigned int timePlayed)
+    : mFlagsLeft(flagsLeft),
+      mTimePlayed(timePlayed)
 {
 }
 

@@ -15,8 +15,11 @@ class GameStateModel : public QObject
     Q_PROPERTY(unsigned int timePlayed READ timePlayed NOTIFY timePlayedChanged)
 
     public:
-        // modified default constructor
-        GameStateModel();
+        // delete default constructor
+        GameStateModel() = delete;
+
+        // custom constructor
+        GameStateModel(const unsigned int flagsLeft, const unsigned int timePlayed);
 
         // default destructor
         ~GameStateModel() = default;

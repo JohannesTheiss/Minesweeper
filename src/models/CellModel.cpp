@@ -3,11 +3,14 @@
 namespace models
 {
 
-CellModel::CellModel()
-    : mHidden(true),
-      mFlagged(false),
-      mIsBomb(false),
-      mSurroundingBombs(0)
+CellModel::CellModel(const bool hidden,
+                     const bool flagged,
+                     const bool isBomb,
+                     unsigned int surroundingBombs)
+    : mHidden(hidden),
+      mFlagged(flagged),
+      mIsBomb(isBomb),
+      mSurroundingBombs(surroundingBombs)
 {
 }
 

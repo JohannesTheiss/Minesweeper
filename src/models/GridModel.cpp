@@ -3,11 +3,14 @@
 namespace models
 {
 
-GridModel::GridModel()
-    : mGrid(),
-      mRows(0),
-      mColumns(0),
-      mMineCount(0)
+GridModel::GridModel(const QVector<CellModel *> grid,
+                     const unsigned int rows,
+                     const unsigned int columns,
+                     const unsigned int mineCount)
+    : mGrid(grid),
+      mRows(rows),
+      mColumns(columns),
+      mMineCount(mineCount)
 {
 }
 
