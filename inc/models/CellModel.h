@@ -14,7 +14,7 @@ class CellModel : public QObject
     Q_PROPERTY(bool hidden READ hidden NOTIFY hiddenChanged)
     Q_PROPERTY(bool flagged READ flagged NOTIFY flaggedChanged)
     Q_PROPERTY(bool isBomb READ isBomb NOTIFY isBombChanged)
-    Q_PROPERTY(unsigned int surroundingBombs READ surroundingBombs NOTIFY surroundingBombsChanged)
+    Q_PROPERTY(quint64 surroundingBombs READ surroundingBombs NOTIFY surroundingBombsChanged)
 
     public:
         // delete default constructor
@@ -24,7 +24,7 @@ class CellModel : public QObject
         CellModel(const bool hidden,
                   const bool flagged,
                   const bool isBomb,
-                  unsigned int surroundingBombs);
+                  quint64 surroundingBombs);
 
         // default destructor
         ~CellModel() = default;
@@ -33,13 +33,13 @@ class CellModel : public QObject
         bool hidden();
         bool flagged();
         bool isBomb();
-        unsigned int surroundingBombs();
+        quint64 surroundingBombs();
 
         // property setters
         void setHidden(const bool hidden);
         void setFlagged(const bool flagged);
         void setIsBomb(const bool isBomb);
-        void setSurroundingBombs(const unsigned int surroundingBombs);
+        void setSurroundingBombs(const quint64 surroundingBombs);
 
     signals:
         void hiddenChanged();
@@ -53,7 +53,7 @@ class CellModel : public QObject
         bool mHidden;
         bool mFlagged;
         bool mIsBomb;
-        unsigned int mSurroundingBombs;
+        quint64 mSurroundingBombs;
 
 };
 

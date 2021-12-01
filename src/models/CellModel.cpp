@@ -6,7 +6,7 @@ namespace models
 CellModel::CellModel(const bool hidden,
                      const bool flagged,
                      const bool isBomb,
-                     unsigned int surroundingBombs)
+                     quint64 surroundingBombs)
     : mHidden(hidden),
       mFlagged(flagged),
       mIsBomb(isBomb),
@@ -29,7 +29,7 @@ bool CellModel::isBomb()
     return mIsBomb;
 }
 
-unsigned int CellModel::surroundingBombs()
+quint64 CellModel::surroundingBombs()
 {
     return mSurroundingBombs;
 }
@@ -52,7 +52,7 @@ void CellModel::setIsBomb(const bool isBomb)
     emit isBombChanged();
 }
 
-void CellModel::setSurroundingBombs(const unsigned int surroundingBombs)
+void CellModel::setSurroundingBombs(const quint64 surroundingBombs)
 {
     mSurroundingBombs = surroundingBombs;
     emit surroundingBombsChanged();

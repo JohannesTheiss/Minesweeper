@@ -11,26 +11,26 @@ class GameStateModel : public QObject
 
     Q_OBJECT
 
-    Q_PROPERTY(unsigned int flagsLeft READ flagsLeft NOTIFY flagsLeftChanged)
-    Q_PROPERTY(unsigned int timePlayed READ timePlayed NOTIFY timePlayedChanged)
+    Q_PROPERTY(quint64 flagsLeft READ flagsLeft NOTIFY flagsLeftChanged)
+    Q_PROPERTY(quint64 timePlayed READ timePlayed NOTIFY timePlayedChanged)
 
     public:
         // delete default constructor
         GameStateModel() = delete;
 
         // custom constructor
-        GameStateModel(const unsigned int flagsLeft, const unsigned int timePlayed);
+        GameStateModel(const quint64 flagsLeft, const quint64 timePlayed);
 
         // default destructor
         ~GameStateModel() = default;
 
         // property getters
-        unsigned int flagsLeft();
-        unsigned int timePlayed();
+        quint64 flagsLeft();
+        quint64 timePlayed();
 
         // property setters
-        void setFlagsLeft(const unsigned int flagsLeft);
-        void setTimePlayed(const unsigned int timePlayed);
+        void setFlagsLeft(const quint64 flagsLeft);
+        void setTimePlayed(const quint64 timePlayed);
 
     signals:
         void flagsLeftChanged();
@@ -39,8 +39,8 @@ class GameStateModel : public QObject
     private:
 
         // properties
-        unsigned int mFlagsLeft;
-        unsigned int mTimePlayed;
+        quint64 mFlagsLeft;
+        quint64 mTimePlayed;
 
 };
 

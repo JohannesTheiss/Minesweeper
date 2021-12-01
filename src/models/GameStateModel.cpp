@@ -3,29 +3,29 @@
 namespace models
 {
 
-GameStateModel::GameStateModel(const unsigned int flagsLeft, const unsigned int timePlayed)
+GameStateModel::GameStateModel(const quint64 flagsLeft, const quint64 timePlayed)
     : mFlagsLeft(flagsLeft),
       mTimePlayed(timePlayed)
 {
 }
 
-unsigned int GameStateModel::flagsLeft()
+quint64 GameStateModel::flagsLeft()
 {
     return mFlagsLeft;
 }
 
-unsigned int GameStateModel::timePlayed()
+quint64 GameStateModel::timePlayed()
 {
     return mTimePlayed;
 }
 
-void GameStateModel::setFlagsLeft(const unsigned int flagsLeft)
+void GameStateModel::setFlagsLeft(const quint64 flagsLeft)
 {
     mFlagsLeft = flagsLeft;
     emit flagsLeftChanged();
 }
 
-void GameStateModel::setTimePlayed(const unsigned int timePlayed)
+void GameStateModel::setTimePlayed(const quint64 timePlayed)
 {
     mTimePlayed = timePlayed;
     emit timePlayedChanged();

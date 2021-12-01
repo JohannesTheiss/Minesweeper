@@ -4,9 +4,9 @@ namespace models
 {
 
 GridModel::GridModel(const QVector<CellModel *> grid,
-                     const unsigned int rows,
-                     const unsigned int columns,
-                     const unsigned int mineCount)
+                     const quint64 rows,
+                     const quint64 columns,
+                     const quint64 mineCount)
     : mGrid(grid),
       mRows(rows),
       mColumns(columns),
@@ -28,17 +28,17 @@ QVector<QObject *> GridModel::grid()
     return convertedGrid;
 }
 
-unsigned int GridModel::rows()
+quint64 GridModel::rows()
 {
     return mRows;
 }
 
-unsigned int GridModel::columns()
+quint64 GridModel::columns()
 {
     return mColumns;
 }
 
-unsigned int GridModel::mineCount()
+quint64 GridModel::mineCount()
 {
     return mMineCount;
 }
@@ -49,19 +49,19 @@ void GridModel::setGrid(const QVector<CellModel *> grid)
     emit gridChanged();
 }
 
-void GridModel::setRows(const unsigned int rows)
+void GridModel::setRows(const quint64 rows)
 {
     mRows = rows;
     emit rowsChanged();
 }
 
-void GridModel::setColumns(const unsigned int columns)
+void GridModel::setColumns(const quint64 columns)
 {
     mColumns = columns;
     emit columnsChanged();
 }
 
-void GridModel::setMineCount(const unsigned int mineCount)
+void GridModel::setMineCount(const quint64 mineCount)
 {
     mMineCount = mineCount;
     emit mineCountChanged();
