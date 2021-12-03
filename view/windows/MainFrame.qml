@@ -4,15 +4,154 @@ import QtQml.Models 2.12
 import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.0
 
+import Qt.labs.platform 1.1
+
 import "qrc:/controls"
 import "qrc:/includes"
 import "qrc:/text"
 
-Window {
+ApplicationWindow {
     id: mainWindow;
+
+    MenuBar {
+        id: menuBar;
+
+        Menu {
+            title: qsTr("&Game");
+
+            MenuItem {
+                icon.source: "qrc:/images/empty.png"
+
+                text: qsTr("&Beginner");
+                onTriggered: {
+                    console.log("pre min");
+                    mainWindow.minimumWidth = Math.max(20 * Style.cellWidth, 310) + 24;
+                    mainWindow.minimumHeight = 11 * Style.cellHeight + statusBar.height + 36;
+                    console.log("post min - pre max");
+                    mainWindow.maximumWidth = Math.max(20 * Style.cellWidth, 310) + 24;
+                    mainWindow.maximumHeight = 11 * Style.cellHeight + statusBar.height + 36;
+                    console.log("post max - pre set");
+
+                    nWidth = 9;
+                    mHeight = 9;
+                    numOfMines = 10;
+
+                    mainWindow.minimumWidth = topOuterBorder.width;
+                    mainWindow.minimumHeight = leftOuterBorder.height;
+
+                    mainWindow.maximumWidth = topOuterBorder.width;
+                    mainWindow.maximumHeight = leftOuterBorder.height;
+
+                    mainWindow.width = topOuterBorder.width;
+                    mainWindow.height = leftOuterBorder.height;
+                    console.log("change beginner");
+                }
+            }
+            MenuItem {
+                icon.source: "qrc:/images/mine.png"
+
+                text: qsTr("&Intermediate");
+                onTriggered: {
+                    console.log("pre min");
+                    mainWindow.minimumWidth = Math.max(25 * Style.cellWidth, 310) + 24;
+                    mainWindow.minimumHeight = 14 * Style.cellHeight + statusBar.height + 36;
+                    console.log("post min - pre max");
+                    mainWindow.maximumWidth = Math.max(25 * Style.cellWidth, 310) + 24;
+                    mainWindow.maximumHeight = 14 * Style.cellHeight + statusBar.height + 36;
+                    console.log("post max - pre set");
+
+                    nWidth = 16;
+                    mHeight = 16;
+                    numOfMines = 40;
+
+                    mainWindow.minimumWidth = topOuterBorder.width;
+                    mainWindow.minimumHeight = leftOuterBorder.height;
+
+                    mainWindow.maximumWidth = topOuterBorder.width;
+                    mainWindow.maximumHeight = leftOuterBorder.height;
+
+                    mainWindow.width = topOuterBorder.width;
+                    mainWindow.height = leftOuterBorder.height;
+                    console.log("change beginner");
+                }
+            }
+            MenuItem {
+                icon.source: "qrc:/images/mineRed.png"
+
+                text: qsTr("&Expert");
+                onTriggered: {
+                    console.log("pre min");
+                    mainWindow.minimumWidth = Math.max(30 * Style.cellWidth, 310) + 24;
+                    mainWindow.minimumHeight = 16 * Style.cellHeight + statusBar.height + 36;
+                    console.log("post min - pre max");
+                    mainWindow.maximumWidth = Math.max(30 * Style.cellWidth, 310) + 24;
+                    mainWindow.maximumHeight = 16 * Style.cellHeight + statusBar.height + 36;
+                    console.log("post max - pre set");
+
+                    nWidth = 30;
+                    mHeight = 16;
+                    numOfMines = 99;
+
+                    mainWindow.minimumWidth = topOuterBorder.width;
+                    mainWindow.minimumHeight = leftOuterBorder.height;
+
+                    mainWindow.maximumWidth = topOuterBorder.width;
+                    mainWindow.maximumHeight = leftOuterBorder.height;
+
+                    mainWindow.width = topOuterBorder.width;
+                    mainWindow.height = leftOuterBorder.height;
+                    console.log("change beginner");
+                }
+            }
+            MenuItem { text: qsTr("&Custom...") }
+        }
+
+
+        Menu {
+            title: qsTr("&Extras")
+
+            MenuItem {
+                icon.source: "qrc:/images/flagTransparent.png";
+                text: qsTr("&Statistics");
+            }
+            MenuItem {
+                icon.source: "qrc:/images/questionTransparent.png";
+                text: qsTr("&Help");
+            }
+        }
+
+//        Menu {
+//            enabled: false;
+//        }
+//        Menu {
+//            enabled: false;
+//        }
+//        Menu {
+//            enabled: false;
+//        }
+//        Menu {
+//            enabled: false;
+//        }
+//        Menu {
+//            enabled: false;
+//        }
+//        Menu {
+//            enabled: false;
+//        }
+
+        Menu {
+            title: qsTr(nWidth + "x" + mHeight + "  " + numOfMines + " Mines");
+            enabled: false;
+        }
+    }
+
+//    footer: TextLabel {
+//        text: "99 Mines";
+//    }
 
     property int nWidth: 30;
     property int mHeight: 16;
+    property int numOfMines: 99;
 
     title: "Minesweeper";
     visible: true;
@@ -30,53 +169,113 @@ Window {
 //    height: 600;
 
     width: topOuterBorder.width;
-    height: leftOuterBorder.height + 21;
+    height: leftOuterBorder.height;
 
     //Minimum Size
-    minimumWidth: width;
-    minimumHeight: height;
+    minimumWidth: topOuterBorder.width;
+    minimumHeight: leftOuterBorder.height;
 
-    maximumWidth: width;
-    maximumHeight: height;
+    maximumWidth: topOuterBorder.width;
+    maximumHeight: leftOuterBorder.height;
 
     color: "#c0c0c0";
 
-    Rectangle {
-        id: menuBar;
+//    Rectangle {
+//        id: menuBar;
 
-        width: topOuterBorder.width;
-        height: 20;
+//        width: topOuterBorder.width;
+//        height: 20;
 
-        anchors.horizontalCenter: statusBar.horizontalCenter;
+//        anchors.horizontalCenter: statusBar.horizontalCenter;
 
-        color: "#ffffff";
+//        color: "#ffffff";
 
-        Row {
-            anchors.fill: parent;
+//        Row {
+//            anchors.fill: parent;
 
-            anchors.leftMargin: 5;
-            anchors.topMargin: 2;
+//            Button {
+//                id: gameButton;
 
-            TextLabel {
-                id: gameButton;
-                width: 35;
-                font.pointSize: 8.0;
-                text: "Game";
-            }
-            TextLabel {
-                id: statisticsButton;
-                width: 50;
-                font.pointSize: 8.0;
-                text: "Statistics";
-            }
-            TextLabel {
-                id: helpButton;
-                width: 30;
-                font.pointSize: 8.0;
-                text: "Help";
-            }
-        }
-    }
+//                height: menuBar.height;
+//                width: 45;
+
+//                MouseArea {                                         //used for showing toolTips
+//                    id: ma;
+
+//                    anchors.fill: parent;
+//                    hoverEnabled: true;
+//                    onClicked: {                                    //pass click to Button
+//                        parent.onClicked();
+//                    }
+//                }
+
+//                Text {
+//                    anchors.centerIn: parent;
+
+//                    font.family: "Arial";
+//                    color: "black";
+//                    text: "Game";
+//                }
+
+//                background: Rectangle {
+//                    color: ma.containsMouse? "lightblue" : "transparent";
+
+//                    border.width: ma.containsMouse? 1 : 0;
+//                    border.color: "lightblue";
+//                }
+//            }
+
+//            Button {
+//                id: statisticsButton;
+
+//                height: menuBar.height;
+//                width: 45;
+
+//                Text {
+//                    anchors.centerIn: parent;
+
+//                    font.family: "Arial";
+//                    color: "black";
+//                    text: "Statistics";
+//                }
+
+//                background: Rectangle {
+//                    color: "transparent";
+//                }
+//            }
+
+//            Button {
+//                id: helpButton;
+
+//                height: menuBar.height;
+//                width: 45;
+
+//                Text {
+//                    anchors.centerIn: parent;
+
+//                    font.family: "Arial";
+//                    color: "black";
+//                    text: "Help";
+//                }
+
+//                background: Rectangle {
+//                    color: "transparent";
+//                }
+//            }
+//        }
+
+//        TextLabel {
+//            anchors.right: parent.right;
+//            anchors.rightMargin: 5;
+//            height: parent.height;
+
+//            verticalAlignment: Text.AlignVCenter;
+
+//            font.pointSize: 8.0;
+
+//            text: nWidth + "x" + mHeight + " 99 Mines";
+//        }
+//    }
 
     Rectangle {
         id: statusBar;
@@ -86,7 +285,7 @@ Window {
 
         anchors.horizontalCenter: parent.horizontalCenter;
 
-        y: 33;
+        y: 12;
 
         color: "#c0c0c0";
 
@@ -102,7 +301,7 @@ Window {
             font.family: "Consolas";
             color: "blue";
 
-            text: "099";
+            text: "0" + numOfMines;
         }
 
         Image {
@@ -129,6 +328,15 @@ Window {
             onClicked: {
                 for (let i = 0; i < nWidth * mHeight; i++) {
                     cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/cell.png";
+                    cellRepeater.itemAt(i).enabled = true;
+                }
+
+                if (board.visible === false) {
+                    board.visible = true;
+                    pausePlayButton.icon.source = "qrc:/images/pause.png";
+                    pausePlayButton.toolTipText = "Pause";
+                    pausePlayButton.imageIndex = 0;
+                    pauseText.visible = false;
                 }
             }
         }
@@ -148,12 +356,14 @@ Window {
                     icon.source = "qrc:/images/play.png";
                     toolTipText = "Play";
                     imageIndex = 1;
-                    pauseScreen.visible = true;
+                    pauseText.visible = true;
+                    board.visible = false;
                 }else {
                     icon.source = "qrc:/images/pause.png";
                     toolTipText = "Pause";
                     imageIndex = 0;
-                    pauseScreen.visible = false;
+                    pauseText.visible = false;
+                    board.visible = true;
                 }
             }
         }
@@ -170,7 +380,19 @@ Window {
 
             icon.source: "qrc:/images/stop.png";
             hasBorder: false;
-            onClicked: { console.log("loiloloi ez"); }
+            onClicked: {
+                for (let i = 0; i < nWidth * mHeight; i++) {
+                    cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/empty.png";
+                }
+
+                if (board.visible === false) {
+                    board.visible = true;
+                    pausePlayButton.icon.source = "qrc:/images/pause.png";
+                    pausePlayButton.toolTipText = "Pause";
+                    pausePlayButton.imageIndex = 0;
+                    pauseText.visible = false;
+                }
+            }
         }
 
         Image {
@@ -201,8 +423,8 @@ Window {
         }
     }
 
-    Item {
-        id: pauseScreen
+    TextLabel {
+        id: pauseText
 
         width: boardTopBorder.width - 6;
         height: boardLeftBorder.height - 6;
@@ -210,48 +432,45 @@ Window {
         anchors.top: boardTopBorder.bottom;
         anchors.left: boardLeftBorder.right;
 
-        z: 3;
+
+//                height: Math.min(boardBottomBorder.y - boardTopBorder.y - 3, Style.defaultHeight);
+
+        verticalAlignment: Text.AlignVCenter;
+        horizontalAlignment: Text.AlignHCenter;
+
+        color: "blue";
+        fontSizeMode: Text.Fit;
+        font.pointSize: 30;
 
         visible: false;
 
-        MouseArea {                     //don't pass clicks through pauseScreen
-            anchors.fill: parent;
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.5
-        }
-
-        Rectangle {
-            width: pauseText.width;
-            height: pauseText.height;
-
-            anchors.centerIn: parent;
-
-            color: "grey";
-
-            TextLabel {
-                id: pauseText
-
-                height: Math.min(boardBottomBorder.y - boardTopBorder.y - 3, Style.defaultHeight);
-
-                anchors.centerIn: parent;
-
-                verticalAlignment: Text.AlignVCenter;
-                horizontalAlignment: Text.AlignHCenter;
-
-                color: "blue";
-                fontSizeMode: Text.Fit;
-                font.pointSize: 30;
-
-                text: "PAUSED";
-            }
-        }
-
-
+        text: "PAUSED";
     }
+
+//    Item {
+//        id: pauseScreen
+
+//        width: boardTopBorder.width - 6;
+//        height: boardLeftBorder.height - 6;
+
+//        anchors.top: boardTopBorder.bottom;
+//        anchors.left: boardLeftBorder.right;
+
+//        z: 3;
+
+//        visible: false;
+
+//        Rectangle {
+//            width: pauseText.width;
+//            height: pauseText.height;
+
+//            anchors.centerIn: parent;
+
+//            color: "grey";
+
+
+//        }
+//    }
 
     //unten
     Rectangle {
@@ -320,6 +539,7 @@ Window {
             model: nWidth * mHeight;
 
             ImageButton {
+                id: cell;
 
                 x: 100;
                 y: 100;
@@ -327,6 +547,34 @@ Window {
                 buttonImage: "qrc:/cellImages/cell.png";
 
                 onClicked: { buttonImage = "qrc:/cellImages/empty.png"; }
+
+                MouseArea {
+                    id: ma
+
+                    anchors.fill: parent;
+                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
+                    onClicked: {
+                        if (mouse.button === Qt.RightButton) {
+                            if (cell.buttonImage.toString() === "qrc:/cellImages/cell.png") {
+                                cell.buttonImage = "qrc:/cellImages/flag.png";
+                            }
+                            else if(cell.buttonImage.toString() === "qrc:/cellImages/flag.png") {
+                                cell.buttonImage = "qrc:/cellImages/cell.png";
+                            }
+                        }
+                        else if (mouse.button === Qt.MiddleButton) {
+                            if(cell.buttonImage.toString() === "qrc:/cellImages/flag.png") {
+                                cell.buttonImage = "qrc:/cellImages/cell.png";
+                            }
+                        }
+                        else if (mouse.button === Qt.LeftButton) {
+                            if(cell.buttonImage.toString() !== "qrc:/cellImages/flag.png") {
+                                cell.buttonImage = "qrc:/cellImages/empty.png";
+                                cell.enabled = false;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -425,5 +673,10 @@ Window {
         x: boardLeftBorder.x - 9;
         anchors.bottom: bottomOuterBorder.bottom;
         color: "#ffffff";
+
+        Component.onCompleted: {
+            mainWindow.height = height;
+            console.log("mainWindow " + mainWindow.height);
+        }
     }
 }
