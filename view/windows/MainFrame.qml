@@ -10,6 +10,8 @@ import "qrc:/controls"
 import "qrc:/includes"
 import "qrc:/text"
 
+import "qrc:/scripts/Adapter.js" as Adapter
+
 ApplicationWindow {
     id: mainWindow;
 
@@ -523,8 +525,10 @@ ApplicationWindow {
     Grid {
         id: board;
 
-        columns: nWidth;
-        rows: mHeight;
+        //columns: nWidth;
+        //rows: mHeight;
+        columns: gridModel.columns;
+        rows: gridModel.rows;
 
         columnSpacing: 0
         rowSpacing: 0;
@@ -536,7 +540,8 @@ ApplicationWindow {
         Repeater {
             id: cellRepeater;
 
-            model: nWidth * mHeight;
+            //model: nWidth * mHeight;
+            model: gridModel.grid
 
             ImageButton {
                 id: cell;
@@ -544,9 +549,11 @@ ApplicationWindow {
                 x: 100;
                 y: 100;
 
-                buttonImage: "qrc:/cellImages/cell.png";
+                buttonImage: Adapter.resolveImage(model.modelData)
 
-                onClicked: { buttonImage = "qrc:/cellImages/empty.png"; }
+                onClicked: { 
+                    buttonImage = "qrc:/cellImages/empty.png";
+                }
 
                 MouseArea {
                     id: ma
@@ -569,8 +576,7 @@ ApplicationWindow {
                         }
                         else if (mouse.button === Qt.LeftButton) {
                             if(cell.buttonImage.toString() !== "qrc:/cellImages/flag.png") {
-                                cell.buttonImage = "qrc:/cellImages/empty.png";
-                                cell.enabled = false;
+                                gridController.revealCell(model.index);
                             }
                         }
                     }

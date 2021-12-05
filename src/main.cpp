@@ -3,6 +3,16 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+#include <QObject>
+#include <QVector>
+
+#include <QDebug>
+
+#include "../inc/models/CellModel.h"
+#include "../inc/models/GridModel.h"
+
+#include "../inc/controllers/GridController.h"
+
 int main(int argc, char *argv[])
 {
     // Define start view
@@ -30,6 +40,26 @@ int main(int argc, char *argv[])
     // Let the frontend only know about the 
     //engine.rootContext()->setContextProperty("backend", &backend);
 
+    // connect grid model with view
+    quint64 numberOfRows = 16;
+    quint64 numberOfColumns = 30;
+    //quint64 numberOfRows = 4;
+    //quint64 numberOfColumns = 4;
+
+    quint64 numberOfMines = 99;
+
+    QVector<models::CellModel *> grid;
+    models::GridModel gridModel(grid, numberOfRows, numberOfColumns, numberOfMines);
+    
+    controllers::GridController gridController;
+    gridController.generateGrid(gridModel);
+
+
+    qDebug() << "lol: " << qobject_cast<models::CellModel *>(gridModel.grid().at(0))->hidden();
+
+    engine.rootContext()->setContextProperty("gridModel", &gridModel);
+    engine.rootContext()->setContextProperty("gridController", &gridController);
+    
     // Load the start view
     engine.load(url);
 

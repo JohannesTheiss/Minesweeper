@@ -46,4 +46,7 @@
     <qresource prefix="/windows">
         <file alias="MainFrame.qml">view/windows/MainFrame.qml</file>
     </qresource>
+    <qresource prefix="/scripts">
+        <file alias="Adapter.js">view/scripts/Adapter.js</file>
+    </qresource>
 </RCC>

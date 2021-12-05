@@ -58,4 +58,10 @@ void CellModel::setSurroundingBombs(const quint64 surroundingBombs)
     emit surroundingBombsChanged();
 }
 
+void CellModel::increaseSurroundingBombsCount()
+{
+    mSurroundingBombs++;
+    emit surroundingBombsChanged();
+}
+
 } // namespace models
