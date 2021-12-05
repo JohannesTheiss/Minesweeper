@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     quint64 numberOfMines = 99;
 
     QVector<models::CellModel *> grid;
-    models::GridModel gridModel(grid, numberOfRows, numberOfColumns, numberOfMines);
+    models::GridModel gridModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines);
     
     controllers::GridController gridController;
     gridController.generateGrid(&gridModel);

@@ -294,7 +294,7 @@ ApplicationWindow {
         TextLabel {
             id: flagsLabel;
 
-            width: 30;
+            width: 40;
             x: 10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
@@ -303,7 +303,8 @@ ApplicationWindow {
             font.family: "Consolas";
             color: "blue";
 
-            text: "0" + numOfMines;
+            //text: "0" + numOfMines;
+            text: gridModel.flagCount;
         }
 
         Image {
@@ -415,7 +416,7 @@ ApplicationWindow {
         TextLabel {
             id: timeLabel;
 
-            width: 30;
+            width: 40;
             x: statusBar.width - 40;
 
             anchors.verticalCenter: statusBar.verticalCenter;
@@ -564,23 +565,16 @@ ApplicationWindow {
                     anchors.fill: parent;
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
                     onClicked: {
-                        if (mouse.button === Qt.RightButton) {
-                            if (cell.buttonImage.toString() === "qrc:/cellImages/cell.png") {
-                                cell.buttonImage = "qrc:/cellImages/flag.png";
-                            }
-                            else if(cell.buttonImage.toString() === "qrc:/cellImages/flag.png") {
-                                cell.buttonImage = "qrc:/cellImages/cell.png";
-                            }
-                        }
-                        else if (mouse.button === Qt.MiddleButton) {
-                            if(cell.buttonImage.toString() === "qrc:/cellImages/flag.png") {
-                                cell.buttonImage = "qrc:/cellImages/cell.png";
-                            }
-                        }
-                        else if (mouse.button === Qt.LeftButton) {
-                            if(cell.buttonImage.toString() !== "qrc:/cellImages/flag.png") {
+                        switch(mouse.button)
+                        {
+                            case Qt.LeftButton:
                                 gridController.revealCell(model.index);
-                            }
+                                break;
+
+                            case Qt.MiddleButton:
+                            case Qt.RightButton:
+                                gridController.flagCell(model.index);
+                                break;
                         }
                     }
                 }

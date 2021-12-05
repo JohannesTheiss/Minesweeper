@@ -2,10 +2,13 @@
 function resolveImage(cell) {
     let imageUrl = "qrc:/cellImages/cell.png";
 
+    if(cell.flagged) {
+        imageUrl = "qrc:/cellImages/flag.png";
+    }
+
     // if revealed
     if(!cell.hidden) {
         if(cell.isBomb) {
-
             imageUrl = "qrc:/cellImages/mine.png";
         }
         else {

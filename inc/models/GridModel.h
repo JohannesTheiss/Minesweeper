@@ -18,6 +18,7 @@ class GridModel : public QObject
     Q_PROPERTY(quint64 rows READ rows NOTIFY rowsChanged)
     Q_PROPERTY(quint64 columns READ columns NOTIFY columnsChanged)
     Q_PROPERTY(quint64 mineCount READ mineCount NOTIFY mineCountChanged)
+    Q_PROPERTY(quint64 flagCount READ flagCount NOTIFY flagCountChanged)
 
     public:
         //delete default constructor
@@ -27,7 +28,8 @@ class GridModel : public QObject
         GridModel(const QVector<CellModel *> grid,
                   const quint64 rows,
                   const quint64 columns,
-                  const quint64 mineCount);
+                  const quint64 mineCount,
+                  const quint64 flagCount);
 
         // default destructor
         ~GridModel() = default;
@@ -37,18 +39,24 @@ class GridModel : public QObject
         quint64 rows();
         quint64 columns();
         quint64 mineCount();
+        quint64 flagCount();
 
         // property setters
         void setGrid(const QVector<CellModel *> grid);
         void setRows(const quint64 rows);
         void setColumns(const quint64 columns);
         void setMineCount(const quint64 mineCount);
+        void setFlagCount(const quint64 flagCount);
+
+        void increaseFlags();
+        void decreaseFlags();
 
     signals:
         void gridChanged();
         void rowsChanged();
         void columnsChanged();
         void mineCountChanged();
+        void flagCountChanged();
 
     private:
 
@@ -57,6 +65,7 @@ class GridModel : public QObject
         quint64 mRows;
         quint64 mColumns;
         quint64 mMineCount;
+        quint64 mFlagCount;
 
 };
 

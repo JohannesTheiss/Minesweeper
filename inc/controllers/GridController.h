@@ -27,6 +27,8 @@ class GridController : public QObject
         void revealCell(quint64 index);
         void revealAllCells();
     
+        void flagCell(quint64 index);
+
     private:
         models::GridModel *mGridModel;
 

@@ -15,6 +15,7 @@ void GridController::newGrid()
     mGridModel->setRows(numberOfRows);
     mGridModel->setColumns(numberOfColumns);
     mGridModel->setMineCount(numberOfMines);
+    mGridModel->setFlagCount(numberOfMines);
 
     generateGrid(mGridModel);
 }
@@ -124,6 +125,8 @@ void GridController::revealCell(quint64 index)
     QObject *obj = mGridModel->grid().at(index);
     models::CellModel* cell = qobject_cast<models::CellModel *>(obj);
 
+    if(cell->flagged()) return;
+
     if(cell->isBomb())
     {
         revealAllCells();
@@ -203,6 +206,26 @@ void GridController::revealAllCells()
     foreach(QObject* obj, mGridModel->grid())
     {
         qobject_cast<models::CellModel *>(obj)->setHidden(false);
+    }
+}
+
+void GridController::flagCell(quint64 index)
+{
+    QObject *obj = mGridModel->grid().at(index);
+    models::CellModel* cell = qobject_cast<models::CellModel *>(obj);
+
+    if(cell->hidden())
+    {
+        if(cell->flagged())
+        {
+            cell->setFlagged(false);
+            mGridModel->increaseFlags();
+        }
+        else 
+        {
+            cell->setFlagged(true);
+            mGridModel->decreaseFlags();
+        }
     }
 }
 
