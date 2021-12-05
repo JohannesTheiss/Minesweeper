@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     models::GridModel gridModel(grid, numberOfRows, numberOfColumns, numberOfMines);
     
     controllers::GridController gridController;
-    gridController.generateGrid(gridModel);
+    gridController.generateGrid(&gridModel);
 
 
     qDebug() << "lol: " << qobject_cast<models::CellModel *>(gridModel.grid().at(0))->hidden();

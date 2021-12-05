@@ -328,10 +328,13 @@ ApplicationWindow {
             icon.source: "qrc:/images/new.png";
             hasBorder: false;
             onClicked: {
+                /*
                 for (let i = 0; i < nWidth * mHeight; i++) {
                     cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/cell.png";
                     cellRepeater.itemAt(i).enabled = true;
                 }
+                */
+                gridController.newGrid();
 
                 if (board.visible === false) {
                     board.visible = true;

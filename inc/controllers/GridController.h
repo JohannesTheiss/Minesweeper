@@ -21,9 +21,11 @@ class GridController : public QObject
     public:
 
     public slots:
-        void generateGrid(models::GridModel &gridModel);
+        void newGrid();
+        void generateGrid(models::GridModel *gridModel);
 
         void revealCell(quint64 index);
+        void revealAllCells();
     
     private:
         models::GridModel *mGridModel;
