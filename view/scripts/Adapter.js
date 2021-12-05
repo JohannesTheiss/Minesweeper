@@ -9,6 +9,7 @@ function resolveImage(cell) {
     // if revealed
     if(!cell.hidden) {
         if(cell.isBomb) {
+            testTimer.running = false;
             imageUrl = "qrc:/cellImages/mine.png";
         }
         else {

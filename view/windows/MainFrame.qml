@@ -337,6 +337,9 @@ ApplicationWindow {
                 */
                 gridController.newGrid();
 
+                testTimer.running = true;
+                timeLabel.text = '000';
+
                 if (board.visible === false) {
                     board.visible = true;
                     pausePlayButton.icon.source = "qrc:/images/pause.png";
@@ -426,6 +429,17 @@ ApplicationWindow {
             color: "blue";
 
             text: "000";
+        }
+      Timer {
+          id: testTimer;
+
+          interval: 1000; 
+          running: true; 
+          repeat: true;
+          onTriggered: {
+              let newTime = ((+timeLabel.text) + 1).toString();
+              timeLabel.text = (newTime < 100 ? '0' : '') + (newTime < 10 ? '0' : '') + newTime;
+          }
         }
     }
 
