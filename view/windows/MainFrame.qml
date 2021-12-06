@@ -24,7 +24,7 @@ ApplicationWindow {
             title: qsTr("&Game");
 
             MenuItem {
-                icon.source: "qrc:/images/empty.png"
+                icon.source: "qrc:/cellImages/empty.png"
 
                 text: qsTr("&Beginner");
                 onTriggered: {
@@ -54,7 +54,7 @@ ApplicationWindow {
                 }
             }
             MenuItem {
-                icon.source: "qrc:/images/mine.png"
+                icon.source: "qrc:/cellImages/mine.png"
 
                 text: qsTr("&Intermediate");
                 onTriggered: {
@@ -84,7 +84,7 @@ ApplicationWindow {
                 }
             }
             MenuItem {
-                icon.source: "qrc:/images/mineRed.png"
+                icon.source: "qrc:/cellImages/mineRed.png"
 
                 text: qsTr("&Expert");
                 onTriggered: {
@@ -300,12 +300,14 @@ ApplicationWindow {
                     imageIndex = 1;
                     pauseText.visible = true;
                     board.visible = false;
+                    testTimer.running = false;
                 }else {
                     icon.source = "qrc:/images/pause.png";
                     toolTipText = "Pause";
                     imageIndex = 0;
                     pauseText.visible = false;
                     board.visible = true;
+                    testTimer.running = true;
                 }
             }
         }
@@ -428,7 +430,16 @@ ApplicationWindow {
         anchors.top: statusBar.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#ffffff";
-    }
+    }   /*
+                for (let i = 0; i < nWidth * mHeight; i++) {
+                    cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/cell.png";
+                    cellRepeater.itemAt(i).enabled = true;
+                }
+                */
+                gridController.newGrid();
+
+                testTimer.running = false;
+                timeLabel.text = '000';
 
     //rechts
     Rectangle {

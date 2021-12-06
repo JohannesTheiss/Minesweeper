@@ -3,32 +3,29 @@
         <file alias="Style.qml">view/styles/Style.qml</file>
     </qresource>
     <qresource prefix="/cellImages">
-        <file alias="cell.png">view/cellImages/cell.png</file>
-        <file alias="eight.png">view/cellImages/eight.png</file>
-        <file alias="empty.png">view/cellImages/empty.png</file>
-        <file alias="five.png">view/cellImages/five.png</file>
-        <file alias="flag.png">view/cellImages/flag.png</file>
-        <file alias="four.png">view/cellImages/four.png</file>
-        <file alias="mine.png">view/cellImages/mine.png</file>
-        <file alias="mineRed.png">view/cellImages/mineRed.png</file>
-        <file alias="mineX.png">view/cellImages/mineX.png</file>
-        <file alias="one.png">view/cellImages/one.png</file>
-        <file alias="seven.png">view/cellImages/seven.png</file>
-        <file alias="six.png">view/cellImages/six.png</file>
-        <file alias="three.png">view/cellImages/three.png</file>
-        <file alias="two.png">view/cellImages/two.png</file>
+        <file alias="cell.png">view/images/cellImages/cell.png</file>
+        <file alias="eight.png">view/images/cellImages/eight.png</file>
+        <file alias="empty.png">view/images/cellImages/empty.png</file>
+        <file alias="five.png">view/images/cellImages/five.png</file>
+        <file alias="flag.png">view/images/cellImages/flag.png</file>
+        <file alias="four.png">view/images/cellImages/four.png</file>
+        <file alias="mine.png">view/images/cellImages/mine.png</file>
+        <file alias="mineRed.png">view/images/cellImages/mineRed.png</file>
+        <file alias="mineX.png">view/images/cellImages/mineX.png</file>
+        <file alias="one.png">view/images/cellImages/one.png</file>
+        <file alias="seven.png">view/images/cellImages/seven.png</file>
+        <file alias="six.png">view/images/cellImages/six.png</file>
+        <file alias="three.png">view/images/cellImages/three.png</file>
+        <file alias="two.png">view/images/cellImages/two.png</file>
     </qresource>
     <qresource prefix="/controls">
         <file alias="IconButton.qml">view/components/controls/IconButton.qml</file>
         <file alias="ImageButton.qml">view/components/controls/ImageButton.qml</file>
     </qresource>
     <qresource prefix="/images">
-    <file alias="empty.png">view/images/empty.png</file>
         <file alias="flagTransparent.png">view/images/flagTransparent.png</file>
         <file alias="logo-hs.ico">view/images/logo-hs.ico</file>
         <file alias="logo-hs.png">view/images/logo-hs.png</file>
-        <file alias="mine.png">view/images/mine.png</file>
-        <file alias="mineRed.png">view/images/mineRed.png</file>
         <file alias="new.png">view/images/new.png</file>
         <file alias="pause.png">view/images/pause.png</file>
         <file alias="play.png">view/images/play.png</file>
