@@ -36,9 +36,14 @@ QtObject {
     property int borderRadius: 8
     property int borderWidth: 1
 
-    // Object Width / Height (e.g. Buttons, SongElements)
+    // Cell Width / Height
+    property int cellWidth: 16
+    property int cellHeight: 16
+
+    // Object Width / Height (e.g. Buttons)
     property int defaultWidth: 40
     property int defaultHeight: 40
+
 
     // Anchors
     property int percentageEdge: 16

@@ -41,6 +41,8 @@ class CellModel : public QObject
         void setIsBomb(const bool isBomb);
         void setSurroundingBombs(const quint64 surroundingBombs);
 
+        void increaseSurroundingBombsCount();
+
     signals:
         void hiddenChanged();
         void flaggedChanged();

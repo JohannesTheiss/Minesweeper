@@ -6,11 +6,13 @@ namespace models
 GridModel::GridModel(const QVector<CellModel *> grid,
                      const quint64 rows,
                      const quint64 columns,
-                     const quint64 mineCount)
+                     const quint64 mineCount,
+                     const quint64 flagCount)
     : mGrid(grid),
       mRows(rows),
       mColumns(columns),
-      mMineCount(mineCount)
+      mMineCount(mineCount),
+      mFlagCount(flagCount)
 {
 }
 
@@ -43,6 +45,11 @@ quint64 GridModel::mineCount()
     return mMineCount;
 }
 
+quint64 GridModel::flagCount()
+{
+    return mFlagCount;
+}
+
 void GridModel::setGrid(const QVector<CellModel *> grid)
 {
     mGrid = grid;
@@ -65,6 +72,24 @@ void GridModel::setMineCount(const quint64 mineCount)
 {
     mMineCount = mineCount;
     emit mineCountChanged();
+}
+
+void GridModel::setFlagCount(const quint64 flagCount)
+{
+    mFlagCount = flagCount;
+    emit flagCountChanged();
+}
+
+void GridModel::increaseFlags()
+{
+    mFlagCount++;
+    emit flagCountChanged();
+}
+
+void GridModel::decreaseFlags()
+{
+    mFlagCount--;
+    emit flagCountChanged();
 }
 
 } // namespace models
