@@ -16,13 +16,6 @@
 void connectControllerToModel(controllers::GridController &controller, models::GridModel &model)
 {
     QObject::connect(&controller, SIGNAL(updateGrid(QVector<models::CellModel *>)), &model, SLOT(setGrid(QVector<models::CellModel *>)));
-
-    // connect model with controller
-    QObject::connect(&model, SIGNAL(gridChanged(QVector<models::CellModel *>)), &controller, SLOT(updateInternalGrid(QVector<models::CellModel *>)));
-    QObject::connect(&model, SIGNAL(columnsChanged(quint64)), &controller, SLOT(updateInternalColumns(quint64)));
-    QObject::connect(&model, SIGNAL(rowsChanged(quint64)), &controller, SLOT(updateInternalRows(quint64)));
-    QObject::connect(&model, SIGNAL(mineCountChanged(quint64)), &controller, SLOT(updateInternalMineCount(quint64)));
-    QObject::connect(&model, SIGNAL(flagCountChanged(quint64)), &controller, SLOT(updateInternalFlagCount(quint64)));
 }
 
 int main(int argc, char *argv[])
@@ -61,9 +54,9 @@ int main(int argc, char *argv[])
     models::GridModel gridModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines);
     //models::GridModel gridModel(grid, 0, 0, 0, 0);
     
-    controllers::GridController gridController;
+    controllers::GridController gridController(&gridModel, &gridModel);
     connectControllerToModel(gridController, gridModel);
-    gridController.generateGrid(&gridModel);
+    gridController.generateGrid();
 
 
     // connect models with view

@@ -55,43 +55,43 @@ quint64 GridModel::flagCount()
 void GridModel::setGrid(const QVector<CellModel *> grid)
 {
     mGrid = grid;
-    emit gridChanged(mGrid);
+    emit gridChanged();
 }
 
 void GridModel::setRows(const quint64 rows)
 {
     mRows = rows;
-    emit rowsChanged(mRows);
+    emit rowsChanged();
 }
 
 void GridModel::setColumns(const quint64 columns)
 {
     mColumns = columns;
-    emit columnsChanged(mColumns);
+    emit columnsChanged();
 }
 
 void GridModel::setMineCount(const quint64 mineCount)
 {
     mMineCount = mineCount;
-    emit mineCountChanged(mMineCount);
+    emit mineCountChanged();
 }
 
 void GridModel::setFlagCount(const quint64 flagCount)
 {
     mFlagCount = flagCount;
-    emit flagCountChanged(mFlagCount);
+    emit flagCountChanged();
 }
 
 void GridModel::increaseFlags()
 {
     mFlagCount++;
-    emit flagCountChanged(mFlagCount);
+    emit flagCountChanged();
 }
 
 void GridModel::decreaseFlags()
 {
     mFlagCount--;
-    emit flagCountChanged(mFlagCount);
+    emit flagCountChanged();
 }
 
 } // namespace models
