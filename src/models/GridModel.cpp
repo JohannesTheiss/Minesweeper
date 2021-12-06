@@ -1,5 +1,7 @@
 #include "../../inc/models/GridModel.h"
 
+#include <QDebug>
+
 namespace models
 {
 
@@ -52,6 +54,7 @@ quint64 GridModel::flagCount()
 
 void GridModel::setGrid(const QVector<CellModel *> grid)
 {
+    qDebug() << "grid set" << grid.length();
     mGrid = grid;
     emit gridChanged();
 }

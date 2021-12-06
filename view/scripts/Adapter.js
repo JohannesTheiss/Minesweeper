@@ -1,5 +1,6 @@
 
 function resolveImage(cell) {
+    console.log("cell")
     let imageUrl = "qrc:/cellImages/cell.png";
 
     if(cell.flagged) {

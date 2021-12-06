@@ -34,6 +34,7 @@ class GridModel : public QObject
         // default destructor
         ~GridModel() = default;
 
+    public slots:
         // property getters
         QVector<QObject *> grid();
         quint64 rows();
@@ -42,7 +43,7 @@ class GridModel : public QObject
         quint64 flagCount();
 
         // property setters
-        void setGrid(const QVector<CellModel *> grid);
+        void setGrid(const QVector<models::CellModel *> grid);
         void setRows(const quint64 rows);
         void setColumns(const quint64 columns);
         void setMineCount(const quint64 mineCount);

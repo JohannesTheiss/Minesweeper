@@ -22,7 +22,7 @@ ApplicationWindow {
             title: qsTr("&Game");
 
             MenuItem {
-                icon.source: "qrc:/images/empty.png"
+                //icon.source: "qrc:/images/empty.png"
 
                 text: qsTr("&Beginner");
                 onTriggered: {
@@ -50,7 +50,7 @@ ApplicationWindow {
                 }
             }
             MenuItem {
-                icon.source: "qrc:/images/mine.png"
+                //icon.source: "qrc:/images/mine.png"
 
                 text: qsTr("&Intermediate");
                 onTriggered: {
@@ -78,7 +78,7 @@ ApplicationWindow {
                 }
             }
             MenuItem {
-                icon.source: "qrc:/images/mineRed.png"
+                //icon.source: "qrc:/images/mineRed.png"
 
                 text: qsTr("&Expert");
                 onTriggered: {
@@ -113,11 +113,11 @@ ApplicationWindow {
             title: qsTr("&Extras")
 
             MenuItem {
-                icon.source: "qrc:/images/flagTransparent.png";
+                //icon.source: "qrc:/images/flagTransparent.png";
                 text: qsTr("&Statistics");
             }
             MenuItem {
-                icon.source: "qrc:/images/questionTransparent.png";
+                //icon.source: "qrc:/images/questionTransparent.png";
                 text: qsTr("&Help");
             }
         }

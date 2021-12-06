@@ -13,6 +13,11 @@
 
 #include "../inc/controllers/GridController.h"
 
+void connectControllerToModel(controllers::GridController &controller, models::GridModel &model)
+{
+    QObject::connect(&controller, SIGNAL(updateGrid(QVector<models::CellModel *>)), &model, SLOT(setGrid(QVector<models::CellModel *>)));
+}
+
 int main(int argc, char *argv[])
 {
     // Define start view
@@ -52,6 +57,7 @@ int main(int argc, char *argv[])
     models::GridModel gridModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines);
     
     controllers::GridController gridController;
+    connectControllerToModel(gridController, gridModel);
     gridController.generateGrid(&gridModel);
 
 

@@ -29,7 +29,7 @@ void GridController::generateGrid(models::GridModel *gridModel)
     std::iota(indices.begin(), indices.end(), 0);
     long long seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
-    QVector<quint64> mineIndices(indices.begin(), indices.begin() + gridModel->mineCount());
+    QVector<quint64> mineIndices(indices.mid(0, gridModel->mineCount()));
     //QVector<quint64> mineIndices({15, 6});
 
     // build the grid
@@ -113,8 +113,8 @@ void GridController::generateGrid(models::GridModel *gridModel)
         }
     }
 
-
-    gridModel->setGrid(grid);
+    emit updateGrid(grid);
+    //gridModel->setGrid(grid);
 
     mGridModel = gridModel;
 }

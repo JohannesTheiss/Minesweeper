@@ -3,6 +3,7 @@
 
 #include <random>
 #include <numeric>
+#include <iterator>
 
 #include <QObject>
 
@@ -28,6 +29,9 @@ class GridController : public QObject
         void revealAllCells();
     
         void flagCell(quint64 index);
+
+    signals:
+        QVector <models::CellModel *> updateGrid(QVector<models::CellModel *>);
 
     private:
         models::GridModel *mGridModel;
