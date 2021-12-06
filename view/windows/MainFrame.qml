@@ -587,7 +587,7 @@ ApplicationWindow {
 
                             case Qt.MiddleButton:
                             case Qt.RightButton:
-                                gridController.flagCell(model.index);
+                                gridController.toggleFlagInCell(model.index);
                                 break;
                         }
                     }

@@ -12,12 +12,12 @@ void GridController::newGrid()
     quint64 numberOfColumns = 30;
     quint64 numberOfMines = 99;
 
-    mGridModel->setRows(numberOfRows);
-    mGridModel->setColumns(numberOfColumns);
-    mGridModel->setMineCount(numberOfMines);
-    mGridModel->setFlagCount(numberOfMines);
+    //mGridModel->setRows(numberOfRows);
+    //mGridModel->setColumns(numberOfColumns);
+    //mGridModel->setMineCount(numberOfMines);
+    //mGridModel->setFlagCount(numberOfMines);
 
-    generateGrid(mGridModel);
+    //generateGrid(mGridModel);
 }
 
 void GridController::generateGrid(models::GridModel *gridModel)
@@ -30,12 +30,12 @@ void GridController::generateGrid(models::GridModel *gridModel)
     long long seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
     QVector<quint64> mineIndices(indices.mid(0, gridModel->mineCount()));
-    //QVector<quint64> mineIndices({15, 6});
 
     // build the grid
     QVector<models::CellModel *> grid(numberOfCells);
     for (int i = 0; i < grid.size(); ++i)
     {
+        // set CellModel(hidden = true, flagged = false, isBomb = false, surroundingBombs = 0)
         grid[i] = new models::CellModel(true, false, false, 0);
     }
         
@@ -48,12 +48,18 @@ void GridController::generateGrid(models::GridModel *gridModel)
         quint64 columns = gridModel->columns();
         quint64 rows = gridModel->rows();
 
-        // increase surrounding cells
-        quint64 x = mineIndex % columns;
 
-        bool notFirstColumn = x > 0;
+        /*
+        updateSurroundingCell(index, numberOfColumns, numberOfRow, 
+                std::bind(&GridController::revealCell, this, std::placeholders::_1));
+                */
+
+        // increase surrounding cells
+        quint64 columnIndex = mineIndex % columns;
+
+        bool notFirstColumn = columnIndex  > 0;
         bool notFirstRow = mineIndex >= columns; 
-        bool notLastColumn = (x + 1) < columns;
+        bool notLastColumn = (columnIndex + 1) < columns;
         bool notLastRow = mineIndex < ((columns * rows) - columns);
 
         /*
@@ -114,7 +120,6 @@ void GridController::generateGrid(models::GridModel *gridModel)
     }
 
     emit updateGrid(grid);
-    //gridModel->setGrid(grid);
 
     mGridModel = gridModel;
 }
@@ -122,11 +127,14 @@ void GridController::generateGrid(models::GridModel *gridModel)
 
 void GridController::revealCell(quint64 index)
 {
-    QObject *obj = mGridModel->grid().at(index);
-    models::CellModel* cell = qobject_cast<models::CellModel *>(obj);
+    //QObject *obj = mGridModel->grid().at(index);
+    //models::CellModel* cell = qobject_cast<models::CellModel *>(obj);
+    models::CellModel* cell = mGrid.at(index);
 
+    // don't reveal flagged cells
     if(cell->flagged()) return;
 
+    // if cell is a bomb then game over
     if(cell->isBomb())
     {
         revealAllCells();
@@ -134,69 +142,15 @@ void GridController::revealCell(quint64 index)
     }
     else if(cell->hidden()) 
     {
-
         cell->setHidden(false);
 
         if(cell->surroundingBombs() == 0)
         {
-            quint64 columns = mGridModel->columns();
-            quint64 rows = mGridModel->rows();
+            quint64 numberOfColumns = mGridModel->columns();
+            quint64 numberOfRow = mGridModel->rows();
 
-            // reveal surrounding cells
-            quint64 x = index % columns;
-
-            bool notFirstColumn = x > 0;
-            bool notFirstRow = index >= columns; 
-            bool notLastColumn = (x + 1) < columns;
-            bool notLastRow = index < ((columns * rows) - columns);
-
-            if(notFirstRow && notFirstColumn)
-            {
-                // reveal upper left cell
-                revealCell(index - columns - 1);
-            }
-
-            if(notFirstRow)
-            {
-                // reveal upper cell
-                revealCell(index - columns);
-            }
-
-            if(notFirstRow && notLastColumn)
-            {
-                // reveal upper right cell
-                revealCell(index - columns + 1);
-            }
-
-            if(notLastColumn)
-            {
-                // reveal right cell
-                revealCell(index + 1);
-            }
-
-            if(notLastColumn && notLastRow)
-            {
-                // reveal lower right cell
-                revealCell(index + columns + 1);
-            }
-
-            if(notLastRow)
-            {
-                // reveal lower cell
-                revealCell(index + columns);
-            }
-
-            if(notLastRow && notFirstColumn) 
-            {
-                // reveal lower left cell
-                revealCell(index + columns - 1);
-            }
-
-            if(notFirstColumn) 
-            {
-                // reveal left cell
-                revealCell(index - 1);
-            }
+            updateSurroundingCell(index, numberOfColumns, numberOfRow, 
+                    std::bind(&GridController::revealCell, this, std::placeholders::_1));
         }
     }
 }
@@ -209,7 +163,7 @@ void GridController::revealAllCells()
     }
 }
 
-void GridController::flagCell(quint64 index)
+void GridController::toggleFlagInCell(quint64 index)
 {
     QObject *obj = mGridModel->grid().at(index);
     models::CellModel* cell = qobject_cast<models::CellModel *>(obj);
@@ -229,5 +183,106 @@ void GridController::flagCell(quint64 index)
     }
 }
 
+void GridController::updateInternalGrid(QVector<models::CellModel *> grid)
+{
+    mGrid = grid; 
+}
+
+void GridController::updateInternalColumns(quint64 columns)
+{
+    mColumns = columns; 
+}
+
+void GridController::updateInternalRows(quint64 rows)
+{
+    mRows = rows; 
+}
+
+void GridController::updateInternalMineCount(quint64 mineCount)
+{
+    mMineCount = mineCount; 
+}
+
+void GridController::updateInternalFlagCount(quint64 flagCount)
+{
+    mFlagCount = flagCount; 
+}
+
+
+
+
+
+
+void GridController::increaseSurroundingBombsCount(const quint64 cellIndex)
+{
+    
+}
+
+
+void GridController::updateSurroundingCell(const quint64 cellIndex,
+    const quint64 numberOfColumns,
+    const quint64 numberOfRow,
+    const std::function<void(quint64)> updateFunction)
+{
+    quint64 columnIndex = cellIndex % numberOfColumns;
+
+    bool notFirstColumn = columnIndex > 0;
+    bool notFirstRow = cellIndex >= numberOfColumns; 
+    bool notLastColumn = (columnIndex + 1) < numberOfColumns;
+    bool notLastRow = cellIndex < ((numberOfColumns * numberOfRow) - numberOfColumns);
+
+    if(notFirstRow && notFirstColumn)
+    {
+        // upper left cell
+        updateFunction(cellIndex - numberOfColumns - 1);
+    }
+
+    if(notFirstRow)
+    {
+        // upper cell
+        updateFunction(cellIndex - numberOfColumns);
+    }
+
+    if(notFirstRow && notLastColumn)
+    {
+        // upper right cell
+        updateFunction(cellIndex - numberOfColumns + 1);
+    }
+
+    if(notLastColumn)
+    {
+        // right cell
+        updateFunction(cellIndex + 1);
+    }
+
+    if(notLastColumn && notLastRow)
+    {
+        // lower right cell
+        updateFunction(cellIndex + numberOfColumns + 1);
+    }
+
+    if(notLastRow)
+    {
+        // lower cell
+        updateFunction(cellIndex + numberOfColumns);
+    }
+
+    if(notLastRow && notFirstColumn) 
+    {
+        // lower left cell
+        updateFunction(cellIndex + numberOfColumns - 1);
+    }
+
+    if(notFirstColumn) 
+    {
+        // left cell
+        updateFunction(cellIndex - 1);
+    }
+}
+
+
 
 } // namespace controllers
+
+
+

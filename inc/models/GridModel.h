@@ -53,11 +53,11 @@ class GridModel : public QObject
         void decreaseFlags();
 
     signals:
-        void gridChanged();
-        void rowsChanged();
-        void columnsChanged();
-        void mineCountChanged();
-        void flagCountChanged();
+        void gridChanged(QVector<models::CellModel * > grid);
+        void rowsChanged(quint64);
+        void columnsChanged(quint64);
+        void mineCountChanged(quint64);
+        void flagCountChanged(quint64);
 
     private:
 
