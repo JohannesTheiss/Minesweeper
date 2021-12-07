@@ -1,5 +1,5 @@
-#ifndef GRIDMODEL_H
-#define GRIDMODEL_H
+#ifndef GRAMEMODEL_H
+#define GRAMEMODEL_H
 
 #include <QObject>
 #include <QVector>
@@ -9,47 +9,50 @@
 namespace models
 {
 
-class GridModel : public QObject
+class GameModel : public QObject
 {
 
     Q_OBJECT
 
-    Q_PROPERTY(QVector<QObject *> grid READ grid NOTIFY gridChanged)
+    Q_PROPERTY(QVector<CellModel *> grid READ grid NOTIFY gridChanged)
     Q_PROPERTY(quint64 rows READ rows NOTIFY rowsChanged)
     Q_PROPERTY(quint64 columns READ columns NOTIFY columnsChanged)
     Q_PROPERTY(quint64 mineCount READ mineCount NOTIFY mineCountChanged)
     Q_PROPERTY(quint64 flagCount READ flagCount NOTIFY flagCountChanged)
+    Q_PROPERTY(quint64 timePlayed READ timePlayed NOTIFY timePlayedChanged)
 
     public:
         //delete default constructor
-        GridModel() = delete;
+        GameModel() = delete;
 
         // custom constructor
-        GridModel(const QVector<CellModel *> grid,
+        GameModel(const QVector<CellModel *> grid,
                   const quint64 rows,
                   const quint64 columns,
                   const quint64 mineCount,
-                  const quint64 flagCount);
+                  const quint64 flagCount,
+                  const quint64 timePlayed);
 
         // default destructor
-        ~GridModel() = default;
+        ~GameModel() = default;
 
+    public slots:
         // property getters
-        QVector<QObject *> grid();
+        QVector<CellModel *> grid();
         quint64 rows();
         quint64 columns();
         quint64 mineCount();
         quint64 flagCount();
+        quint64 timePlayed();
+
 
         // property setters
-        void setGrid(const QVector<CellModel *> grid);
+        void setGrid(const QVector<models::CellModel *> grid);
         void setRows(const quint64 rows);
         void setColumns(const quint64 columns);
         void setMineCount(const quint64 mineCount);
         void setFlagCount(const quint64 flagCount);
-
-        void increaseFlags();
-        void decreaseFlags();
+        void setTimePlayed(const quint64 timePlayed);
 
     signals:
         void gridChanged();
@@ -57,6 +60,7 @@ class GridModel : public QObject
         void columnsChanged();
         void mineCountChanged();
         void flagCountChanged();
+        void timePlayedChanged();
 
     private:
 
@@ -66,8 +70,9 @@ class GridModel : public QObject
         quint64 mColumns;
         quint64 mMineCount;
         quint64 mFlagCount;
+        quint64 mTimePlayed;
 
 };
 
 } // namespace models
-#endif // GRIDMODEL_H
+#endif // GRAMEMODEL_H

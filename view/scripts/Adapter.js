@@ -9,7 +9,6 @@ function resolveImage(cell) {
     // if revealed
     if(!cell.hidden) {
         if(cell.isBomb) {
-            testTimer.running = false;
             imageUrl = "qrc:/cellImages/mine.png";
         }
         else {
@@ -46,4 +45,8 @@ function resolveImage(cell) {
     }
 
     return imageUrl;
+}
+
+function timeToString(secs){
+    return (secs < 100 ? '0' : '') + (secs < 10 ? '0' : '') + secs;
 }

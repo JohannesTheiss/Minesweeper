@@ -9,9 +9,10 @@
 #include <QDebug>
 
 #include "../inc/models/CellModel.h"
-#include "../inc/models/GridModel.h"
+#include "../inc/models/GameModel.h"
 
-#include "../inc/controllers/GridController.h"
+#include "../inc/controllers/GameController.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -37,28 +38,24 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
 
     // Connect frontend with backend
-    // Let the frontend only know about the 
-    //engine.rootContext()->setContextProperty("backend", &backend);
 
-    // connect grid model with view
+    // TODO load from json and create default
+    // create the GridModel
     quint64 numberOfRows = 16;
     quint64 numberOfColumns = 30;
-    //quint64 numberOfRows = 4;
-    //quint64 numberOfColumns = 4;
-
     quint64 numberOfMines = 99;
-
+    quint64 timePlayed = 0;
     QVector<models::CellModel *> grid;
-    models::GridModel gridModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines);
+    models::GameModel gameModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines, timePlayed);
     
-    controllers::GridController gridController;
-    gridController.generateGrid(&gridModel);
+    // create the GridController
+    controllers::GameController gameController(&gameModel, &gameModel);
 
+    // connect models with view
+    engine.rootContext()->setContextProperty("gameModel", &gameModel);
 
-    qDebug() << "lol: " << qobject_cast<models::CellModel *>(gridModel.grid().at(0))->hidden();
-
-    engine.rootContext()->setContextProperty("gridModel", &gridModel);
-    engine.rootContext()->setContextProperty("gridController", &gridController);
+    // connect controllers with view
+    engine.rootContext()->setContextProperty("gameController", &gameController);
     
     // Load the start view
     engine.load(url);
