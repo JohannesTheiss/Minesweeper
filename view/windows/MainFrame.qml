@@ -15,7 +15,7 @@ import "qrc:/scripts/Adapter.js" as Adapter
 ApplicationWindow {
     id: mainWindow;
 
-    property double sizeFactor: 1;
+    property double sizeFactor: 1.0;
 
     MenuBar {
         id: menuBar;
@@ -24,7 +24,10 @@ ApplicationWindow {
             title: qsTr("&Game");
 
             MenuItem {
-                icon.source: "qrc:/cellImages/empty.png"
+                icon.source: !checked ? "qrc:/cellImages/empty.png" : "";
+
+                checkable: false;
+                checked: gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10;
 
                 text: qsTr("&Beginner");
                 onTriggered: {
@@ -54,7 +57,10 @@ ApplicationWindow {
                 }
             }
             MenuItem {
-                icon.source: "qrc:/cellImages/mine.png"
+                icon.source: !checked ? "qrc:/cellImages/mine.png" : "";
+
+                checkable: false;
+                checked: gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40;
 
                 text: qsTr("&Intermediate");
                 onTriggered: {
@@ -84,7 +90,10 @@ ApplicationWindow {
                 }
             }
             MenuItem {
-                icon.source: "qrc:/cellImages/mineRed.png"
+                icon.source: !checked ? "qrc:/cellImages/mineRed.png" : "";
+
+                checkable: false;
+                checked: gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99;
 
                 text: qsTr("&Expert");
                 onTriggered: {
@@ -118,53 +127,65 @@ ApplicationWindow {
             MenuSeparator { }
 
             Menu {
-                title: qsTr("&Size")
+                title: qsTr("&Size");
 
                 MenuItem {
+                    checkable: true;
+                    checked: mainWindow.sizeFactor === 1.0;
+
                     text: qsTr("&Small")
                     onTriggered: {
+                        mainWindow.sizeFactor = 0.5;
                         mainWindow.sizeFactor = 1.0;
 
-                        mainWindow.minimumWidth = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                        mainWindow.maximumWidth = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                        mainWindow.width = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                     }
                 }
 
                 MenuItem {
+                    checkable: true;
+                    checked: mainWindow.sizeFactor === 1.5;
+
                     text: qsTr("&Medium")
                     onTriggered: {
+                        mainWindow.sizeFactor = 0.5;
                         mainWindow.sizeFactor = 1.5;
 
-                        mainWindow.minimumWidth = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                        mainWindow.maximumWidth = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                        mainWindow.width = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                     }
                 }
 
                 MenuItem {
-                    text: qsTr("&Big")
+                    checkable: true;
+                    checked: mainWindow.sizeFactor === 2.0;
+
+                    text: qsTr("&Large")
                     onTriggered: {
+                        mainWindow.sizeFactor = 0.5;
                         mainWindow.sizeFactor = 2.0;
 
-                        mainWindow.minimumWidth = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                        mainWindow.maximumWidth = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                        mainWindow.width = Math.max(gridModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gridModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                     }
                 }
             }
@@ -177,6 +198,7 @@ ApplicationWindow {
                 icon.source: "qrc:/images/flagTransparent.png";
                 text: qsTr("&Statistics");
             }
+
             MenuItem {
                 icon.source: "qrc:/images/questionTransparent.png";
                 text: qsTr("&Help");
@@ -235,7 +257,7 @@ ApplicationWindow {
             color: "blue";
 
             //text: "0" + numOfMines;
-            text: gridModel.flagCount < 10 ? "00" + gridModel.flagCount : (gridModel.flagCount < 100 ? "0" + gridModel.flagCount : gridModel.flagCount);
+            text: gameModel.flagCount < 10 ? "00" + gameModel.flagCount : (gameModel.flagCount < 100 ? "0" + gameModel.flagCount : gameModel.flagCount);
 
 
         }
@@ -410,16 +432,7 @@ ApplicationWindow {
         anchors.top: statusBar.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#ffffff";
-    }   /*
-                for (let i = 0; i < nWidth * mHeight; i++) {
-                    cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/cell.png";
-                    cellRepeater.itemAt(i).enabled = true;
-                }
-                */
-                gridController.newGrid();
-
-                testTimer.running = false;
-                timeLabel.text = '000';
+    }     
 
     //rechts
     Rectangle {
