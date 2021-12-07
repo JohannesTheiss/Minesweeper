@@ -31,29 +31,16 @@ ApplicationWindow {
 
                 text: qsTr("&Beginner");
                 onTriggered: {
-                    console.log("pre min");
-                    mainWindow.minimumWidth = Math.max(20 * Style.cellWidth, 310) + 24;
-                    mainWindow.minimumHeight = 11 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post min - pre max");
-                    mainWindow.maximumWidth = Math.max(20 * Style.cellWidth, 310) + 24;
-                    mainWindow.maximumHeight = 11 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post max - pre set");
-
-                    nWidth = 9;
-                    mHeight = 9;
-                    numOfMines = 10;
-
                     gameController.setGameMode(9, 9, 10);
 
-                    mainWindow.minimumWidth = topOuterBorder.width;
-                    mainWindow.minimumHeight = leftOuterBorder.height;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = topOuterBorder.width;
-                    mainWindow.maximumHeight = leftOuterBorder.height;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = topOuterBorder.width;
-                    mainWindow.height = leftOuterBorder.height;
-                    console.log("change beginner");
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem {
@@ -64,29 +51,16 @@ ApplicationWindow {
 
                 text: qsTr("&Intermediate");
                 onTriggered: {
-                    console.log("pre min");
-                    mainWindow.minimumWidth = Math.max(25 * Style.cellWidth, 310) + 24;
-                    mainWindow.minimumHeight = 14 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post min - pre max");
-                    mainWindow.maximumWidth = Math.max(25 * Style.cellWidth, 310) + 24;
-                    mainWindow.maximumHeight = 14 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post max - pre set");
-
-                    nWidth = 16;
-                    mHeight = 16;
-                    numOfMines = 40;
-
                     gameController.setGameMode(16, 16, 40);
 
-                    mainWindow.minimumWidth = topOuterBorder.width;
-                    mainWindow.minimumHeight = leftOuterBorder.height;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = topOuterBorder.width;
-                    mainWindow.maximumHeight = leftOuterBorder.height;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = topOuterBorder.width;
-                    mainWindow.height = leftOuterBorder.height;
-                    console.log("change beginner");
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem {
@@ -97,29 +71,16 @@ ApplicationWindow {
 
                 text: qsTr("&Expert");
                 onTriggered: {
-                    console.log("pre min");
-                    mainWindow.minimumWidth = Math.max(30 * Style.cellWidth, 310) + 24;
-                    mainWindow.minimumHeight = 16 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post min - pre max");
-                    mainWindow.maximumWidth = Math.max(30 * Style.cellWidth, 310) + 24;
-                    mainWindow.maximumHeight = 16 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post max - pre set");
-
-                    nWidth = 30;
-                    mHeight = 16;
-                    numOfMines = 99;
-
                     gameController.setGameMode(16, 30, 99);
 
-                    mainWindow.minimumWidth = topOuterBorder.width;
-                    mainWindow.minimumHeight = leftOuterBorder.height;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = topOuterBorder.width;
-                    mainWindow.maximumHeight = leftOuterBorder.height;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = topOuterBorder.width;
-                    mainWindow.height = leftOuterBorder.height;
-                    console.log("change beginner");
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem { text: qsTr("&Custom...") }
