@@ -23,22 +23,23 @@ class GridController : public QObject
         GridController(models::GridModel *gridModel, 
                 QObject *parent = nullptr);
 
-        void increaseSurroundingBombsCount(quint64 cellIndex);
+
+    public slots:
+        void generateGrid(const quint64 numberOfRow,
+                const quint64 numberOfColumns,
+                const quint64 numberOfMines);
+
+        void revealCell(const quint64 index);
+        void revealAllCells();
+    
+        void toggleFlagInCell(const quint64 index);
+
+    private:
+        void increaseSurroundingBombsCount(const quint64 cellIndex);
         void increaseFlagCount();
         void decreaseFlagCount();
 
-    public slots:
-        void generateGrid();
-
-        void revealCell(quint64 index);
-        void revealAllCells();
-    
-        void toggleFlagInCell(quint64 index);
-
-    private:
         void updateSurroundingCell(const quint64 cellIndex,
-                const quint64 numberOfColumns,
-                const quint64 numberOfRow,
                 const std::function<void(quint64)> updateFunction);
 
         models::GridModel *mGridModel;

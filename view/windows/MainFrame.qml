@@ -38,6 +38,8 @@ ApplicationWindow {
                     mHeight = 9;
                     numOfMines = 10;
 
+                    gridController.generateGrid(9, 9, 10);
+
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
 
@@ -66,6 +68,8 @@ ApplicationWindow {
                     mHeight = 16;
                     numOfMines = 40;
 
+                    gridController.generateGrid(16, 16, 40);
+
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
 
@@ -93,6 +97,8 @@ ApplicationWindow {
                     nWidth = 30;
                     mHeight = 16;
                     numOfMines = 99;
+
+                    gridController.generateGrid(30, 16, 99);
 
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
@@ -335,7 +341,7 @@ ApplicationWindow {
                     cellRepeater.itemAt(i).enabled = true;
                 }
                 */
-                gridController.generateGrid();
+                gridController.generateGrid(70, 100, 3000);
 
                 testTimer.running = true;
                 timeLabel.text = '000';
