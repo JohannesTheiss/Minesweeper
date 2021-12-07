@@ -256,16 +256,21 @@ ApplicationWindow {
         IconButton {
             id: newButton;
 
-            width: 50 * sizeFactor;
-            height: 15 * sizeFactor;
+//            width: 50 * sizeFactor;
+//            height: 15 * sizeFactor;
+            width: 60 * sizeFactor;
+            height: 30 * sizeFactor;
 
-            x: pausePlayButton.x - width - 2;
+            x: pausePlayButton.x - width - 10;
 
             anchors.verticalCenter: parent.verticalCenter
 
-            icon.source: "qrc:/images/new.png";
-            icon.width: 100;
-            icon.height: 30;
+//            icon.source: "qrc:/images/new.png";
+//            icon.width: 100;
+//            icon.height: 30;
+            icon.source: "qrc:/images/newButton.png";
+            icon.width: 120;
+            icon.height: 60;
             hasBorder: false;
             onClicked: {
                 gameController.initGame();
@@ -277,6 +282,14 @@ ApplicationWindow {
                     pausePlayButton.imageIndex = 0;
                     pauseText.visible = false;
                 }
+            }
+
+            onPressed: {
+                newButton.icon.source = "qrc:/images/newButtonPressed.png"
+            }
+
+            onReleased: {
+                newButton.icon.source = "qrc:/images/newButton.png"
             }
         }
 
@@ -291,7 +304,7 @@ ApplicationWindow {
             icon.source: "qrc:/images/pause.png";
             icon.width: 60;
             icon.height: 60;
-            hasBorder: false;
+            hasBorder: true;
             onClicked: {
                 gameController.togglePauseGame();
                 if (imageIndex === 0) {
@@ -315,16 +328,23 @@ ApplicationWindow {
         IconButton {
             id: stopButton;
 
-            width: 62 * sizeFactor;
-            height: 15 * sizeFactor;
+//            width: 62 * sizeFactor;
+//            height: 15 * sizeFactor;
+            width: 60 * sizeFactor;
+            height: 30 * sizeFactor;
 
-            x: pausePlayButton.x + pausePlayButton.width + 2;
+            x: pausePlayButton.x + pausePlayButton.width + 10;
 
             anchors.verticalCenter: parent.verticalCenter
 
-            icon.source: "qrc:/images/stop.png";
-            icon.width: 124;
-            icon.height: 30;
+//            icon.source: "qrc:/images/stop.png";
+//            icon.width: 124;
+//            icon.height: 30;
+
+            icon.source: "qrc:/images/endButton.png";
+            icon.width: 120;
+            icon.height: 60;
+
             hasBorder: false;
             onClicked: {
                 gameController.endGame();
@@ -339,6 +359,14 @@ ApplicationWindow {
                     pausePlayButton.imageIndex = 0;
                     pauseText.visible = false;
                 }
+            }
+
+            onPressed: {
+                stopButton.icon.source = "qrc:/images/endButtonPressed.png"
+            }
+
+            onReleased: {
+                stopButton.icon.source = "qrc:/images/endButton.png"
             }
         }
 
