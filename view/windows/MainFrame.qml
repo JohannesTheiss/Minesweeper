@@ -557,15 +557,12 @@ ApplicationWindow {
 
                 buttonImage: Adapter.resolveImage(model.modelData)
 
-                onClicked: { 
-                    buttonImage = "qrc:/cellImages/empty.png";
-                }
-
                 MouseArea {
                     id: ma
 
                     anchors.fill: parent;
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
+                    enabled: model.modelData.hidden;
                     onClicked: {
                         gameController.startGame();
                         switch(mouse.button)
