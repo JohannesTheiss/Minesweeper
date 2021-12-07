@@ -1,5 +1,5 @@
-#ifndef GRIDMODEL_H
-#define GRIDMODEL_H
+#ifndef GRAMEMODEL_H
+#define GRAMEMODEL_H
 
 #include <QObject>
 #include <QVector>
@@ -9,7 +9,7 @@
 namespace models
 {
 
-class GridModel : public QObject
+class GameModel : public QObject
 {
 
     Q_OBJECT
@@ -19,20 +19,22 @@ class GridModel : public QObject
     Q_PROPERTY(quint64 columns READ columns NOTIFY columnsChanged)
     Q_PROPERTY(quint64 mineCount READ mineCount NOTIFY mineCountChanged)
     Q_PROPERTY(quint64 flagCount READ flagCount NOTIFY flagCountChanged)
+    Q_PROPERTY(quint64 timePlayed READ timePlayed NOTIFY timePlayedChanged)
 
     public:
         //delete default constructor
-        GridModel() = delete;
+        GameModel() = delete;
 
         // custom constructor
-        GridModel(const QVector<CellModel *> grid,
+        GameModel(const QVector<CellModel *> grid,
                   const quint64 rows,
                   const quint64 columns,
                   const quint64 mineCount,
-                  const quint64 flagCount);
+                  const quint64 flagCount,
+                  const quint64 timePlayed);
 
         // default destructor
-        ~GridModel() = default;
+        ~GameModel() = default;
 
     public slots:
         // property getters
@@ -41,6 +43,8 @@ class GridModel : public QObject
         quint64 columns();
         quint64 mineCount();
         quint64 flagCount();
+        quint64 timePlayed();
+
 
         // property setters
         void setGrid(const QVector<models::CellModel *> grid);
@@ -48,6 +52,7 @@ class GridModel : public QObject
         void setColumns(const quint64 columns);
         void setMineCount(const quint64 mineCount);
         void setFlagCount(const quint64 flagCount);
+        void setTimePlayed(const quint64 timePlayed);
 
     signals:
         void gridChanged();
@@ -55,6 +60,7 @@ class GridModel : public QObject
         void columnsChanged();
         void mineCountChanged();
         void flagCountChanged();
+        void timePlayedChanged();
 
     private:
 
@@ -64,8 +70,9 @@ class GridModel : public QObject
         quint64 mColumns;
         quint64 mMineCount;
         quint64 mFlagCount;
+        quint64 mTimePlayed;
 
 };
 
 } // namespace models
-#endif // GRIDMODEL_H
+#endif // GRAMEMODEL_H

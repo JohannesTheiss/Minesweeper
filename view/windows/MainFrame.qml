@@ -38,7 +38,7 @@ ApplicationWindow {
                     mHeight = 9;
                     numOfMines = 10;
 
-                    gridController.generateGrid(9, 9, 10);
+                    gameController.generateGrid(9, 9, 10);
 
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
@@ -68,7 +68,7 @@ ApplicationWindow {
                     mHeight = 16;
                     numOfMines = 40;
 
-                    gridController.generateGrid(16, 16, 40);
+                    gameController.generateGrid(16, 16, 40);
 
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
@@ -98,7 +98,7 @@ ApplicationWindow {
                     mHeight = 16;
                     numOfMines = 99;
 
-                    gridController.generateGrid(30, 16, 99);
+                    gameController.generateGrid(30, 16, 99);
 
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
@@ -310,7 +310,7 @@ ApplicationWindow {
             color: "blue";
 
             //text: "0" + numOfMines;
-            text: gridModel.flagCount;
+            text: gameModel.flagCount;
         }
 
         Image {
@@ -341,7 +341,7 @@ ApplicationWindow {
                     cellRepeater.itemAt(i).enabled = true;
                 }
                 */
-                gridController.generateGrid(70, 100, 3000);
+                gameController.generateGrid(70, 100, 3000);
 
                 testTimer.running = true;
                 timeLabel.text = '000';
@@ -551,8 +551,8 @@ ApplicationWindow {
 
         //columns: nWidth;
         //rows: mHeight;
-        columns: gridModel.columns;
-        rows: gridModel.rows;
+        columns: gameModel.columns;
+        rows: gameModel.rows;
 
         columnSpacing: 0
         rowSpacing: 0;
@@ -565,7 +565,7 @@ ApplicationWindow {
             id: cellRepeater;
 
             //model: nWidth * mHeight;
-            model: gridModel.grid
+            model: gameModel.grid
 
             ImageButton {
                 id: cell;
@@ -588,12 +588,12 @@ ApplicationWindow {
                         switch(mouse.button)
                         {
                             case Qt.LeftButton:
-                                gridController.revealCell(model.index);
+                                gameController.revealCell(model.index);
                                 break;
 
                             case Qt.MiddleButton:
                             case Qt.RightButton:
-                                gridController.toggleFlagInCell(model.index);
+                                gameController.toggleFlagInCell(model.index);
                                 break;
                         }
                     }
