@@ -18,6 +18,7 @@ GameController::~GameController()
 {
     if(mTimerThread.joinable())
     {
+        mGameStarted = false;
         mTimerThread.join();
     }
 
