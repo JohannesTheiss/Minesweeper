@@ -253,11 +253,9 @@ ApplicationWindow {
             source: "qrc:/images/flagTransparent.png";
         }
 
-        IconButton {
+        ImageButton {
             id: newButton;
 
-//            width: 50 * sizeFactor;
-//            height: 15 * sizeFactor;
             width: 60 * sizeFactor;
             height: 30 * sizeFactor;
 
@@ -265,35 +263,28 @@ ApplicationWindow {
 
             anchors.verticalCenter: parent.verticalCenter
 
-//            icon.source: "qrc:/images/new.png";
-//            icon.width: 100;
-//            icon.height: 30;
-            icon.source: "qrc:/images/newButton.png";
-            icon.width: 120;
-            icon.height: 60;
-            hasBorder: false;
+            buttonImage: "qrc:/images/newButton.png";
+
             onClicked: {
                 gameController.initGame();
 
                 if (board.visible === false) {
                     board.visible = true;
-                    pausePlayButton.icon.source = "qrc:/images/pause.png";
-                    pausePlayButton.toolTipText = "Pause";
-                    pausePlayButton.imageIndex = 0;
+                    pausePlayButton.buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                 }
             }
 
             onPressed: {
-                newButton.icon.source = "qrc:/images/newButtonPressed.png"
+                newButton.buttonImage = "qrc:/images/newButtonPressed.png"
             }
 
             onReleased: {
-                newButton.icon.source = "qrc:/images/newButton.png"
+                newButton.buttonImage = "qrc:/images/newButton.png"
             }
         }
 
-        IconButton {
+        ImageButton {
             id: pausePlayButton;
 
             width: 30 * sizeFactor;
@@ -301,23 +292,18 @@ ApplicationWindow {
 
             anchors.centerIn: parent;
 
-            icon.source: "qrc:/images/pause.png";
-            icon.width: 60;
-            icon.height: 60;
-            hasBorder: true;
+            buttonImage: "qrc:/images/pauseButton.png";
+
             onClicked: {
                 gameController.togglePauseGame();
-                if (imageIndex === 0) {
-                    icon.source = "qrc:/images/play.png";
-                    toolTipText = "Play";
-                    imageIndex = 1;
+
+                if (buttonImage.toString() === "qrc:/images/pauseButton.png") {
+                    buttonImage = "qrc:/images/playButtonPressed.png";
                     pauseText.visible = true;
                     board.visible = false;
                     testTimer.running = false;
                 }else {
-                    icon.source = "qrc:/images/pause.png";
-                    toolTipText = "Pause";
-                    imageIndex = 0;
+                    buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                     board.visible = true;
                     testTimer.running = true;
@@ -325,11 +311,9 @@ ApplicationWindow {
             }
         }
 
-        IconButton {
-            id: stopButton;
+        ImageButton {
+            id: endButton;
 
-//            width: 62 * sizeFactor;
-//            height: 15 * sizeFactor;
             width: 60 * sizeFactor;
             height: 30 * sizeFactor;
 
@@ -337,36 +321,29 @@ ApplicationWindow {
 
             anchors.verticalCenter: parent.verticalCenter
 
-//            icon.source: "qrc:/images/stop.png";
-//            icon.width: 124;
-//            icon.height: 30;
+            buttonImage: "qrc:/images/endButton.png";
 
-            icon.source: "qrc:/images/endButton.png";
-            icon.width: 120;
-            icon.height: 60;
-
-            hasBorder: false;
             onClicked: {
                 gameController.endGame();
                 for (let i = 0; i < nWidth * mHeight; i++) {
                     cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/empty.png";
                 }
 
+                testTimer.running = false;
+
                 if (board.visible === false) {
                     board.visible = true;
-                    pausePlayButton.icon.source = "qrc:/images/pause.png";
-                    pausePlayButton.toolTipText = "Pause";
-                    pausePlayButton.imageIndex = 0;
+                    pausePlayButton.buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                 }
             }
 
             onPressed: {
-                stopButton.icon.source = "qrc:/images/endButtonPressed.png"
+                endButton.buttonImage = "qrc:/images/endButtonPressed.png"
             }
 
             onReleased: {
-                stopButton.icon.source = "qrc:/images/endButton.png"
+                endButton.buttonImage = "qrc:/images/endButton.png"
             }
         }
 
@@ -422,31 +399,6 @@ ApplicationWindow {
 
         text: "PAUSED";
     }
-
-//    Item {
-//        id: pauseScreen
-
-//        width: boardTopBorder.width - 6;
-//        height: boardLeftBorder.height - 6;
-
-//        anchors.top: boardTopBorder.bottom;
-//        anchors.left: boardLeftBorder.right;
-
-//        z: 3;
-
-//        visible: false;
-
-//        Rectangle {
-//            width: pauseText.width;
-//            height: pauseText.height;
-
-//            anchors.centerIn: parent;
-
-//            color: "grey";
-
-
-//        }
-//    }
 
     //unten
     Rectangle {

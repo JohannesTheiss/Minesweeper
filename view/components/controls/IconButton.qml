@@ -25,7 +25,6 @@ Button {
     icon.width: width;
     padding: 0;
 
-
 //    MouseArea {                                         //used for showing toolTips
 //        id: ma;
 
@@ -65,6 +64,5 @@ Button {
         color: "transparent";
         border.color: "grey";
         border.width: Style.borderWidth;
-        radius: 8;
     }
 }
