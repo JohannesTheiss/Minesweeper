@@ -11,9 +11,6 @@ import "qrc:/includes"
 Button {
     property alias buttonImage: image.source;
 
-    width: Style.cellWidth;
-    height: Style.cellHeight;
-
     visible: true;
 
 //    MouseArea {                                         //used for showing toolTips

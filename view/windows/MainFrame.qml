@@ -15,6 +15,8 @@ import "qrc:/scripts/Adapter.js" as Adapter
 ApplicationWindow {
     id: mainWindow;
 
+    property double sizeFactor: 1.0;
+
     MenuBar {
         id: menuBar;
 
@@ -22,98 +24,133 @@ ApplicationWindow {
             title: qsTr("&Game");
 
             MenuItem {
-                icon.source: "qrc:/images/empty.png"
+                icon.source: !checked ? "qrc:/cellImages/empty.png" : "";
+
+                checkable: false;
+                checked: gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10;
 
                 text: qsTr("&Beginner");
                 onTriggered: {
-                    console.log("pre min");
-                    mainWindow.minimumWidth = Math.max(20 * Style.cellWidth, 310) + 24;
-                    mainWindow.minimumHeight = 11 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post min - pre max");
-                    mainWindow.maximumWidth = Math.max(20 * Style.cellWidth, 310) + 24;
-                    mainWindow.maximumHeight = 11 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post max - pre set");
-
-                    nWidth = 9;
-                    mHeight = 9;
-                    numOfMines = 10;
-
                     gameController.setGameMode(9, 9, 10);
 
-                    mainWindow.minimumWidth = topOuterBorder.width;
-                    mainWindow.minimumHeight = leftOuterBorder.height;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = topOuterBorder.width;
-                    mainWindow.maximumHeight = leftOuterBorder.height;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = topOuterBorder.width;
-                    mainWindow.height = leftOuterBorder.height;
-                    console.log("change beginner");
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem {
-                icon.source: "qrc:/images/mine.png"
+                icon.source: !checked ? "qrc:/cellImages/mine.png" : "";
+
+                checkable: false;
+                checked: gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40;
 
                 text: qsTr("&Intermediate");
                 onTriggered: {
-                    console.log("pre min");
-                    mainWindow.minimumWidth = Math.max(25 * Style.cellWidth, 310) + 24;
-                    mainWindow.minimumHeight = 14 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post min - pre max");
-                    mainWindow.maximumWidth = Math.max(25 * Style.cellWidth, 310) + 24;
-                    mainWindow.maximumHeight = 14 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post max - pre set");
-
-                    nWidth = 16;
-                    mHeight = 16;
-                    numOfMines = 40;
-
                     gameController.setGameMode(16, 16, 40);
 
-                    mainWindow.minimumWidth = topOuterBorder.width;
-                    mainWindow.minimumHeight = leftOuterBorder.height;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = topOuterBorder.width;
-                    mainWindow.maximumHeight = leftOuterBorder.height;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = topOuterBorder.width;
-                    mainWindow.height = leftOuterBorder.height;
-                    console.log("change beginner");
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem {
-                icon.source: "qrc:/images/mineRed.png"
+                icon.source: !checked ? "qrc:/cellImages/mineRed.png" : "";
+
+                checkable: false;
+                checked: gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99;
 
                 text: qsTr("&Expert");
                 onTriggered: {
-                    console.log("pre min");
-                    mainWindow.minimumWidth = Math.max(30 * Style.cellWidth, 310) + 24;
-                    mainWindow.minimumHeight = 16 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post min - pre max");
-                    mainWindow.maximumWidth = Math.max(30 * Style.cellWidth, 310) + 24;
-                    mainWindow.maximumHeight = 16 * Style.cellHeight + statusBar.height + 36;
-                    console.log("post max - pre set");
-
-                    nWidth = 30;
-                    mHeight = 16;
-                    numOfMines = 99;
-
                     gameController.setGameMode(16, 30, 99);
 
-                    mainWindow.minimumWidth = topOuterBorder.width;
-                    mainWindow.minimumHeight = leftOuterBorder.height;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = topOuterBorder.width;
-                    mainWindow.maximumHeight = leftOuterBorder.height;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = topOuterBorder.width;
-                    mainWindow.height = leftOuterBorder.height;
-                    console.log("change beginner");
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem { text: qsTr("&Custom...") }
-        }
 
+            MenuSeparator { }
+
+            Menu {
+                title: qsTr("&Size");
+
+                MenuItem {
+                    checkable: true;
+                    checked: mainWindow.sizeFactor === 1.0;
+
+                    text: qsTr("&Small")
+                    onTriggered: {
+                        mainWindow.sizeFactor = 0.5;
+                        mainWindow.sizeFactor = 1.0;
+
+                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    }
+                }
+
+                MenuItem {
+                    checkable: true;
+                    checked: mainWindow.sizeFactor === 1.5;
+
+                    text: qsTr("&Medium")
+                    onTriggered: {
+                        mainWindow.sizeFactor = 0.5;
+                        mainWindow.sizeFactor = 1.5;
+
+                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    }
+                }
+
+                MenuItem {
+                    checkable: true;
+                    checked: mainWindow.sizeFactor === 2.0;
+
+                    text: qsTr("&Large")
+                    onTriggered: {
+                        mainWindow.sizeFactor = 0.5;
+                        mainWindow.sizeFactor = 2.0;
+
+                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
+                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    }
+                }
+            }
+        }
 
         Menu {
             title: qsTr("&Extras")
@@ -122,30 +159,12 @@ ApplicationWindow {
                 icon.source: "qrc:/images/flagTransparent.png";
                 text: qsTr("&Statistics");
             }
+
             MenuItem {
                 icon.source: "qrc:/images/questionTransparent.png";
                 text: qsTr("&Help");
             }
         }
-
-//        Menu {
-//            enabled: false;
-//        }
-//        Menu {
-//            enabled: false;
-//        }
-//        Menu {
-//            enabled: false;
-//        }
-//        Menu {
-//            enabled: false;
-//        }
-//        Menu {
-//            enabled: false;
-//        }
-//        Menu {
-//            enabled: false;
-//        }
 
         Menu {
             title: qsTr(gameModel.rows + "x" + gameModel.columns + "  " + gameModel.mineCount + " Mines");
@@ -153,28 +172,12 @@ ApplicationWindow {
         }
     }
 
-//    footer: TextLabel {
-//        text: "99 Mines";
-//    }
-
     property int nWidth: 30;
     property int mHeight: 16;
     property int numOfMines: 99;
 
     title: "Minesweeper";
     visible: true;
-//    width: Style.cellWidth * n;
-//    height: Style.cellHeight * m;
-
-//    //Minimum Size
-//    minimumWidth: Style.cellWidth * n;
-//    minimumHeight: Style.cellHeight * m;
-
-//    maximumWidth: Style.cellWidth * n;
-//    maximumHeight: Style.cellHeight * m;
-
-//    width: 1500;
-//    height: 600;
 
     width: topOuterBorder.width;
     height: leftOuterBorder.height;
@@ -188,108 +191,11 @@ ApplicationWindow {
 
     color: "#c0c0c0";
 
-//    Rectangle {
-//        id: menuBar;
-
-//        width: topOuterBorder.width;
-//        height: 20;
-
-//        anchors.horizontalCenter: statusBar.horizontalCenter;
-
-//        color: "#ffffff";
-
-//        Row {
-//            anchors.fill: parent;
-
-//            Button {
-//                id: gameButton;
-
-//                height: menuBar.height;
-//                width: 45;
-
-//                MouseArea {                                         //used for showing toolTips
-//                    id: ma;
-
-//                    anchors.fill: parent;
-//                    hoverEnabled: true;
-//                    onClicked: {                                    //pass click to Button
-//                        parent.onClicked();
-//                    }
-//                }
-
-//                Text {
-//                    anchors.centerIn: parent;
-
-//                    font.family: "Arial";
-//                    color: "black";
-//                    text: "Game";
-//                }
-
-//                background: Rectangle {
-//                    color: ma.containsMouse? "lightblue" : "transparent";
-
-//                    border.width: ma.containsMouse? 1 : 0;
-//                    border.color: "lightblue";
-//                }
-//            }
-
-//            Button {
-//                id: statisticsButton;
-
-//                height: menuBar.height;
-//                width: 45;
-
-//                Text {
-//                    anchors.centerIn: parent;
-
-//                    font.family: "Arial";
-//                    color: "black";
-//                    text: "Statistics";
-//                }
-
-//                background: Rectangle {
-//                    color: "transparent";
-//                }
-//            }
-
-//            Button {
-//                id: helpButton;
-
-//                height: menuBar.height;
-//                width: 45;
-
-//                Text {
-//                    anchors.centerIn: parent;
-
-//                    font.family: "Arial";
-//                    color: "black";
-//                    text: "Help";
-//                }
-
-//                background: Rectangle {
-//                    color: "transparent";
-//                }
-//            }
-//        }
-
-//        TextLabel {
-//            anchors.right: parent.right;
-//            anchors.rightMargin: 5;
-//            height: parent.height;
-
-//            verticalAlignment: Text.AlignVCenter;
-
-//            font.pointSize: 8.0;
-
-//            text: nWidth + "x" + mHeight + " 99 Mines";
-//        }
-//    }
-
     Rectangle {
         id: statusBar;
 
-        width: Math.max(board.width, 310);
-        height: Style.defaultHeight;
+        width: Math.max(board.width, 310 * sizeFactor);
+        height: Style.defaultHeight * sizeFactor;
 
         anchors.horizontalCenter: parent.horizontalCenter;
 
@@ -300,116 +206,137 @@ ApplicationWindow {
         TextLabel {
             id: flagsLabel;
 
-            width: 40;
+            width: 35 * sizeFactor;
             x: 10;
+            z:10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
 
+            font.pointSize: Style.textSize * sizeFactor;
             font.family: "Consolas";
             color: "blue";
 
             //text: "0" + numOfMines;
-            text: gameModel.flagCount;
+            text: gameModel.flagCount < 10 ? "00" + gameModel.flagCount : (gameModel.flagCount < 100 ? "0" + gameModel.flagCount : gameModel.flagCount);
+
+
         }
 
         Image {
             id: flagImage;
 
             x: flagsLabel.x + flagsLabel.width + 2;
+
             anchors.verticalCenter: statusBar.verticalCenter;
+
+            width: 16 * sizeFactor
+            height: 16 * sizeFactor
 
             source: "qrc:/images/flagTransparent.png";
         }
 
-        IconButton {
+        ImageButton {
             id: newButton;
 
-            width: 50;
-            height: 15;
+            width: 60 * sizeFactor;
+            height: 30 * sizeFactor;
 
-            x: pausePlayButton.x - 52;
+            x: pausePlayButton.x - width - 10;
 
             anchors.verticalCenter: parent.verticalCenter
 
-            icon.source: "qrc:/images/new.png";
-            hasBorder: false;
+            buttonImage: "qrc:/images/newButton.png";
+
             onClicked: {
                 gameController.initGame();
 
                 if (board.visible === false) {
                     board.visible = true;
-                    pausePlayButton.icon.source = "qrc:/images/pause.png";
-                    pausePlayButton.toolTipText = "Pause";
-                    pausePlayButton.imageIndex = 0;
+                    pausePlayButton.buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                 }
             }
+
+            onPressed: {
+                newButton.buttonImage = "qrc:/images/newButtonPressed.png"
+            }
+
+            onReleased: {
+                newButton.buttonImage = "qrc:/images/newButton.png"
+            }
         }
 
-        IconButton {
+        ImageButton {
             id: pausePlayButton;
 
-            width: 30;
-            height: 30;
+            width: 30 * sizeFactor;
+            height: 30 * sizeFactor;
 
             anchors.centerIn: parent;
 
-            icon.source: "qrc:/images/pause.png";
-            hasBorder: false;
+            buttonImage: "qrc:/images/pauseButton.png";
+
             onClicked: {
                 gameController.togglePauseGame();
-                if (imageIndex === 0) {
-                    icon.source = "qrc:/images/play.png";
-                    toolTipText = "Play";
-                    imageIndex = 1;
+
+                if (buttonImage.toString() === "qrc:/images/pauseButton.png") {
+                    buttonImage = "qrc:/images/playButtonPressed.png";
                     pauseText.visible = true;
                     board.visible = false;
+                    testTimer.running = false;
                 }else {
-                    icon.source = "qrc:/images/pause.png";
-                    toolTipText = "Pause";
-                    imageIndex = 0;
+                    buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                     board.visible = true;
+                    testTimer.running = true;
                 }
             }
         }
 
-        IconButton {
-            id: stopButton;
+        ImageButton {
+            id: endButton;
 
-            width: 62;
-            height: 15;
+            width: 60 * sizeFactor;
+            height: 30 * sizeFactor;
 
-            x: pausePlayButton.x + 32;
+            x: pausePlayButton.x + pausePlayButton.width + 10;
 
             anchors.verticalCenter: parent.verticalCenter
 
-            icon.source: "qrc:/images/stop.png";
-            hasBorder: false;
+            buttonImage: "qrc:/images/endButton.png";
+
             onClicked: {
                 gameController.endGame();
                 for (let i = 0; i < nWidth * mHeight; i++) {
                     cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/empty.png";
                 }
 
+                testTimer.running = false;
+
                 if (board.visible === false) {
                     board.visible = true;
-                    pausePlayButton.icon.source = "qrc:/images/pause.png";
-                    pausePlayButton.toolTipText = "Pause";
-                    pausePlayButton.imageIndex = 0;
+                    pausePlayButton.buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                 }
+            }
+
+            onPressed: {
+                endButton.buttonImage = "qrc:/images/endButtonPressed.png"
+            }
+
+            onReleased: {
+                endButton.buttonImage = "qrc:/images/endButton.png"
             }
         }
 
         Image {
             id: hourglassImage;
 
-            width: 16;
-            height: 16;
+            width: 16 * sizeFactor;
+            height: 16 * sizeFactor;
 
-            x: timeLabel.x - 18;
+            x: timeLabel.x - width - 2;
             anchors.verticalCenter: statusBar.verticalCenter;
 
             source: "qrc:/images/timerTransparent.png";
@@ -418,12 +345,13 @@ ApplicationWindow {
         TextLabel {
             id: timeLabel;
 
-            width: 40;
-            x: statusBar.width - 40;
+            width: 40 * sizeFactor;
+            x: statusBar.width - width;
 
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
 
+            font.pointSize: Style.textSize * sizeFactor;
             font.family: "Consolas";
             color: "blue";
 
@@ -455,31 +383,6 @@ ApplicationWindow {
         text: "PAUSED";
     }
 
-//    Item {
-//        id: pauseScreen
-
-//        width: boardTopBorder.width - 6;
-//        height: boardLeftBorder.height - 6;
-
-//        anchors.top: boardTopBorder.bottom;
-//        anchors.left: boardLeftBorder.right;
-
-//        z: 3;
-
-//        visible: false;
-
-//        Rectangle {
-//            width: pauseText.width;
-//            height: pauseText.height;
-
-//            anchors.centerIn: parent;
-
-//            color: "grey";
-
-
-//        }
-//    }
-
     //unten
     Rectangle {
         id: statusBottomBorder;
@@ -490,7 +393,7 @@ ApplicationWindow {
         anchors.top: statusBar.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#ffffff";
-    }
+    }     
 
     //rechts
     Rectangle {
@@ -552,8 +455,8 @@ ApplicationWindow {
             ImageButton {
                 id: cell;
 
-                x: 100;
-                y: 100;
+                width: Style.cellWidth * sizeFactor;
+                height: Style.cellHeight * sizeFactor;
 
                 buttonImage: Adapter.resolveImage(model.modelData)
 
