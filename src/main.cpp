@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
 
     // Connect frontend with backend
 
+    // TODO load from json and create default
     // create the GridModel
     quint64 numberOfRows = 16;
     quint64 numberOfColumns = 30;

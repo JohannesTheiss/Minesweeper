@@ -25,22 +25,26 @@ class GameController : public QObject
         GameController(models::GameModel *gameModel,
                 QObject *parent = nullptr);
 
+        ~GameController();
 
     public slots:
-        void generateGrid(const quint64 numberOfRow,
-                const quint64 numberOfColumns,
-                const quint64 numberOfMines);
-
         void revealCell(const quint64 index);
         void revealAllCells();
     
         void toggleFlagInCell(const quint64 index);
 
+        void initGame();
         void startGame();
         void togglePauseGame();
         void endGame();
 
+        void setGameMode(const quint64 numberOfRows,
+                         const quint64 numberOfColumns,
+                         const quint64 numberOfMines);
+
     private:
+        void generateGrid();
+
         void increaseSurroundingBombsCount(const quint64 cellIndex);
         void increaseFlagCount();
         void decreaseFlagCount();

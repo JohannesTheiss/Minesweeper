@@ -38,7 +38,7 @@ ApplicationWindow {
                     mHeight = 9;
                     numOfMines = 10;
 
-                    gameController.generateGrid(9, 9, 10);
+                    gameController.setGameMode(9, 9, 10);
 
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
@@ -68,7 +68,7 @@ ApplicationWindow {
                     mHeight = 16;
                     numOfMines = 40;
 
-                    gameController.generateGrid(16, 16, 40);
+                    gameController.setGameMode(16, 16, 40);
 
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
@@ -98,7 +98,7 @@ ApplicationWindow {
                     mHeight = 16;
                     numOfMines = 99;
 
-                    gameController.generateGrid(30, 16, 99);
+                    gameController.setGameMode(16, 30, 99);
 
                     mainWindow.minimumWidth = topOuterBorder.width;
                     mainWindow.minimumHeight = leftOuterBorder.height;
@@ -148,7 +148,7 @@ ApplicationWindow {
 //        }
 
         Menu {
-            title: qsTr(nWidth + "x" + mHeight + "  " + numOfMines + " Mines");
+            title: qsTr(gameModel.rows + "x" + gameModel.columns + "  " + gameModel.mineCount + " Mines");
             enabled: false;
         }
     }
@@ -335,16 +335,7 @@ ApplicationWindow {
             icon.source: "qrc:/images/new.png";
             hasBorder: false;
             onClicked: {
-                /*
-                for (let i = 0; i < nWidth * mHeight; i++) {
-                    cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/cell.png";
-                    cellRepeater.itemAt(i).enabled = true;
-                }
-                */
-                gameController.generateGrid(70, 100, 3000);
-
-                testTimer.running = true;
-                timeLabel.text = '000';
+                gameController.initGame();
 
                 if (board.visible === false) {
                     board.visible = true;
@@ -367,6 +358,7 @@ ApplicationWindow {
             icon.source: "qrc:/images/pause.png";
             hasBorder: false;
             onClicked: {
+                gameController.togglePauseGame();
                 if (imageIndex === 0) {
                     icon.source = "qrc:/images/play.png";
                     toolTipText = "Play";
@@ -396,6 +388,7 @@ ApplicationWindow {
             icon.source: "qrc:/images/stop.png";
             hasBorder: false;
             onClicked: {
+                gameController.endGame();
                 for (let i = 0; i < nWidth * mHeight; i++) {
                     cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/empty.png";
                 }
@@ -434,18 +427,7 @@ ApplicationWindow {
             font.family: "Consolas";
             color: "blue";
 
-            text: "000";
-        }
-      Timer {
-          id: testTimer;
-
-          interval: 1000; 
-          running: true; 
-          repeat: true;
-          onTriggered: {
-              let newTime = ((+timeLabel.text) + 1).toString();
-              timeLabel.text = (newTime < 100 ? '0' : '') + (newTime < 10 ? '0' : '') + newTime;
-          }
+            text: Adapter.timeToString(gameModel.timePlayed);
         }
     }
 
@@ -585,6 +567,7 @@ ApplicationWindow {
                     anchors.fill: parent;
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
                     onClicked: {
+                        gameController.startGame();
                         switch(mouse.button)
                         {
                             case Qt.LeftButton:

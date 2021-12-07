@@ -10,52 +10,19 @@ GameController::GameController(models::GameModel *gameModel, QObject *parent)
       mTimerRunning(false),
       mGameModel(gameModel)
 {
-    // TODO what if the rows and columns are 0
-    // generate a first grid
-    generateGrid(mGameModel->rows(), mGameModel->columns(), mGameModel->mineCount());
+    // TODO 1. load from json , 2. set game mode and 3. init game
+    initGame();
 }
 
-void GameController::generateGrid(const quint64 numberOfRow,
-                const quint64 numberOfColumns,
-                const quint64 numberOfMines)
+GameController::~GameController()
 {
-    // update the model
-    mGameModel->setRows(numberOfRow);
-    mGameModel->setColumns(numberOfColumns);
-    mGameModel->setMineCount(numberOfMines);
-    mGameModel->setFlagCount(numberOfMines);
-    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
-
-    // generate the mines
-    QVector<quint64> indices(numberOfCells);
-    std::iota(indices.begin(), indices.end(), 0);
-    long long seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
-    QVector<quint64> mineIndices(indices.mid(0, mGameModel->mineCount()));
-
-    // build a new the grid
-    QVector<models::CellModel *> grid(numberOfCells);
-    for (int i = 0; i < grid.size(); ++i)
+    if(mTimerThread.joinable())
     {
-        // set CellModel(hidden = true, flagged = false, isBomb = false, surroundingBombs = 0)
-        grid[i] = new models::CellModel(true, false, false, 0);
+        mTimerThread.join();
     }
 
-    // set the grid
-    mGameModel->setGrid(grid);
-        
-    // set mines in grid
-    foreach(quint64 mineIndex, mineIndices)
-    {
-        // set bomb
-        grid[mineIndex]->setIsBomb(true);
-
-        // culc. the values surrounding cells
-        updateSurroundingCell(mineIndex,
-                std::bind(&GameController::increaseSurroundingBombsCount, this, std::placeholders::_1));
-    }
+    // TODO save game configuration to json
 }
-
 
 void GameController::revealCell(const quint64 index)
 {
@@ -68,8 +35,9 @@ void GameController::revealCell(const quint64 index)
 
     // if cell is a bomb then game over
     if(cell->isBomb())
-    {
+    {   
         revealAllCells();
+        endGame();
         qDebug() << "ur a NOOB... lol";
     }
     else if(cell->hidden()) 
@@ -113,13 +81,26 @@ void GameController::toggleFlagInCell(const quint64 index)
     }
 }
 
+void GameController::initGame()
+{
+    mGameStarted = false;
+    mTimerRunning = false;
+    mGameModel->setFlagCount(mGameModel->mineCount());
+    mGameModel->setTimePlayed(0);
+    if(mTimerThread.joinable())
+    {
+        mTimerThread.join();
+    }
+    generateGrid();
+}
+
 void GameController::startGame()
 {
     if(!mGameStarted)
     {
-        mGameModel->setTimePlayed(0);
         mGameStarted = true;
         mTimerRunning = true;
+
         mTimerThread = std::thread(&GameController::threadedTimer, this);
     }
 }
@@ -138,6 +119,55 @@ void GameController::endGame()
     {
         mGameStarted = false;
         mTimerRunning = false;
+
+        mTimerThread.join();
+    }
+}
+
+void GameController::setGameMode(const quint64 numberOfRows,
+                                 const quint64 numberOfColumns,
+                                 const quint64 numberOfMines)
+{
+    // update the model
+    mGameModel->setRows(numberOfRows);
+    mGameModel->setColumns(numberOfColumns);
+    mGameModel->setMineCount(numberOfMines);
+
+    // initialize the game
+    initGame();
+}
+
+void GameController::generateGrid()
+{
+    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
+
+    // generate the mines
+    QVector<quint64> indices(numberOfCells);
+    std::iota(indices.begin(), indices.end(), 0);
+    long long seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
+    QVector<quint64> mineIndices(indices.mid(0, mGameModel->mineCount()));
+
+    // build a new the grid
+    QVector<models::CellModel *> grid(numberOfCells);
+    for (int i = 0; i < grid.size(); ++i)
+    {
+        // set CellModel(hidden = true, flagged = false, isBomb = false, surroundingBombs = 0)
+        grid[i] = new models::CellModel(true, false, false, 0);
+    }
+
+    // set the grid
+    mGameModel->setGrid(grid);
+
+    // set mines in grid
+    foreach(quint64 mineIndex, mineIndices)
+    {
+        // set bomb
+        grid[mineIndex]->setIsBomb(true);
+
+        // culc. the values surrounding cells
+        updateSurroundingCell(mineIndex,
+                std::bind(&GameController::increaseSurroundingBombsCount, this, std::placeholders::_1));
     }
 }
 
@@ -222,14 +252,14 @@ void GameController::threadedTimer()
 {
     while(mGameStarted)
     {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
         if(mTimerRunning)
         {
             mMutex.lock();
             mGameModel->setTimePlayed(mGameModel->timePlayed() + 1);
             mMutex.unlock();
         }
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 
