@@ -20,13 +20,14 @@ class GridController : public QObject
     Q_OBJECT
 
     public:
-        GridController(models::GridModel *gridModel, QObject *parent = nullptr);
+        GridController(models::GridModel *gridModel, 
+                QObject *parent = nullptr);
 
         void increaseSurroundingBombsCount(quint64 cellIndex);
+        void increaseFlagCount();
+        void decreaseFlagCount();
 
     public slots:
-
-        void newGrid();
         void generateGrid();
 
         void revealCell(quint64 index);
@@ -34,11 +35,7 @@ class GridController : public QObject
     
         void toggleFlagInCell(quint64 index);
 
-    signals:
-        QVector<models::CellModel *> updateGrid(QVector<models::CellModel *>);
-
     private:
-
         void updateSurroundingCell(const quint64 cellIndex,
                 const quint64 numberOfColumns,
                 const quint64 numberOfRow,

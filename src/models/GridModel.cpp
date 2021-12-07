@@ -18,18 +18,9 @@ GridModel::GridModel(const QVector<CellModel *> grid,
 {
 }
 
-QVector<QObject *> GridModel::grid()
+QVector<CellModel *> GridModel::grid()
 {
-    QVector <QObject *> convertedGrid;
-
-    // convert grid in order to make
-    // it accessible by a qt frontend
-    foreach(CellModel *cell, mGrid)
-    {
-        convertedGrid.append(cell);
-    }
-
-    return convertedGrid;
+    return mGrid;
 }
 
 quint64 GridModel::rows()
@@ -52,7 +43,7 @@ quint64 GridModel::flagCount()
     return mFlagCount;
 }
 
-void GridModel::setGrid(const QVector<CellModel *> grid)
+void GridModel::setGrid(const QVector<models::CellModel *> grid)
 {
     mGrid = grid;
     emit gridChanged();
@@ -82,16 +73,5 @@ void GridModel::setFlagCount(const quint64 flagCount)
     emit flagCountChanged();
 }
 
-void GridModel::increaseFlags()
-{
-    mFlagCount++;
-    emit flagCountChanged();
-}
-
-void GridModel::decreaseFlags()
-{
-    mFlagCount--;
-    emit flagCountChanged();
-}
 
 } // namespace models

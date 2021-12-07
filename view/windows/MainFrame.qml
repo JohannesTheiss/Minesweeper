@@ -335,7 +335,7 @@ ApplicationWindow {
                     cellRepeater.itemAt(i).enabled = true;
                 }
                 */
-                gridController.newGrid();
+                gridController.generateGrid();
 
                 testTimer.running = true;
                 timeLabel.text = '000';

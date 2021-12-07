@@ -13,10 +13,6 @@
 
 #include "../inc/controllers/GridController.h"
 
-void connectControllerToModel(controllers::GridController &controller, models::GridModel &model)
-{
-    QObject::connect(&controller, SIGNAL(updateGrid(QVector<models::CellModel *>)), &model, SLOT(setGrid(QVector<models::CellModel *>)));
-}
 
 int main(int argc, char *argv[])
 {
@@ -42,27 +38,21 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
 
     // Connect frontend with backend
-    // Let the frontend only know about the 
-    //engine.rootContext()->setContextProperty("backend", &backend);
 
-    // connect grid model with view
+    // create the GridModel
     quint64 numberOfRows = 16;
     quint64 numberOfColumns = 30;
     quint64 numberOfMines = 99;
-
     QVector<models::CellModel *> grid;
     models::GridModel gridModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines);
-    //models::GridModel gridModel(grid, 0, 0, 0, 0);
     
+    // create the GridController
     controllers::GridController gridController(&gridModel, &gridModel);
-    connectControllerToModel(gridController, gridModel);
-    gridController.generateGrid();
-
 
     // connect models with view
     engine.rootContext()->setContextProperty("gridModel", &gridModel);
 
-    // connect controller with view
+    // connect controllers with view
     engine.rootContext()->setContextProperty("gridController", &gridController);
     
     // Load the start view

@@ -14,7 +14,7 @@ class GridModel : public QObject
 
     Q_OBJECT
 
-    Q_PROPERTY(QVector<QObject *> grid READ grid NOTIFY gridChanged)
+    Q_PROPERTY(QVector<CellModel *> grid READ grid NOTIFY gridChanged)
     Q_PROPERTY(quint64 rows READ rows NOTIFY rowsChanged)
     Q_PROPERTY(quint64 columns READ columns NOTIFY columnsChanged)
     Q_PROPERTY(quint64 mineCount READ mineCount NOTIFY mineCountChanged)
@@ -36,7 +36,7 @@ class GridModel : public QObject
 
     public slots:
         // property getters
-        QVector<QObject *> grid();
+        QVector<CellModel *> grid();
         quint64 rows();
         quint64 columns();
         quint64 mineCount();
@@ -48,9 +48,6 @@ class GridModel : public QObject
         void setColumns(const quint64 columns);
         void setMineCount(const quint64 mineCount);
         void setFlagCount(const quint64 flagCount);
-
-        void increaseFlags();
-        void decreaseFlags();
 
     signals:
         void gridChanged();

@@ -7,22 +7,10 @@ namespace controllers
 GridController::GridController(models::GridModel *gridModel, QObject *parent)
     : QObject(parent),
       mGridModel(gridModel)
-{}
-
-void GridController::newGrid()
 {
-    // load settings
-    
-    quint64 numberOfRows = 16;
-    quint64 numberOfColumns = 30;
-    quint64 numberOfMines = 99;
-
-    //mGridModel->setRows(numberOfRows);
-    //mGridModel->setColumns(numberOfColumns);
-    //mGridModel->setMineCount(numberOfMines);
-    //mGridModel->setFlagCount(numberOfMines);
-
-    //generateGrid(mGridModel);
+    // TODO what if the rows and columns are 0
+    // generate a first grid
+    generateGrid();
 }
 
 void GridController::generateGrid()
@@ -36,13 +24,16 @@ void GridController::generateGrid()
     std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
     QVector<quint64> mineIndices(indices.mid(0, mGridModel->mineCount()));
 
-    // build the grid
+    // build a new the grid
     QVector<models::CellModel *> grid(numberOfCells);
     for (int i = 0; i < grid.size(); ++i)
     {
         // set CellModel(hidden = true, flagged = false, isBomb = false, surroundingBombs = 0)
         grid[i] = new models::CellModel(true, false, false, 0);
     }
+
+    // set the grid
+    mGridModel->setGrid(grid);
         
     // set mines in grid
     foreach(quint64 mineIndex, mineIndices)
@@ -50,81 +41,18 @@ void GridController::generateGrid()
         // set bomb
         grid[mineIndex]->setIsBomb(true);
 
-        quint64 numberOfColumns = mGridModel->columns();
-        quint64 numberOfRow = mGridModel->rows();
-
-
-        updateSurroundingCell(mineIndex, numberOfColumns, numberOfRow, 
+        // culc. the values surrounding cells
+        updateSurroundingCell(mineIndex, mGridModel->columns(), mGridModel->rows(), 
                 std::bind(&GridController::increaseSurroundingBombsCount, this, std::placeholders::_1));
-
-        /*
-
-        // increase surrounding cells
-        quint64 columnIndex = mineIndex % columns;
-
-        bool notFirstColumn = columnIndex  > 0;
-        bool notFirstRow = mineIndex >= columns; 
-        bool notLastColumn = (columnIndex + 1) < columns;
-        bool notLastRow = mineIndex < ((columns * rows) - columns);
-
-        if(notFirstRow && notFirstColumn)
-        {
-            // increase upper left cell
-            grid[mineIndex - columns - 1]->increaseSurroundingBombsCount();
-        }
-
-        if(notFirstRow)
-        {
-            // increase upper cell
-            grid[mineIndex - columns]->increaseSurroundingBombsCount();
-        }
-
-        if(notFirstRow && notLastColumn)
-        {
-            // increase upper right cell
-            grid[mineIndex - columns + 1]->increaseSurroundingBombsCount();
-        }
-
-        if(notLastColumn)
-        {
-            // increase right cell
-            grid[mineIndex + 1]->increaseSurroundingBombsCount();
-        }
-
-        if(notLastColumn && notLastRow)
-        {
-            // increase lower right cell
-            grid[mineIndex + columns + 1]->increaseSurroundingBombsCount();
-        }
-
-        if(notLastRow)
-        {
-            // increase lower cell
-            grid[mineIndex + columns]->increaseSurroundingBombsCount();
-        }
-
-        if(notLastRow && notFirstColumn) 
-        {
-            // increase lower left cell
-            grid[mineIndex + columns - 1]->increaseSurroundingBombsCount();
-        }
-
-        if(notFirstColumn) 
-        {
-            // increase left cell
-            grid[mineIndex - 1]->increaseSurroundingBombsCount();
-        }
-        */
     }
-
-    emit updateGrid(grid);
 }
 
 
 void GridController::revealCell(quint64 index)
 {
-    QObject *obj = mGridModel->grid().at(index);
-    models::CellModel* cell = qobject_cast<models::CellModel *>(obj);
+    models::CellModel* cell = mGridModel->grid().at(index);
+
+    // TODO if first hit is a bomb...
 
     // don't reveal flagged cells
     if(cell->flagged()) return;
@@ -139,12 +67,11 @@ void GridController::revealCell(quint64 index)
     {
         cell->setHidden(false);
 
+        // if there are no surrounding bombs
         if(cell->surroundingBombs() == 0)
         {
-            quint64 numberOfColumns = mGridModel->columns();
-            quint64 numberOfRow = mGridModel->rows();
-
-            updateSurroundingCell(index, numberOfColumns, numberOfRow, 
+            // reveal surrounding cells
+            updateSurroundingCell(index, mGridModel->columns(), mGridModel->rows(), 
                     std::bind(&GridController::revealCell, this, std::placeholders::_1));
         }
     }
@@ -152,39 +79,45 @@ void GridController::revealCell(quint64 index)
 
 void GridController::revealAllCells()
 {
-    foreach(QObject* obj, mGridModel->grid())
+    foreach(models::CellModel* cell, mGridModel->grid())
     {
-        qobject_cast<models::CellModel *>(obj)->setHidden(false);
+        cell->setHidden(false);
     }
 }
 
 void GridController::toggleFlagInCell(quint64 index)
 {
-    QObject *obj = mGridModel->grid().at(index);
-    models::CellModel* cell = qobject_cast<models::CellModel *>(obj);
+    models::CellModel* cell = mGridModel->grid().at(index);
 
     if(cell->hidden())
     {
         if(cell->flagged())
         {
             cell->setFlagged(false);
-            mGridModel->increaseFlags();
+            increaseFlagCount();
         }
         else 
         {
             cell->setFlagged(true);
-            mGridModel->decreaseFlags();
+            decreaseFlagCount();
         }
     }
 }
 
 void GridController::increaseSurroundingBombsCount(quint64 cellIndex)
 {
-    qDebug() << "index: " << cellIndex;
-    QObject *obj = mGridModel->grid().at(cellIndex);
-    models::CellModel* cell = qobject_cast<models::CellModel *>(obj);
-    qDebug() << "ende";
-    //cell->setSurroundingBombs(1);
+    models::CellModel *cell = mGridModel->grid().at(cellIndex);
+    cell->setSurroundingBombs(cell->surroundingBombs() + 1);
+}
+
+void GridController::increaseFlagCount()
+{
+    mGridModel->setFlagCount(mGridModel->flagCount() + 1);
+}
+
+void GridController::decreaseFlagCount()
+{
+    mGridModel->setFlagCount(mGridModel->flagCount() - 1);
 }
 
 void GridController::updateSurroundingCell(const quint64 cellIndex,
