@@ -7,6 +7,11 @@
 #include <thread>
 #include <mutex>
 
+// tests
+#include <iostream>
+#include <ostream>
+
+
 #include <QObject>
 
 #include <QDebug>
@@ -52,6 +57,8 @@ class GameController : public QObject
 
         void updateSurroundingCell(const quint64 cellIndex,
                 const std::function<void(quint64)> updateFunction);
+
+        void checkForWin();
 
         bool mGameStarted;
         bool mTimerRunning;

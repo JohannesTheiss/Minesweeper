@@ -41,9 +41,12 @@ int main(int argc, char *argv[])
 
     // TODO load from json and create default
     // create the GridModel
-    quint64 numberOfRows = 16;
-    quint64 numberOfColumns = 30;
-    quint64 numberOfMines = 99;
+    //quint64 numberOfRows = 16;
+    //quint64 numberOfColumns = 30;
+    //quint64 numberOfMines = 99;
+    quint64 numberOfRows = 5;
+    quint64 numberOfColumns = 5;
+    quint64 numberOfMines = 1;
     quint64 timePlayed = 0;
     QVector<models::CellModel *> grid;
     models::GameModel gameModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines, timePlayed);

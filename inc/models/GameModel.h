@@ -18,7 +18,7 @@ class GameModel : public QObject
     Q_PROPERTY(quint64 rows READ rows NOTIFY rowsChanged)
     Q_PROPERTY(quint64 columns READ columns NOTIFY columnsChanged)
     Q_PROPERTY(quint64 mineCount READ mineCount NOTIFY mineCountChanged)
-    Q_PROPERTY(quint64 flagCount READ flagCount NOTIFY flagCountChanged)
+    Q_PROPERTY(qint64 flagCount READ flagCount NOTIFY flagCountChanged)
     Q_PROPERTY(quint64 timePlayed READ timePlayed NOTIFY timePlayedChanged)
 
     public:
@@ -30,7 +30,7 @@ class GameModel : public QObject
                   const quint64 rows,
                   const quint64 columns,
                   const quint64 mineCount,
-                  const quint64 flagCount,
+                  const qint64 flagCount,
                   const quint64 timePlayed);
 
         // default destructor
@@ -42,7 +42,7 @@ class GameModel : public QObject
         quint64 rows();
         quint64 columns();
         quint64 mineCount();
-        quint64 flagCount();
+        qint64 flagCount();
         quint64 timePlayed();
 
 
@@ -51,7 +51,7 @@ class GameModel : public QObject
         void setRows(const quint64 rows);
         void setColumns(const quint64 columns);
         void setMineCount(const quint64 mineCount);
-        void setFlagCount(const quint64 flagCount);
+        void setFlagCount(const qint64 flagCount);
         void setTimePlayed(const quint64 timePlayed);
 
     signals:
@@ -69,7 +69,7 @@ class GameModel : public QObject
         quint64 mRows;
         quint64 mColumns;
         quint64 mMineCount;
-        quint64 mFlagCount;
+        qint64 mFlagCount;
         quint64 mTimePlayed;
 
 };

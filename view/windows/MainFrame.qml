@@ -223,10 +223,7 @@ ApplicationWindow {
             font.family: "Consolas";
             color: "blue";
 
-            //text: "0" + numOfMines;
-            text: gameModel.flagCount < 10 ? "00" + gameModel.flagCount : (gameModel.flagCount < 100 ? "0" + gameModel.flagCount : gameModel.flagCount);
-
-
+            text: Adapter.flagsToString(gameModel.flagCount);
         }
 
         Image {
@@ -290,12 +287,10 @@ ApplicationWindow {
                     buttonImage = "qrc:/images/playButtonPressed.png";
                     pauseText.visible = true;
                     board.visible = false;
-                    testTimer.running = false;
                 }else {
                     buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                     board.visible = true;
-                    testTimer.running = true;
                 }
             }
         }
@@ -317,8 +312,6 @@ ApplicationWindow {
                 for (let i = 0; i < nWidth * mHeight; i++) {
                     cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/empty.png";
                 }
-
-                testTimer.running = false;
 
                 if (board.visible === false) {
                     board.visible = true;

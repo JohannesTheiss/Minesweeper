@@ -52,6 +52,8 @@ void GameController::revealCell(const quint64 index)
             updateSurroundingCell(index,
                     std::bind(&GameController::revealCell, this, std::placeholders::_1));
         }
+
+        checkForWin();
     }
 }
 
@@ -78,6 +80,8 @@ void GameController::toggleFlagInCell(const quint64 index)
         {
             cell->setFlagged(true);
             decreaseFlagCount();
+        
+            checkForWin();
         }
     }
 }
@@ -188,6 +192,21 @@ void GameController::decreaseFlagCount()
     mGameModel->setFlagCount(mGameModel->flagCount() - 1);
 }
 
+void GameController::threadedTimer()
+{
+    while(mGameStarted)
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        if(mTimerRunning)
+        {
+            mMutex.lock();
+            mGameModel->setTimePlayed(mGameModel->timePlayed() + 1);
+            mMutex.unlock();
+        }
+    }
+}
+
 void GameController::updateSurroundingCell(const quint64 cellIndex,
     const std::function<void(quint64)> updateFunction)
 {
@@ -249,20 +268,44 @@ void GameController::updateSurroundingCell(const quint64 cellIndex,
     }
 }
 
-void GameController::threadedTimer()
+void GameController::checkForWin()
 {
-    while(mGameStarted)
-    {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        if(mTimerRunning)
+    // check if the game is won now
+    if(mGameModel->flagCount() == 0)
+    {
+        qDebug() << "check for win";
+        bool won = true;
+
+
+        //foreach(models::CellModel *cell, mGameModel->grid())
+        for(int i = 0; i < mGameModel->grid().size(); i++) 
         {
-            mMutex.lock();
-            mGameModel->setTimePlayed(mGameModel->timePlayed() + 1);
-            mMutex.unlock();
+            //if(cell->hidden() && (!cell->isBomb() || !cell->flagged()))
+            //if(mGameModel->grid().at(i)->hidden() && (!mGameModel->grid().at(i)->isBomb() || !mGameModel->grid().at(i)->flagged()))
+            models::CellModel *cell = mGameModel->grid().at(i);
+            if(cell->hidden() && (!cell->isBomb() || !cell->flagged()))
+            {
+                won = false;
+                break;
+            }
+
         }
+
+
+        auto t1 = std::chrono::high_resolution_clock::now();
+        if(won)
+        {
+            endGame();
+            qDebug() << "u won the game";
+        }
+
+        auto t2 = std::chrono::high_resolution_clock::now();
+        auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+        std::cout << "checkForWin = " << ms_int.count() << " ms"<< std::endl;
     }
 }
+
 
 } // namespace controllers
 

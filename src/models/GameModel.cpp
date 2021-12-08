@@ -9,7 +9,7 @@ GameModel::GameModel(const QVector<CellModel *> grid,
                      const quint64 rows,
                      const quint64 columns,
                      const quint64 mineCount,
-                     const quint64 flagCount,
+                     const qint64 flagCount,
                      const quint64 timePlayed)
     : mGrid(grid),
       mRows(rows),
@@ -40,7 +40,7 @@ quint64 GameModel::mineCount()
     return mMineCount;
 }
 
-quint64 GameModel::flagCount()
+qint64 GameModel::flagCount()
 {
     return mFlagCount;
 }
@@ -74,7 +74,7 @@ void GameModel::setMineCount(const quint64 mineCount)
     emit mineCountChanged();
 }
 
-void GameModel::setFlagCount(const quint64 flagCount)
+void GameModel::setFlagCount(const qint64 flagCount)
 {
     mFlagCount = flagCount;
     emit flagCountChanged();
