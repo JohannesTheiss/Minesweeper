@@ -53,8 +53,12 @@ class GameController : public QObject
 
     private:
         void generateGrid();
+        void generateMines();
+        quint64 addMine();
+        void removeMine(const quint64 mineIndex);
 
         void increaseSurroundingBombsCount(const quint64 cellIndex);
+        void decreaseSurroundingBombsCount(const quint64 cellIndex);
         void increaseFlagCount();
         void decreaseFlagCount();
         void threadedTimer();
@@ -64,6 +68,7 @@ class GameController : public QObject
 
         void checkForWin();
 
+        bool mFirstReveal;
         bool mGameStarted;
         bool mTimerRunning;
         std::thread mTimerThread;

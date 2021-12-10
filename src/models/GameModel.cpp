@@ -11,15 +11,29 @@ GameModel::GameModel(const QVector<CellModel *> grid,
                      const quint64 mineCount,
                      const qint64 flagCount,
                      const quint64 timePlayed,
-                     const SizeScaling scaling)
+                     const SizeScaling scaling,
+                     const QVector<quint64> mineIndices)
     : mGrid(grid),
       mRows(rows),
       mColumns(columns),
       mMineCount(mineCount),
       mFlagCount(flagCount),
       mTimePlayed(timePlayed),
-      mScaling(scaling)
+      mScaling(scaling),
+      mMineIndices(mineIndices)
 {
+}
+
+void GameModel::appendToMineIndices(quint64 mineIndex)
+{
+    mMineIndices.append(mineIndex);
+    emit mineIndicesChanged();
+}
+
+void GameModel::removeFromMineIndices(const quint64 mineIndex)
+{
+    mMineIndices.removeOne(mineIndex);
+    emit mineIndicesChanged();
 }
 
 QVector<CellModel *> GameModel::grid()
@@ -55,6 +69,11 @@ quint64 GameModel::timePlayed()
 models::SizeScaling GameModel::scaling()
 {
     return mScaling;
+}
+
+QVector<quint64> GameModel::mineIndices()
+{
+    return mMineIndices;
 }
 
 void GameModel::setGrid(const QVector<models::CellModel *> grid)
@@ -99,5 +118,9 @@ void GameModel::setScaling(const models::SizeScaling scaling)
     emit scalingChanged();
 }
 
+void GameModel::setMineIndices(const QVector<quint64> mineIndices)
+{
+    mMineIndices = mineIndices;
+}
 
 } // namespace models

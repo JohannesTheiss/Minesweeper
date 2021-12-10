@@ -41,7 +41,8 @@ int main(int argc, char *argv[])
 
     // create the GridModel
     QVector<models::CellModel *> grid;
-    models::GameModel gameModel(grid, 0, 0, 0, 0, 0, models::SizeScaling::SMALL);
+    QVector<quint64> mineIndices;
+    models::GameModel gameModel(grid, 0, 0, 0, 0, 0, models::SizeScaling::SMALL, mineIndices);
     
     // create the GridController
     controllers::GameController gameController(&gameModel, &gameModel);

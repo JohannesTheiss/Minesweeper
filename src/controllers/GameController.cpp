@@ -6,6 +6,7 @@ namespace controllers
 
 GameController::GameController(models::GameModel *gameModel, QObject *parent)
     : QObject(parent),
+      mFirstReveal(true),
       mGameStarted(false),
       mTimerRunning(false),
       mGameModel(gameModel)
@@ -73,20 +74,27 @@ void GameController::revealCell(const quint64 index)
 {
     models::CellModel* cell = mGameModel->grid().at(index);
 
-    // TODO if first hit is a bomb...
-
     // don't reveal flagged cells
     if(cell->flagged()) return;
+
+    // if the first hit is a bomb
+    if(cell->isBomb() && mFirstReveal)
+    {
+        // move the bomb to a new random place
+        addMine();
+        removeMine(index);
+        mFirstReveal = false;
+    }
 
     // if cell is a bomb then game over
     if(cell->isBomb())
     {   
         revealAllCells();
         endGame();
-        qDebug() << "ur a NOOB... lol";
     }
     else if(cell->hidden()) 
     {
+        if(mFirstReveal) mFirstReveal = false;
         cell->setHidden(false);
 
         // if there are no surrounding bombs
@@ -147,6 +155,7 @@ void GameController::startGame()
 {
     if(!mGameStarted)
     {
+        mFirstReveal = true;
         mGameStarted = true;
         mTimerRunning = true;
 
@@ -195,13 +204,6 @@ void GameController::generateGrid()
 {
     quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
 
-    // generate the mines
-    QVector<quint64> indices(numberOfCells);
-    std::iota(indices.begin(), indices.end(), 0);
-    long long seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
-    QVector<quint64> mineIndices(indices.mid(0, mGameModel->mineCount()));
-
     // build a new the grid
     QVector<models::CellModel *> grid(numberOfCells);
     for (int i = 0; i < grid.size(); ++i)
@@ -213,22 +215,101 @@ void GameController::generateGrid()
     // set the grid
     mGameModel->setGrid(grid);
 
+    generateMines();
+}
+
+void GameController::generateMines()
+{
+    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
+
+    QVector<quint64> indices(numberOfCells);
+    std::iota(indices.begin(), indices.end(), 0); // indices: {0, 1, 2, ..., numberOfCells}
+    
+    // put the indices in a random order
+    long long seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
+
+    // get the first 'mineCount' indices from the list
+    // e.g. if mineCount = 3 then get the first 3 elements from the random indices array
+    QVector<quint64> mineIndices(indices.mid(0, mGameModel->mineCount()));
+    
     // set mines in grid
     foreach(quint64 mineIndex, mineIndices)
     {
+        qDebug() << "mine: " << mineIndex;
+
         // set bomb
-        grid[mineIndex]->setIsBomb(true);
+        mGameModel->grid().at(mineIndex)->setIsBomb(true);
 
         // culc. the values surrounding cells
         updateSurroundingCell(mineIndex,
                 std::bind(&GameController::increaseSurroundingBombsCount, this, std::placeholders::_1));
     }
+
+    // update the mineIndices of the model
+    mGameModel->setMineIndices(mineIndices);
+}
+
+quint64 GameController::addMine()
+{
+    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
+    quint64 newMineIndex = 0;
+
+    bool mineAlreadyExists = false;
+    do 
+    {
+        mineAlreadyExists = false;
+        newMineIndex = numberOfCells * (rand() / (RAND_MAX + 1.0)); // [0, numberOfCells[
+
+        // check if the new mine indices are already mines
+        foreach(quint64 mineIndex, mGameModel->mineIndices())
+        {
+            // min already exists
+            if(newMineIndex == mineIndex)
+            {
+                mineAlreadyExists = true;
+                break;
+            }
+        }
+    }
+    while(mineAlreadyExists);
+    
+    // set bomb
+    mGameModel->grid().at(newMineIndex)->setIsBomb(true);
+
+    // culc. the values surrounding cells
+    updateSurroundingCell(newMineIndex,
+            std::bind(&GameController::increaseSurroundingBombsCount, this, std::placeholders::_1));
+
+    // update the mineIndices of the model
+    mGameModel->appendToMineIndices(newMineIndex);
+
+    return newMineIndex;
+}
+
+void GameController::removeMine(const quint64 mineIndex)
+{
+    // change cell
+    mGameModel->grid().at(mineIndex)->setIsBomb(false);
+
+    // remove from gameModel
+    mGameModel->removeFromMineIndices(mineIndex);
+
+    // decrease surrounding bomb count
+    updateSurroundingCell(mineIndex,
+            std::bind(&GameController::decreaseSurroundingBombsCount, this, std::placeholders::_1));
 }
 
 void GameController::increaseSurroundingBombsCount(const quint64 cellIndex)
 {
     models::CellModel *cell = mGameModel->grid().at(cellIndex);
     cell->setSurroundingBombs(cell->surroundingBombs() + 1);
+}
+
+void GameController::decreaseSurroundingBombsCount(const quint64 cellIndex)
+{
+    models::CellModel *cell = mGameModel->grid().at(cellIndex);
+    cell->setSurroundingBombs(cell->surroundingBombs() - 1);
 }
 
 void GameController::increaseFlagCount()
@@ -319,28 +400,21 @@ void GameController::updateSurroundingCell(const quint64 cellIndex,
 
 void GameController::checkForWin()
 {
-
     // check if the game is won now
     if(mGameModel->flagCount() == 0)
     {
         qDebug() << "check for win";
         bool won = true;
 
-
-        //foreach(models::CellModel *cell, mGameModel->grid())
         for(int i = 0; i < mGameModel->grid().size(); i++) 
         {
-            //if(cell->hidden() && (!cell->isBomb() || !cell->flagged()))
-            //if(mGameModel->grid().at(i)->hidden() && (!mGameModel->grid().at(i)->isBomb() || !mGameModel->grid().at(i)->flagged()))
             models::CellModel *cell = mGameModel->grid().at(i);
             if(cell->hidden() && (!cell->isBomb() || !cell->flagged()))
             {
                 won = false;
                 break;
             }
-
         }
-
 
         auto t1 = std::chrono::high_resolution_clock::now();
         if(won)
