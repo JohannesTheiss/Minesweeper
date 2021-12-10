@@ -42,7 +42,7 @@ class JsonManager
         void replaceList(const QString parent, const std::function<void(QJsonArray &)> saveFunction) const;
         
         // Load a JSON object from file with custom load function
-        void load(const QString parent, const std::function<void(QJsonArray &)> loadFunction) const;
+        void load(const QString parent, const std::function<void(QJsonValue &)> loadFunction) const;
 
         // Load a JsonValue from file and return it
         QJsonValue loadValue(QString key) const;
@@ -53,10 +53,10 @@ class JsonManager
 
         // ### SEARCH FUNCTIONS ###
         // Find a JSON object with given key-value-pair in array
-        int findIndexByKeyValueInArray(const QString key, const QString value, QJsonArray &arr) const;
+        //int findIndexByKeyValueInArray(const QString key, const QString value, QJsonArray &arr) const;
 
         // Find a JSON object with given key-value-pair in a file
-        int findIndexByKeyValueInJsonFile(const QString arrayName, const QString key, const QString value) const;
+        //int findIndexByKeyValueInJsonFile(const QString arrayName, const QString key, const QString value) const;
    
 
     private:

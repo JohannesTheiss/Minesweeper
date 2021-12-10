@@ -16,6 +16,8 @@
 
 #include <QDebug>
 
+#include "../data/JsonManager.h"
+
 #include "../models/CellModel.h"
 #include "../models/GameModel.h"
 
@@ -66,6 +68,9 @@ class GameController : public QObject
         std::mutex mMutex;
 
         models::GameModel *mGameModel;
+        data::JsonManager *mJsonManager;
+
+        const QString mJsonObjectName = "configuration";
 };
 
 } // namespace controllers

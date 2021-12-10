@@ -10,8 +10,32 @@ GameController::GameController(models::GameModel *gameModel, QObject *parent)
       mTimerRunning(false),
       mGameModel(gameModel)
 {
-    // TODO 1. load from json , 2. set game mode and 3. init game
-    initGame();
+    // default game configuration
+    quint64 rows = 16;
+    quint64 columns = 16;
+    quint64 mines = 40;
+
+    // load last configuration from json
+    mJsonManager = new data::JsonManager("gameConfiguration.json");
+    mJsonManager->load(mJsonObjectName, [&](QJsonValue &jsonModel) 
+    {
+        QJsonObject configuration = jsonModel.toObject();
+
+        quint64 loadedRows = configuration.value("rows").toString().toULongLong();
+        quint64 loadedColumns = configuration.value("columns").toString().toULongLong();
+        quint64 loadedMines = configuration.value("mines").toString().toULongLong();
+
+        // if the configuration not empty
+        if(loadedRows != 0 && loadedColumns != 0 && loadedMines != 0)
+        {
+            // set to the last configuration
+            rows = loadedRows;
+            columns = loadedColumns;
+            mines = loadedMines;
+        }
+    });
+
+    setGameMode(rows, columns, mines);
 }
 
 GameController::~GameController()
@@ -22,7 +46,20 @@ GameController::~GameController()
         mTimerThread.join();
     }
 
-    // TODO save game configuration to json
+    // save game configuration to json
+    mJsonManager->save(mJsonObjectName, [&](QJsonObject &jsonModel)
+    {
+        // save rows
+        jsonModel.insert("rows", QString::number(mGameModel->rows()));
+
+        // save columns
+        jsonModel.insert("columns", QString::number(mGameModel->columns()));
+
+        // save mines
+        jsonModel.insert("mines", QString::number(mGameModel->mineCount()));
+    });
+
+    delete mJsonManager;
 }
 
 void GameController::revealCell(const quint64 index)

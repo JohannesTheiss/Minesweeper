@@ -107,15 +107,13 @@ void JsonManager::save(const QString parent, const std::function<void(QJsonObjec
     QJsonDocument document = read(mPathToJson);
     QJsonObject root = document.object();
     QJsonValue value = root.value(parent);
-    QJsonArray jsonArray = value.toArray(); 
 
     // create and fill buffer object
     QJsonObject bufferObject;
     saveFunction(bufferObject);
 
     // append the buffer object
-    jsonArray.push_back(QJsonValue(bufferObject));
-    root.insert(parent, QJsonValue(jsonArray));
+    root.insert(parent, QJsonValue(bufferObject));
 
     // write to json
     document.setObject(root);
@@ -201,7 +199,7 @@ void JsonManager::replaceList(const QString parent, const std::function<void(QJs
 // <param name="parent">JSON parent to read the object from</param>
 // <param name="loadFunction">Custom load function to read a custom object</param>
 // <returns>Nothing</returns
-void JsonManager::load(const QString parent, const std::function<void(QJsonArray &)> loadFunction) const
+void JsonManager::load(const QString parent, const std::function<void(QJsonValue &)> loadFunction) const
 {
     try
     {
@@ -212,10 +210,9 @@ void JsonManager::load(const QString parent, const std::function<void(QJsonArray
         if(root.contains(parent))
         {
             QJsonValue value = root.value(parent);
-            QJsonArray jsonArray = value.toArray(); 
 
             // load a custom object
-            loadFunction(jsonArray);
+            loadFunction(value);
         }
     }
     catch (...)
@@ -274,6 +271,7 @@ void JsonManager::remove(const QString parent, const std::function<void(QJsonArr
 // <param name="value">Value to search for</param>
 // <param name="arr">Array to search in</param>
 // <returns>Index of the object with given key-value-pair</returns>
+/*
 int JsonManager::findIndexByKeyValueInArray(const QString key, const QString value, QJsonArray &arr) const
 {
     int index = 0;
@@ -290,6 +288,7 @@ int JsonManager::findIndexByKeyValueInArray(const QString key, const QString val
 
     return found ? index : -1;
 }
+*/
 
 // <summary>Find a JSON object with given key-value-pair in a file</summary>
 // <param name="fileName">JSON file name to search in</param>
@@ -297,6 +296,7 @@ int JsonManager::findIndexByKeyValueInArray(const QString key, const QString val
 // <param name="key">Key to search for</param>
 // <param name="value">Value to search for</param>
 // <returns>Index of the object with given key-value-pair in the file</returns>
+/*
 int JsonManager::findIndexByKeyValueInJsonFile(const QString arrayName, const QString key, const QString value) const
 {
     int index = -1;
@@ -307,5 +307,6 @@ int JsonManager::findIndexByKeyValueInJsonFile(const QString arrayName, const QS
 
     return index;
 }
+*/
 
 }
