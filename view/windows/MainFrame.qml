@@ -5,17 +5,26 @@ import QtQuick.Window 2.15
 
 import Qt.labs.platform 1.1
 
+// import SizeScaling enum
+import Backend.Game 1.0
+
 import "qrc:/controls"
 import "qrc:/includes"
 import "qrc:/text"
 
 import "qrc:/scripts/Adapter.js" as Adapter
 import "qrc:/scripts/windowController.js" as WindowController
+import "qrc:/scripts/Manager.js" as Manager
 
 ApplicationWindow {
     id: mainWindow;
 
     property double sizeFactor: 1.0;
+
+    Component.onCompleted: {
+        // check if new size scaling is set (from backend side)
+        Manager.updateSizeScaling();
+    }
 
     MenuBar {
         id: menuBar;
@@ -98,62 +107,32 @@ ApplicationWindow {
 
                 MenuItem {
                     checkable: true;
-                    checked: mainWindow.sizeFactor === 1.0;
+                    checked: gameModel.scaling == SizeScaling.SMALL
 
                     text: qsTr("&Small")
-                    onTriggered: {
-                        mainWindow.sizeFactor = 0.5;
-                        mainWindow.sizeFactor = 1.0;
-
-                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-                    }
+                    onTriggered: gameController.setScaling(SizeScaling.SMALL);
                 }
 
                 MenuItem {
                     checkable: true;
-                    checked: mainWindow.sizeFactor === 1.5;
+                    checked: gameModel.scaling == SizeScaling.MEDIUM
 
                     text: qsTr("&Medium")
-                    onTriggered: {
-                        mainWindow.sizeFactor = 0.5;
-                        mainWindow.sizeFactor = 1.5;
-
-                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-                    }
+                    onTriggered: gameController.setScaling(SizeScaling.MEDIUM);
                 }
 
                 MenuItem {
                     checkable: true;
-                    checked: mainWindow.sizeFactor === 2.0;
+                    checked: gameModel.scaling == SizeScaling.LARGE
 
                     text: qsTr("&Large")
-                    onTriggered: {
-                        mainWindow.sizeFactor = 0.5;
-                        mainWindow.sizeFactor = 2.0;
+                    onTriggered: gameController.setScaling(SizeScaling.LARGE);
 
-                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                }
 
-                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-                    }
+                Connections {
+                    target: gameModel
+                    function onScalingChanged() { Manager.updateSizeScaling(); }
                 }
             }
         }

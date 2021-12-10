@@ -9,6 +9,15 @@
 namespace models
 {
 
+Q_NAMESPACE
+enum SizeScaling
+{
+    SMALL,
+    MEDIUM,
+    LARGE
+};
+Q_ENUM_NS(SizeScaling) 
+
 class GameModel : public QObject
 {
 
@@ -20,6 +29,7 @@ class GameModel : public QObject
     Q_PROPERTY(quint64 mineCount READ mineCount NOTIFY mineCountChanged)
     Q_PROPERTY(qint64 flagCount READ flagCount NOTIFY flagCountChanged)
     Q_PROPERTY(quint64 timePlayed READ timePlayed NOTIFY timePlayedChanged)
+    Q_PROPERTY(models::SizeScaling scaling READ scaling NOTIFY scalingChanged)
 
     public:
         //delete default constructor
@@ -31,7 +41,8 @@ class GameModel : public QObject
                   const quint64 columns,
                   const quint64 mineCount,
                   const qint64 flagCount,
-                  const quint64 timePlayed);
+                  const quint64 timePlayed,
+                  const SizeScaling scaling);
 
         // default destructor
         ~GameModel() = default;
@@ -44,7 +55,7 @@ class GameModel : public QObject
         quint64 mineCount();
         qint64 flagCount();
         quint64 timePlayed();
-
+        models::SizeScaling scaling();
 
         // property setters
         void setGrid(const QVector<models::CellModel *> grid);
@@ -53,6 +64,7 @@ class GameModel : public QObject
         void setMineCount(const quint64 mineCount);
         void setFlagCount(const qint64 flagCount);
         void setTimePlayed(const quint64 timePlayed);
+        void setScaling(const models::SizeScaling scaling);
 
     signals:
         void gridChanged();
@@ -61,6 +73,7 @@ class GameModel : public QObject
         void mineCountChanged();
         void flagCountChanged();
         void timePlayedChanged();
+        void scalingChanged();
 
     private:
 
@@ -71,6 +84,7 @@ class GameModel : public QObject
         quint64 mMineCount;
         qint64 mFlagCount;
         quint64 mTimePlayed;
+        SizeScaling mScaling;
 
 };
 

@@ -3,6 +3,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+//#include <QtGlobal>
+//#include <QQmlEngine>
+
 #include <QObject>
 #include <QVector>
 
@@ -44,18 +47,23 @@ int main(int argc, char *argv[])
     //quint64 numberOfRows = 16;
     //quint64 numberOfColumns = 30;
     //quint64 numberOfMines = 99;
-    quint64 numberOfRows = 5;
-    quint64 numberOfColumns = 5;
-    quint64 numberOfMines = 1;
-    quint64 timePlayed = 0;
     QVector<models::CellModel *> grid;
-    models::GameModel gameModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines, timePlayed);
+    models::GameModel gameModel(grid, 0, 0, 0, 0, 0, models::SizeScaling::SMALL);
     
     // create the GridController
     controllers::GameController gameController(&gameModel, &gameModel);
 
     // connect models with view
     engine.rootContext()->setContextProperty("gameModel", &gameModel);
+
+    // connect enum with view
+    qmlRegisterUncreatableMetaObject(
+      models::staticMetaObject, // meta object created by Q_NAMESPACE macro
+      "Backend.Game",                // import statement (can be any string)
+      1, 0,                          // major and minor version of the import
+      "SizeScaling",                 // name in QML (does not have to match C++ name)
+      "Error: On Size enums" 
+    );
 
     // connect controllers with view
     engine.rootContext()->setContextProperty("gameController", &gameController);

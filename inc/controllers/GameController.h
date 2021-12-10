@@ -49,6 +49,8 @@ class GameController : public QObject
                          const quint64 numberOfColumns,
                          const quint64 numberOfMines);
 
+        void setScaling(const int scaling);
+
     private:
         void generateGrid();
 

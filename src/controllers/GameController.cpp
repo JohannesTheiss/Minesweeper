@@ -25,6 +25,10 @@ GameController::GameController(models::GameModel *gameModel, QObject *parent)
         quint64 loadedColumns = configuration.value("columns").toString().toULongLong();
         quint64 loadedMines = configuration.value("mines").toString().toULongLong();
 
+        // load and set the size scaling
+        int loadedScaling = configuration.value("scaling").toInt();
+        setScaling(loadedScaling);
+
         // if the configuration not empty
         if(loadedRows != 0 && loadedColumns != 0 && loadedMines != 0)
         {
@@ -57,6 +61,9 @@ GameController::~GameController()
 
         // save mines
         jsonModel.insert("mines", QString::number(mGameModel->mineCount()));
+
+        // save scaling
+        jsonModel.insert("scaling", mGameModel->scaling());
     });
 
     delete mJsonManager;
@@ -177,6 +184,11 @@ void GameController::setGameMode(const quint64 numberOfRows,
 
     // initialize the game
     initGame();
+}
+
+void GameController::setScaling(const int scaling)
+{
+    mGameModel->setScaling(static_cast<models::SizeScaling>(scaling));
 }
 
 void GameController::generateGrid()

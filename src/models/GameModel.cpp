@@ -10,13 +10,15 @@ GameModel::GameModel(const QVector<CellModel *> grid,
                      const quint64 columns,
                      const quint64 mineCount,
                      const qint64 flagCount,
-                     const quint64 timePlayed)
+                     const quint64 timePlayed,
+                     const SizeScaling scaling)
     : mGrid(grid),
       mRows(rows),
       mColumns(columns),
       mMineCount(mineCount),
       mFlagCount(flagCount),
-      mTimePlayed(timePlayed)
+      mTimePlayed(timePlayed),
+      mScaling(scaling)
 {
 }
 
@@ -48,6 +50,11 @@ qint64 GameModel::flagCount()
 quint64 GameModel::timePlayed()
 {
     return mTimePlayed;
+}
+
+models::SizeScaling GameModel::scaling()
+{
+    return mScaling;
 }
 
 void GameModel::setGrid(const QVector<models::CellModel *> grid)
@@ -84,6 +91,12 @@ void GameModel::setTimePlayed(const quint64 timePlayed)
 {
     mTimePlayed = timePlayed;
     emit timePlayedChanged();
+}
+
+void GameModel::setScaling(const models::SizeScaling scaling)
+{
+    mScaling = scaling;
+    emit scalingChanged();
 }
 
 
