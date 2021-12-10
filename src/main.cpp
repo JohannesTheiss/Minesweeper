@@ -3,9 +3,6 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-//#include <QtGlobal>
-//#include <QQmlEngine>
-
 #include <QObject>
 #include <QVector>
 
@@ -42,11 +39,7 @@ int main(int argc, char *argv[])
 
     // Connect frontend with backend
 
-    // TODO load from json and create default
     // create the GridModel
-    //quint64 numberOfRows = 16;
-    //quint64 numberOfColumns = 30;
-    //quint64 numberOfMines = 99;
     QVector<models::CellModel *> grid;
     models::GameModel gameModel(grid, 0, 0, 0, 0, 0, models::SizeScaling::SMALL);
     
@@ -58,10 +51,10 @@ int main(int argc, char *argv[])
 
     // connect enum with view
     qmlRegisterUncreatableMetaObject(
-      models::staticMetaObject, // meta object created by Q_NAMESPACE macro
-      "Backend.Game",                // import statement (can be any string)
-      1, 0,                          // major and minor version of the import
-      "SizeScaling",                 // name in QML (does not have to match C++ name)
+      models::staticMetaObject, 
+      "Backend.Game",
+      1, 0,
+      "SizeScaling",
       "Error: On Size enums" 
     );
 

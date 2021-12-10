@@ -191,7 +191,7 @@ ApplicationWindow {
         TextLabel {
             id: flagsLabel;
 
-            width: 35 * sizeFactor;
+            width: 40 * sizeFactor; // 40 for linux font size
             x: 10;
             z:10;
 
@@ -252,7 +252,7 @@ ApplicationWindow {
         ImageButton {
             id: pausePlayButton;
 
-            width: 30 * sizeFactor;
+            width: 40 * sizeFactor;
             height: 30 * sizeFactor;
 
             anchors.centerIn: parent;
