@@ -24,6 +24,7 @@ QtObject {
     property color sliderBackground: "#bdbebf"
     property color songListBackground: "#121212"
     property color songSliderColor: "#1ed760"
+    property color textBoxBackground: "#c0c0c0"
     property color toolTipBackground: "#1ed760"
     property color volumeSliderColor: "#f5f5f5"
 

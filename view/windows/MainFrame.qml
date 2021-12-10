@@ -1,8 +1,7 @@
-import QtQuick 2.12
+import QtQuick 2.15
 import QtQuick.Controls 2.5
-import QtQml.Models 2.12
-import QtQuick.Window 2.12
-import QtQuick.Dialogs 1.0
+import QtQml.Models 2.15
+import QtQuick.Window 2.15
 
 import Qt.labs.platform 1.1
 
@@ -11,6 +10,7 @@ import "qrc:/includes"
 import "qrc:/text"
 
 import "qrc:/scripts/Adapter.js" as Adapter
+import "qrc:/scripts/windowController.js" as WindowController
 
 ApplicationWindow {
     id: mainWindow;
@@ -83,7 +83,13 @@ ApplicationWindow {
                     mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
-            MenuItem { text: qsTr("&Custom...") }
+            MenuItem {
+                text: qsTr("&Custom...")
+
+                onTriggered: {
+                    WindowController.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml");
+                }
+            }
 
             MenuSeparator { }
 
@@ -167,7 +173,7 @@ ApplicationWindow {
         }
 
         Menu {
-            title: qsTr(gameModel.rows + "x" + gameModel.columns + "  " + gameModel.mineCount + " Mines");
+            title: qsTr(gameModel.columns + "x" + gameModel.rows + "  " + gameModel.mineCount + " Mines");
             enabled: false;
         }
     }
