@@ -27,6 +27,25 @@ Window {
 
     color: "#c0c0c0";
 
+    Component.onCompleted: {
+        if (gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10) {
+            beginnerRadio.checked = true;
+            boardSize = "beginner";
+        }
+        else if (gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40) {
+            intermediateRadio.checked = true;
+            boardSize = "intermediate";
+        }
+        else if (gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99) {
+            expertRadio.checked = true;
+            boardSize = "expert";
+        }
+        else {
+            customRadio.checked = true;
+            boardSize = "custom";
+        }
+    }
+
     Rectangle {
         id: screenBorder
 
