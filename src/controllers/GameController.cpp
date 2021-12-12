@@ -236,7 +236,7 @@ void GameController::generateMines()
     // set mines in grid
     foreach(quint64 mineIndex, mineIndices)
     {
-        qDebug() << "mine: " << mineIndex;
+        //qDebug() << "mine: " << mineIndex;
 
         // set bomb
         mGameModel->grid().at(mineIndex)->setIsBomb(true);

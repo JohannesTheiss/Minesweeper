@@ -256,7 +256,7 @@ ApplicationWindow {
         ImageButton {
             id: pausePlayButton;
 
-            width: 40 * sizeFactor;
+            width: 30 * sizeFactor;
             height: 30 * sizeFactor;
 
             anchors.centerIn: parent;
@@ -559,7 +559,6 @@ ApplicationWindow {
 
         Component.onCompleted: {
             mainWindow.height = height;
-            console.log("mainWindow " + mainWindow.height);
         }
     }
 }
