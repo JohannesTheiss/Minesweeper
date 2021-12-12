@@ -124,7 +124,7 @@ Window {
             }
 
             TextLabel {
-                width: 145;
+                width: 140;
 
                 horizontalAlignment: Text.AlignLeft
 
@@ -132,7 +132,7 @@ Window {
             }
 
             TextLabel {
-                width: 145;
+                width: 140;
 
                 horizontalAlignment: Text.AlignLeft
 
@@ -140,7 +140,7 @@ Window {
             }
 
             TextLabel {
-                width: 90;
+                width: 100;
 
                 horizontalAlignment: Text.AlignLeft
 
@@ -185,7 +185,7 @@ Window {
             }
 
             TextLabel {
-                width: 145;
+                width: 140;
 
                 horizontalAlignment: Text.AlignLeft
 
@@ -193,7 +193,7 @@ Window {
             }
 
             TextLabel {
-                width: 145;
+                width: 140;
 
                 horizontalAlignment: Text.AlignLeft
 
@@ -201,7 +201,7 @@ Window {
             }
 
             TextLabel {
-                width: 90;
+                width: 100;
 
                 horizontalAlignment: Text.AlignLeft
 
@@ -246,7 +246,7 @@ Window {
             }
 
             TextLabel {
-                width: 145;
+                width: 140;
 
                 horizontalAlignment: Text.AlignLeft
 
@@ -254,7 +254,7 @@ Window {
             }
 
             TextLabel {
-                width: 145;
+                width: 140;
 
                 horizontalAlignment: Text.AlignLeft
 
@@ -262,7 +262,7 @@ Window {
             }
 
             TextLabel {
-                width: 90;
+                width: 100;
 
                 horizontalAlignment: Text.AlignLeft
 
