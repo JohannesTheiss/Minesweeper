@@ -13,5 +13,5 @@ Text {
     color: Style.fontColor;
 //    verticalAlignment: Text.AlignVCenter;
     clip: true;
-    elide: Text.ElideRight;
+//    elide: Text.ElideRight;
 }

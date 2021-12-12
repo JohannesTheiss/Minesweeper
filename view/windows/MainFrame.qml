@@ -96,7 +96,7 @@ ApplicationWindow {
                 text: qsTr("&Custom...")
 
                 onTriggered: {
-                    WindowController.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml");
+                    WindowController.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml",  { parentWindow: mainWindow });
                 }
             }
 
@@ -143,6 +143,10 @@ ApplicationWindow {
             MenuItem {
                 icon.source: "qrc:/images/flagTransparent.png";
                 text: qsTr("&Statistics");
+
+                onTriggered: {
+                    WindowController.openWindow(mainWindow, "qrc:/windows/Statistics.qml");
+                }
             }
 
             MenuItem {
@@ -288,9 +292,7 @@ ApplicationWindow {
 
             onClicked: {
                 gameController.endGame();
-                for (let i = 0; i < nWidth * mHeight; i++) {
-                    cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/empty.png";
-                }
+                gameController.revealAllCells();
 
                 if (board.visible === false) {
                     board.visible = true;
@@ -345,9 +347,6 @@ ApplicationWindow {
 
         anchors.top: boardTopBorder.bottom;
         anchors.left: boardLeftBorder.right;
-
-
-//                height: Math.min(boardBottomBorder.y - boardTopBorder.y - 3, Style.defaultHeight);
 
         verticalAlignment: Text.AlignVCenter;
         horizontalAlignment: Text.AlignHCenter;
