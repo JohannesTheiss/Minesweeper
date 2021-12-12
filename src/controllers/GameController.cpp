@@ -8,13 +8,17 @@ GameController::GameController(models::GameModel *gameModel, QObject *parent)
     : QObject(parent),
       mFirstReveal(true),
       mGameStarted(false),
-      mTimerRunning(false),
       mGameModel(gameModel)
 {
     // default game configuration
     quint64 rows = 16;
     quint64 columns = 16;
     quint64 mines = 40;
+
+    // create timer and connect it to a slot
+    timer = new QTimer(this);;
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
+    timer->setInterval(1000); // 1 ms
 
     // load last configuration from json
     mJsonManager = new data::JsonManager("gameConfiguration.json");
@@ -45,11 +49,7 @@ GameController::GameController(models::GameModel *gameModel, QObject *parent)
 
 GameController::~GameController()
 {
-    if(mTimerThread.joinable())
-    {
-        mGameStarted = false;
-        mTimerThread.join();
-    }
+    mGameStarted = false;
 
     // save game configuration to json
     mJsonManager->save(mJsonObjectName, [&](QJsonObject &jsonModel)
@@ -64,10 +64,15 @@ GameController::~GameController()
         jsonModel.insert("mines", QString::number(mGameModel->mineCount()));
 
         // save scaling
-        jsonModel.insert("scaling", mGameModel->scaling());
+        jsonModel.insert("scaling", static_cast<int>(mGameModel->scaling()));
     });
 
     delete mJsonManager;
+}
+
+void GameController::updateTime()
+{
+    mGameModel->setTimePlayed(mGameModel->timePlayed() + 1);
 }
 
 void GameController::revealCell(const quint64 index)
@@ -80,6 +85,8 @@ void GameController::revealCell(const quint64 index)
     // if the first hit is a bomb
     if(cell->isBomb() && mFirstReveal)
     {
+        qDebug() << "first hit is a bomb";
+
         // move the bomb to a new random place
         addMine();
         removeMine(index);
@@ -141,13 +148,11 @@ void GameController::toggleFlagInCell(const quint64 index)
 void GameController::initGame()
 {
     mGameStarted = false;
-    mTimerRunning = false;
+    timer->stop();
+
     mGameModel->setFlagCount(mGameModel->mineCount());
     mGameModel->setTimePlayed(0);
-    if(mTimerThread.joinable())
-    {
-        mTimerThread.join();
-    }
+
     generateGrid();
 }
 
@@ -157,9 +162,8 @@ void GameController::startGame()
     {
         mFirstReveal = true;
         mGameStarted = true;
-        mTimerRunning = true;
 
-        mTimerThread = std::thread(&GameController::threadedTimer, this);
+        timer->start();
     }
 }
 
@@ -167,7 +171,14 @@ void GameController::togglePauseGame()
 {
     if(mGameStarted)
     {
-        mTimerRunning = !mTimerRunning;
+        if(timer->isActive())
+        {
+            timer->stop();
+        }
+        else
+        {
+            timer->start();
+        }
     }
 }
 
@@ -176,9 +187,7 @@ void GameController::endGame()
     if(mGameStarted)
     {
         mGameStarted = false;
-        mTimerRunning = false;
-
-        mTimerThread.join();
+        timer->stop();
     }
 }
 
@@ -197,7 +206,7 @@ void GameController::setGameMode(const quint64 numberOfRows,
 
 void GameController::setScaling(const int scaling)
 {
-    mGameModel->setScaling(static_cast<models::SizeScaling>(scaling));
+    mGameModel->setScaling(models::SizeScaling(scaling));
 }
 
 void GameController::generateGrid()
@@ -320,21 +329,6 @@ void GameController::increaseFlagCount()
 void GameController::decreaseFlagCount()
 {
     mGameModel->setFlagCount(mGameModel->flagCount() - 1);
-}
-
-void GameController::threadedTimer()
-{
-    while(mGameStarted)
-    {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-
-        if(mTimerRunning)
-        {
-            mMutex.lock();
-            mGameModel->setTimePlayed(mGameModel->timePlayed() + 1);
-            mMutex.unlock();
-        }
-    }
 }
 
 void GameController::updateSurroundingCell(const quint64 cellIndex,

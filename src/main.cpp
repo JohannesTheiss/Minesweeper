@@ -12,8 +12,6 @@
 #include "../inc/models/GameModel.h"
 
 #include "../inc/controllers/GameController.h"
-
-
 int main(int argc, char *argv[])
 {
     // Define start view

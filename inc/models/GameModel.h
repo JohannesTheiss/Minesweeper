@@ -10,7 +10,7 @@ namespace models
 {
 
 Q_NAMESPACE
-enum SizeScaling
+enum class SizeScaling
 {
     SMALL,
     MEDIUM,

@@ -48,6 +48,7 @@ function resolveImage(cell) {
 }
 
 function timeToString(secs) {
+    if(secs === undefined) return '000';
     return (secs < 100 ? '0' : '') + (secs < 10 ? '0' : '') + secs;
 }
 
