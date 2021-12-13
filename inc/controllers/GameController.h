@@ -5,9 +5,7 @@
 #include <numeric>
 #include <iterator>
 
-// tests
 #include <iostream>
-#include <ostream>
 #include <QTimer>
 
 #include <QObject>
