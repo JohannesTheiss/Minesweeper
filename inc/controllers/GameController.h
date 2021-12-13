@@ -14,6 +14,8 @@
 
 #include "../data/JsonManager.h"
 
+#include "observers/GameObserver.h"
+
 #include "../models/CellModel.h"
 #include "../models/GameModel.h"
 
@@ -25,7 +27,7 @@ class GameController : public QObject
     Q_OBJECT
 
     public:
-        GameController(models::GameModel *gameModel,
+        GameController(observers::GameObserver *gameObserver,
                 QObject *parent = nullptr);
 
         ~GameController();
@@ -69,7 +71,8 @@ class GameController : public QObject
         bool mGameStarted;
         QTimer *timer;
 
-        models::GameModel *mGameModel;
+        QVector<quint64> mMineIndices;
+        observers::GameObserver *mGameObserver;
         data::JsonManager *mJsonManager;
 
         const QString mJsonObjectName = "configuration";
