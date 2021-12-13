@@ -9,15 +9,31 @@ GameModel::GameModel(const QVector<CellModel *> grid,
                      const quint64 rows,
                      const quint64 columns,
                      const quint64 mineCount,
-                     const quint64 flagCount,
-                     const quint64 timePlayed)
+                     const qint64 flagCount,
+                     const quint64 timePlayed,
+                     const SizeScaling scaling,
+                     const QVector<quint64> mineIndices)
     : mGrid(grid),
       mRows(rows),
       mColumns(columns),
       mMineCount(mineCount),
       mFlagCount(flagCount),
-      mTimePlayed(timePlayed)
+      mTimePlayed(timePlayed),
+      mScaling(scaling),
+      mMineIndices(mineIndices)
 {
+}
+
+void GameModel::appendToMineIndices(quint64 mineIndex)
+{
+    mMineIndices.append(mineIndex);
+    emit mineIndicesChanged();
+}
+
+void GameModel::removeFromMineIndices(const quint64 mineIndex)
+{
+    mMineIndices.removeOne(mineIndex);
+    emit mineIndicesChanged();
 }
 
 QVector<CellModel *> GameModel::grid()
@@ -40,7 +56,7 @@ quint64 GameModel::mineCount()
     return mMineCount;
 }
 
-quint64 GameModel::flagCount()
+qint64 GameModel::flagCount()
 {
     return mFlagCount;
 }
@@ -48,6 +64,16 @@ quint64 GameModel::flagCount()
 quint64 GameModel::timePlayed()
 {
     return mTimePlayed;
+}
+
+models::SizeScaling GameModel::scaling()
+{
+    return mScaling;
+}
+
+QVector<quint64> GameModel::mineIndices()
+{
+    return mMineIndices;
 }
 
 void GameModel::setGrid(const QVector<models::CellModel *> grid)
@@ -74,7 +100,7 @@ void GameModel::setMineCount(const quint64 mineCount)
     emit mineCountChanged();
 }
 
-void GameModel::setFlagCount(const quint64 flagCount)
+void GameModel::setFlagCount(const qint64 flagCount)
 {
     mFlagCount = flagCount;
     emit flagCountChanged();
@@ -86,5 +112,15 @@ void GameModel::setTimePlayed(const quint64 timePlayed)
     emit timePlayedChanged();
 }
 
+void GameModel::setScaling(const models::SizeScaling scaling)
+{
+    mScaling = scaling;
+    emit scalingChanged();
+}
+
+void GameModel::setMineIndices(const QVector<quint64> mineIndices)
+{
+    mMineIndices = mineIndices;
+}
 
 } // namespace models

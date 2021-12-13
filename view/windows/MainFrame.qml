@@ -1,21 +1,30 @@
-import QtQuick 2.12
+import QtQuick 2.15
 import QtQuick.Controls 2.5
-import QtQml.Models 2.12
-import QtQuick.Window 2.12
-import QtQuick.Dialogs 1.0
+import QtQml.Models 2.15
+import QtQuick.Window 2.15
 
 import Qt.labs.platform 1.1
+
+// import SizeScaling enum
+import Backend.Game 1.0
 
 import "qrc:/controls"
 import "qrc:/includes"
 import "qrc:/text"
 
 import "qrc:/scripts/Adapter.js" as Adapter
+import "qrc:/scripts/windowController.js" as WindowController
+import "qrc:/scripts/Manager.js" as Manager
 
 ApplicationWindow {
     id: mainWindow;
 
     property double sizeFactor: 1.0;
+
+    Component.onCompleted: {
+        // check if new size scaling is set (from backend side)
+        Manager.updateSizeScaling();
+    }
 
     MenuBar {
         id: menuBar;
@@ -83,7 +92,13 @@ ApplicationWindow {
                     mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
-            MenuItem { text: qsTr("&Custom...") }
+            MenuItem {
+                text: qsTr("&Custom...")
+
+                onTriggered: {
+                    WindowController.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml",  { parentWindow: mainWindow });
+                }
+            }
 
             MenuSeparator { }
 
@@ -92,62 +107,32 @@ ApplicationWindow {
 
                 MenuItem {
                     checkable: true;
-                    checked: mainWindow.sizeFactor === 1.0;
+                    checked: gameModel.scaling == SizeScaling.SMALL
 
                     text: qsTr("&Small")
-                    onTriggered: {
-                        mainWindow.sizeFactor = 0.5;
-                        mainWindow.sizeFactor = 1.0;
-
-                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-                    }
+                    onTriggered: gameController.setScaling(SizeScaling.SMALL);
                 }
 
                 MenuItem {
                     checkable: true;
-                    checked: mainWindow.sizeFactor === 1.5;
+                    checked: gameModel.scaling == SizeScaling.MEDIUM
 
                     text: qsTr("&Medium")
-                    onTriggered: {
-                        mainWindow.sizeFactor = 0.5;
-                        mainWindow.sizeFactor = 1.5;
-
-                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-                    }
+                    onTriggered: gameController.setScaling(SizeScaling.MEDIUM);
                 }
 
                 MenuItem {
                     checkable: true;
-                    checked: mainWindow.sizeFactor === 2.0;
+                    checked: gameModel.scaling == SizeScaling.LARGE
 
                     text: qsTr("&Large")
-                    onTriggered: {
-                        mainWindow.sizeFactor = 0.5;
-                        mainWindow.sizeFactor = 2.0;
+                    onTriggered: gameController.setScaling(SizeScaling.LARGE);
 
-                        mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                }
 
-                        mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                        mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                        mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
-                    }
+                Connections {
+                    target: gameModel
+                    function onScalingChanged() { Manager.updateSizeScaling(); }
                 }
             }
         }
@@ -158,6 +143,10 @@ ApplicationWindow {
             MenuItem {
                 icon.source: "qrc:/images/flagTransparent.png";
                 text: qsTr("&Statistics");
+
+                onTriggered: {
+                    WindowController.openWindow(mainWindow, "qrc:/windows/Statistics.qml");
+                }
             }
 
             MenuItem {
@@ -167,7 +156,7 @@ ApplicationWindow {
         }
 
         Menu {
-            title: qsTr(gameModel.rows + "x" + gameModel.columns + "  " + gameModel.mineCount + " Mines");
+            title: qsTr(gameModel.columns + "x" + gameModel.rows + "  " + gameModel.mineCount + " Mines");
             enabled: false;
         }
     }
@@ -206,7 +195,7 @@ ApplicationWindow {
         TextLabel {
             id: flagsLabel;
 
-            width: 35 * sizeFactor;
+            width: 40 * sizeFactor; // 40 for linux font size
             x: 10;
             z:10;
 
@@ -217,10 +206,7 @@ ApplicationWindow {
             font.family: "Consolas";
             color: "blue";
 
-            //text: "0" + numOfMines;
-            text: gameModel.flagCount < 10 ? "00" + gameModel.flagCount : (gameModel.flagCount < 100 ? "0" + gameModel.flagCount : gameModel.flagCount);
-
-
+            text: Adapter.flagsToString(gameModel.flagCount);
         }
 
         Image {
@@ -284,12 +270,10 @@ ApplicationWindow {
                     buttonImage = "qrc:/images/playButtonPressed.png";
                     pauseText.visible = true;
                     board.visible = false;
-                    testTimer.running = false;
                 }else {
                     buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                     board.visible = true;
-                    testTimer.running = true;
                 }
             }
         }
@@ -308,11 +292,7 @@ ApplicationWindow {
 
             onClicked: {
                 gameController.endGame();
-                for (let i = 0; i < nWidth * mHeight; i++) {
-                    cellRepeater.itemAt(i).buttonImage = "qrc:/cellImages/empty.png";
-                }
-
-                testTimer.running = false;
+                gameController.revealAllCells();
 
                 if (board.visible === false) {
                     board.visible = true;
@@ -367,9 +347,6 @@ ApplicationWindow {
 
         anchors.top: boardTopBorder.bottom;
         anchors.left: boardLeftBorder.right;
-
-
-//                height: Math.min(boardBottomBorder.y - boardTopBorder.y - 3, Style.defaultHeight);
 
         verticalAlignment: Text.AlignVCenter;
         horizontalAlignment: Text.AlignHCenter;
@@ -582,7 +559,6 @@ ApplicationWindow {
 
         Component.onCompleted: {
             mainWindow.height = height;
-            console.log("mainWindow " + mainWindow.height);
         }
     }
 }

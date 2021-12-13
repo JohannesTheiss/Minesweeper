@@ -12,8 +12,6 @@
 #include "../inc/models/GameModel.h"
 
 #include "../inc/controllers/GameController.h"
-
-
 int main(int argc, char *argv[])
 {
     // Define start view
@@ -39,20 +37,25 @@ int main(int argc, char *argv[])
 
     // Connect frontend with backend
 
-    // TODO load from json and create default
     // create the GridModel
-    quint64 numberOfRows = 16;
-    quint64 numberOfColumns = 30;
-    quint64 numberOfMines = 99;
-    quint64 timePlayed = 0;
     QVector<models::CellModel *> grid;
-    models::GameModel gameModel(grid, numberOfRows, numberOfColumns, numberOfMines, numberOfMines, timePlayed);
+    QVector<quint64> mineIndices;
+    models::GameModel gameModel(grid, 0, 0, 0, 0, 0, models::SizeScaling::SMALL, mineIndices);
     
     // create the GridController
     controllers::GameController gameController(&gameModel, &gameModel);
 
     // connect models with view
     engine.rootContext()->setContextProperty("gameModel", &gameModel);
+
+    // connect enum with view
+    qmlRegisterUncreatableMetaObject(
+      models::staticMetaObject, 
+      "Backend.Game",
+      1, 0,
+      "SizeScaling",
+      "Error: On Size enums" 
+    );
 
     // connect controllers with view
     engine.rootContext()->setContextProperty("gameController", &gameController);

@@ -4,12 +4,15 @@
 #include <random>
 #include <numeric>
 #include <iterator>
-#include <thread>
-#include <mutex>
+
+#include <iostream>
+#include <QTimer>
 
 #include <QObject>
 
 #include <QDebug>
+
+#include "../data/JsonManager.h"
 
 #include "../models/CellModel.h"
 #include "../models/GameModel.h"
@@ -27,6 +30,7 @@ class GameController : public QObject
 
         ~GameController();
 
+
     public slots:
         void revealCell(const quint64 index);
         void revealAllCells();
@@ -41,24 +45,34 @@ class GameController : public QObject
         void setGameMode(const quint64 numberOfRows,
                          const quint64 numberOfColumns,
                          const quint64 numberOfMines);
+        void setScaling(const int scaling);
+
+        void updateTime();
 
     private:
         void generateGrid();
+        void generateMines();
+        quint64 addMine();
+        void removeMine(const quint64 mineIndex);
 
         void increaseSurroundingBombsCount(const quint64 cellIndex);
+        void decreaseSurroundingBombsCount(const quint64 cellIndex);
         void increaseFlagCount();
         void decreaseFlagCount();
-        void threadedTimer();
 
         void updateSurroundingCell(const quint64 cellIndex,
                 const std::function<void(quint64)> updateFunction);
 
+        void checkForWin();
+
+        bool mFirstReveal;
         bool mGameStarted;
-        bool mTimerRunning;
-        std::thread mTimerThread;
-        std::mutex mMutex;
+        QTimer *timer;
 
         models::GameModel *mGameModel;
+        data::JsonManager *mJsonManager;
+
+        const QString mJsonObjectName = "configuration";
 };
 
 } // namespace controllers

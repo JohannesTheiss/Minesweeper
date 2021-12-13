@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.15
 
 import "qrc:/includes"
 
@@ -13,5 +13,5 @@ Text {
     color: Style.fontColor;
 //    verticalAlignment: Text.AlignVCenter;
     clip: true;
-    elide: Text.ElideRight;
+//    elide: Text.ElideRight;
 }

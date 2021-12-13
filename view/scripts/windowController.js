@@ -1,4 +1,3 @@
-
 function openWindow(parent, qmlFile, params = undefined)
 {
     let component = Qt.createComponent(qmlFile);

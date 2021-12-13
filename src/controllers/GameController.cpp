@@ -6,43 +6,102 @@ namespace controllers
 
 GameController::GameController(models::GameModel *gameModel, QObject *parent)
     : QObject(parent),
+      mFirstReveal(true),
       mGameStarted(false),
-      mTimerRunning(false),
       mGameModel(gameModel)
 {
-    // TODO 1. load from json , 2. set game mode and 3. init game
-    initGame();
+    // default game configuration
+    quint64 rows = 16;
+    quint64 columns = 16;
+    quint64 mines = 40;
+
+    // create timer and connect it to a slot
+    timer = new QTimer(this);;
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
+    timer->setInterval(1000); // 1 ms
+
+    // load last configuration from json
+    mJsonManager = new data::JsonManager("gameConfiguration.json");
+    mJsonManager->load(mJsonObjectName, [&](QJsonValue &jsonModel) 
+    {
+        QJsonObject configuration = jsonModel.toObject();
+
+        quint64 loadedRows = configuration.value("rows").toString().toULongLong();
+        quint64 loadedColumns = configuration.value("columns").toString().toULongLong();
+        quint64 loadedMines = configuration.value("mines").toString().toULongLong();
+
+        // load and set the size scaling
+        int loadedScaling = configuration.value("scaling").toInt();
+        setScaling(loadedScaling);
+
+        // if the configuration not empty
+        if(loadedRows != 0 && loadedColumns != 0 && loadedMines != 0)
+        {
+            // set to the last configuration
+            rows = loadedRows;
+            columns = loadedColumns;
+            mines = loadedMines;
+        }
+    });
+
+    setGameMode(rows, columns, mines);
 }
 
 GameController::~GameController()
 {
-    if(mTimerThread.joinable())
-    {
-        mGameStarted = false;
-        mTimerThread.join();
-    }
+    mGameStarted = false;
 
-    // TODO save game configuration to json
+    // save game configuration to json
+    mJsonManager->save(mJsonObjectName, [&](QJsonObject &jsonModel)
+    {
+        // save rows
+        jsonModel.insert("rows", QString::number(mGameModel->rows()));
+
+        // save columns
+        jsonModel.insert("columns", QString::number(mGameModel->columns()));
+
+        // save mines
+        jsonModel.insert("mines", QString::number(mGameModel->mineCount()));
+
+        // save scaling
+        jsonModel.insert("scaling", static_cast<int>(mGameModel->scaling()));
+    });
+
+    delete mJsonManager;
+}
+
+void GameController::updateTime()
+{
+    mGameModel->setTimePlayed(mGameModel->timePlayed() + 1);
 }
 
 void GameController::revealCell(const quint64 index)
 {
     models::CellModel* cell = mGameModel->grid().at(index);
 
-    // TODO if first hit is a bomb...
-
     // don't reveal flagged cells
     if(cell->flagged()) return;
+
+    // if the first hit is a bomb
+    if(cell->isBomb() && mFirstReveal)
+    {
+        qDebug() << "first hit is a bomb";
+
+        // move the bomb to a new random place
+        addMine();
+        removeMine(index);
+        mFirstReveal = false;
+    }
 
     // if cell is a bomb then game over
     if(cell->isBomb())
     {   
         revealAllCells();
         endGame();
-        qDebug() << "ur a NOOB... lol";
     }
     else if(cell->hidden()) 
     {
+        if(mFirstReveal) mFirstReveal = false;
         cell->setHidden(false);
 
         // if there are no surrounding bombs
@@ -52,6 +111,8 @@ void GameController::revealCell(const quint64 index)
             updateSurroundingCell(index,
                     std::bind(&GameController::revealCell, this, std::placeholders::_1));
         }
+
+        checkForWin();
     }
 }
 
@@ -78,6 +139,8 @@ void GameController::toggleFlagInCell(const quint64 index)
         {
             cell->setFlagged(true);
             decreaseFlagCount();
+        
+            checkForWin();
         }
     }
 }
@@ -85,13 +148,11 @@ void GameController::toggleFlagInCell(const quint64 index)
 void GameController::initGame()
 {
     mGameStarted = false;
-    mTimerRunning = false;
+    timer->stop();
+
     mGameModel->setFlagCount(mGameModel->mineCount());
     mGameModel->setTimePlayed(0);
-    if(mTimerThread.joinable())
-    {
-        mTimerThread.join();
-    }
+
     generateGrid();
 }
 
@@ -99,10 +160,10 @@ void GameController::startGame()
 {
     if(!mGameStarted)
     {
+        mFirstReveal = true;
         mGameStarted = true;
-        mTimerRunning = true;
 
-        mTimerThread = std::thread(&GameController::threadedTimer, this);
+        timer->start();
     }
 }
 
@@ -110,7 +171,14 @@ void GameController::togglePauseGame()
 {
     if(mGameStarted)
     {
-        mTimerRunning = !mTimerRunning;
+        if(timer->isActive())
+        {
+            timer->stop();
+        }
+        else
+        {
+            timer->start();
+        }
     }
 }
 
@@ -119,9 +187,7 @@ void GameController::endGame()
     if(mGameStarted)
     {
         mGameStarted = false;
-        mTimerRunning = false;
-
-        mTimerThread.join();
+        timer->stop();
     }
 }
 
@@ -138,16 +204,14 @@ void GameController::setGameMode(const quint64 numberOfRows,
     initGame();
 }
 
+void GameController::setScaling(const int scaling)
+{
+    mGameModel->setScaling(models::SizeScaling(scaling));
+}
+
 void GameController::generateGrid()
 {
     quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
-
-    // generate the mines
-    QVector<quint64> indices(numberOfCells);
-    std::iota(indices.begin(), indices.end(), 0);
-    long long seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
-    QVector<quint64> mineIndices(indices.mid(0, mGameModel->mineCount()));
 
     // build a new the grid
     QVector<models::CellModel *> grid(numberOfCells);
@@ -160,22 +224,101 @@ void GameController::generateGrid()
     // set the grid
     mGameModel->setGrid(grid);
 
+    generateMines();
+}
+
+void GameController::generateMines()
+{
+    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
+
+    QVector<quint64> indices(numberOfCells);
+    std::iota(indices.begin(), indices.end(), 0); // indices: {0, 1, 2, ..., numberOfCells}
+    
+    // put the indices in a random order
+    long long seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
+
+    // get the first 'mineCount' indices from the list
+    // e.g. if mineCount = 3 then get the first 3 elements from the random indices array
+    QVector<quint64> mineIndices(indices.mid(0, mGameModel->mineCount()));
+    
     // set mines in grid
     foreach(quint64 mineIndex, mineIndices)
     {
+        //qDebug() << "mine: " << mineIndex;
+
         // set bomb
-        grid[mineIndex]->setIsBomb(true);
+        mGameModel->grid().at(mineIndex)->setIsBomb(true);
 
         // culc. the values surrounding cells
         updateSurroundingCell(mineIndex,
                 std::bind(&GameController::increaseSurroundingBombsCount, this, std::placeholders::_1));
     }
+
+    // update the mineIndices of the model
+    mGameModel->setMineIndices(mineIndices);
+}
+
+quint64 GameController::addMine()
+{
+    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
+    quint64 newMineIndex = 0;
+
+    bool mineAlreadyExists = false;
+    do 
+    {
+        mineAlreadyExists = false;
+        newMineIndex = numberOfCells * (rand() / (RAND_MAX + 1.0)); // [0, numberOfCells[
+
+        // check if the new mine indices are already mines
+        foreach(quint64 mineIndex, mGameModel->mineIndices())
+        {
+            // min already exists
+            if(newMineIndex == mineIndex)
+            {
+                mineAlreadyExists = true;
+                break;
+            }
+        }
+    }
+    while(mineAlreadyExists);
+    
+    // set bomb
+    mGameModel->grid().at(newMineIndex)->setIsBomb(true);
+
+    // culc. the values surrounding cells
+    updateSurroundingCell(newMineIndex,
+            std::bind(&GameController::increaseSurroundingBombsCount, this, std::placeholders::_1));
+
+    // update the mineIndices of the model
+    mGameModel->appendToMineIndices(newMineIndex);
+
+    return newMineIndex;
+}
+
+void GameController::removeMine(const quint64 mineIndex)
+{
+    // change cell
+    mGameModel->grid().at(mineIndex)->setIsBomb(false);
+
+    // remove from gameModel
+    mGameModel->removeFromMineIndices(mineIndex);
+
+    // decrease surrounding bomb count
+    updateSurroundingCell(mineIndex,
+            std::bind(&GameController::decreaseSurroundingBombsCount, this, std::placeholders::_1));
 }
 
 void GameController::increaseSurroundingBombsCount(const quint64 cellIndex)
 {
     models::CellModel *cell = mGameModel->grid().at(cellIndex);
     cell->setSurroundingBombs(cell->surroundingBombs() + 1);
+}
+
+void GameController::decreaseSurroundingBombsCount(const quint64 cellIndex)
+{
+    models::CellModel *cell = mGameModel->grid().at(cellIndex);
+    cell->setSurroundingBombs(cell->surroundingBombs() - 1);
 }
 
 void GameController::increaseFlagCount()
@@ -249,20 +392,37 @@ void GameController::updateSurroundingCell(const quint64 cellIndex,
     }
 }
 
-void GameController::threadedTimer()
+void GameController::checkForWin()
 {
-    while(mGameStarted)
+    // check if the game is won now
+    if(mGameModel->flagCount() == 0)
     {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        qDebug() << "check for win";
+        bool won = true;
 
-        if(mTimerRunning)
+        for(int i = 0; i < mGameModel->grid().size(); i++) 
         {
-            mMutex.lock();
-            mGameModel->setTimePlayed(mGameModel->timePlayed() + 1);
-            mMutex.unlock();
+            models::CellModel *cell = mGameModel->grid().at(i);
+            if(cell->hidden() && (!cell->isBomb() || !cell->flagged()))
+            {
+                won = false;
+                break;
+            }
         }
+
+        auto t1 = std::chrono::high_resolution_clock::now();
+        if(won)
+        {
+            endGame();
+            qDebug() << "u won the game";
+        }
+
+        auto t2 = std::chrono::high_resolution_clock::now();
+        auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+        std::cout << "checkForWin = " << ms_int.count() << " ms"<< std::endl;
     }
 }
+
 
 } // namespace controllers
 

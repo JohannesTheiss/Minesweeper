@@ -47,6 +47,16 @@ function resolveImage(cell) {
     return imageUrl;
 }
 
-function timeToString(secs){
+function timeToString(secs) {
+    if(secs === undefined) return '000';
     return (secs < 100 ? '0' : '') + (secs < 10 ? '0' : '') + secs;
+}
+
+function flagsToString(flags) {
+    if(flags < 0) {
+        return flags;
+    }
+    else {
+        return flags < 10 ? "00" + flags : (flags < 100 ? "0" + flags : flags);
+    }
 }
