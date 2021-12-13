@@ -4,25 +4,36 @@
 #include <QObject>
 #include <QList>
 
+#include "StatisticEntryModel.h"
+
 namespace models
 {
+
+struct GameMode
+{
+    quint64 rows;
+    quint64 columns;
+    quint64 mines;
+};
 
 class StatisticsModel : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QList<QObject *> statisticEntryModelList READ statisticEntryModelList NOTIFY statisticEntryModelListChanged)
+    Q_PROPERTY(QList<models::StatisticEntryModel *> statisticEntryModelList READ statisticEntryModelList NOTIFY statisticEntryModelListChanged)
 
     public:
-        StatisticsModel(QList<QObject *> statisticEntryModelList, QObject *parent = nullptr);
+        StatisticsModel(QList<models::StatisticEntryModel *> statisticEntryModelList, 
+                QObject *parent = nullptr);
 
-        QList<QObject *> statisticEntryModelList();
+        QList<models::StatisticEntryModel *> statisticEntryModelList();
+
 
     signals:
         void statisticEntryModelListChanged();
 
     private:
-        QList<QObject *> mStatisticEntryModelList;
+        QList<models::StatisticEntryModel *> mStatisticEntryModelList;
 
 };
 

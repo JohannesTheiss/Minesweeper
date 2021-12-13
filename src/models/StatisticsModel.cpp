@@ -3,13 +3,14 @@
 namespace models
 {
 
-StatisticsModel::StatisticsModel(QList<QObject *> statisticEntryModelList, QObject *parent)
+StatisticsModel::StatisticsModel(QList<models::StatisticEntryModel *> statisticEntryModelList,
+    QObject *parent)
   : QObject(parent),
     mStatisticEntryModelList(statisticEntryModelList)
 {
 }
 
-QList<QObject *> StatisticsModel::statisticEntryModelList()
+QList<models::StatisticEntryModel *> StatisticsModel::statisticEntryModelList()
 {
     return mStatisticEntryModelList;
 }

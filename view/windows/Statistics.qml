@@ -125,34 +125,35 @@ Window {
 
         ListModel {
             id: timeModel;
+            
 
-            ListElement {
-                mode: "Beginner";
-                time: 20;
-                games: 1;
-                won: 1;
-            }
+            //ListElement {
+                //mode: "Beginner";
+                //time: 20;
+                //games: 1;
+                //won: 1;
+            //}
 
-            ListElement {
-                mode: "Intermediate";
-                time: 20;
-                games: 1;
-                won: 1;
-            }
+            //ListElement {
+                //mode: "Intermediate";
+                //time: 20;
+                //games: 1;
+                //won: 1;
+            //}
 
-            ListElement {
-                mode: "Expert";
-                time: 20;
-                games: 1;
-                won: 1;
-            }
+            //ListElement {
+                //mode: "Expert";
+                //time: 20;
+                //games: 1;
+                //won: 1;
+            //}
 
-            ListElement {
-                mode: "999x999 - 999 Mines";
-                time: 20;
-                games: 1;
-                won: 1;
-            }
+            //ListElement {
+                //mode: "999x999 - 999 Mines";
+                //time: 20;
+                //games: 1;
+                //won: 1;
+            //}
         }
 
         ScrollView {
@@ -180,8 +181,8 @@ Window {
                 clip: true
                 spacing: 25
 
-//                model: backend.patientList
-                model: timeModel;
+                //model: timeModel;
+                model: statisticsModel.statisticEntryModelList ;
 
                 delegate: /*PatientElement {                                  //fills the PatientElements with data from backend.patientList
                     parentWindow: patientList
@@ -216,7 +217,7 @@ Window {
                     TextLabel {
                         id: modeStat;
 
-                        text: mode;
+                        text: model.modelData.numberOfColumns + "x" + model.modelData.numberOfRows + " " + model.modelData.numberOfMines + " Mines";
 
                         width: timeLabel.x - modeLabel.x + modeLabel.leftPadding;
 
@@ -232,10 +233,9 @@ Window {
 
                         x: 133;
 
-                        text: time;
+                        text: model.modelData.bestTime;
 
                         font.pointSize: 10;
-
 
                     }
 
@@ -244,7 +244,7 @@ Window {
 
                         x: timeStat.x + timeLabel.width + headerRow.spacing;
 
-                        text: games;
+                        text: model.modelData.numberOfGamesPlayed;
 
                         anchors.left: gamesLabel.left;
                     }
@@ -254,7 +254,8 @@ Window {
 
                         x: gamesStat.x + gamesLabel.width + headerRow.spacing;
 
-                        text: won;
+                        //text: won;
+                        text: model.modelData.numberOfWins;
 
                         anchors.left: wonLabel.left;
                     }
@@ -264,7 +265,8 @@ Window {
 
                         x: wonStat.x + wonLabel.width + headerRow.spacing;
 
-                        text: games - won;
+                        //text: games - won;
+                        text: model.modelData.numberOfDefeats;
 
                         anchors.left: lostLabel.left;
                     }

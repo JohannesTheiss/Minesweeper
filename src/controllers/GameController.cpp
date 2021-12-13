@@ -97,7 +97,7 @@ void GameController::revealCell(const quint64 index)
     if(cell->isBomb())
     {   
         revealAllCells();
-        endGame();
+        endGame(false); // game lost = false
     }
     else if(cell->hidden()) 
     {
@@ -182,12 +182,18 @@ void GameController::togglePauseGame()
     }
 }
 
-void GameController::endGame()
+void GameController::endGame(const bool wonOrLost)
 {
     if(mGameStarted)
     {
         mGameStarted = false;
         timer->stop();
+        
+        emit submitStatistics(mGameModel->rows(),
+                mGameModel->columns(),
+                mGameModel->mineCount(),
+                mGameModel->timePlayed(),
+                wonOrLost);
     }
 }
 
@@ -413,7 +419,7 @@ void GameController::checkForWin()
         auto t1 = std::chrono::high_resolution_clock::now();
         if(won)
         {
-            endGame();
+            endGame(won); // game won = true
             qDebug() << "u won the game";
         }
 
