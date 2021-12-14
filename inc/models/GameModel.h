@@ -30,7 +30,6 @@ class GameModel : public QObject
     Q_PROPERTY(qint64 flagCount READ flagCount NOTIFY flagCountChanged)
     Q_PROPERTY(quint64 timePlayed READ timePlayed NOTIFY timePlayedChanged)
     Q_PROPERTY(models::SizeScaling scaling READ scaling NOTIFY scalingChanged)
-    Q_PROPERTY(QVector<quint64> mineIndices READ mineIndices NOTIFY mineIndicesChanged)
 
     public:
         //delete default constructor
@@ -43,25 +42,21 @@ class GameModel : public QObject
                   const quint64 mineCount,
                   const qint64 flagCount,
                   const quint64 timePlayed,
-                  const SizeScaling scaling,
-                  const QVector<quint64> mineIndices);
+                  const SizeScaling scaling);
 
         // default destructor
         ~GameModel() = default;
-    
-        void appendToMineIndices(quint64 mineIndex);
-        void removeFromMineIndices(const quint64 mineIndex);
 
-    public slots:
         // property getters
-        QVector<CellModel *> grid();
-        quint64 rows();
-        quint64 columns();
-        quint64 mineCount();
-        qint64 flagCount();
-        quint64 timePlayed();
-        models::SizeScaling scaling();
-        QVector<quint64> mineIndices();
+        QVector<models::CellModel *> grid() const;
+        quint64 rows() const;
+        quint64 columns() const;
+        quint64 mineCount() const;
+        qint64 flagCount() const;
+        quint64 timePlayed() const;
+        models::SizeScaling scaling() const;
+
+public slots:
 
         // property setters
         void setGrid(const QVector<models::CellModel *> grid);
@@ -71,17 +66,15 @@ class GameModel : public QObject
         void setFlagCount(const qint64 flagCount);
         void setTimePlayed(const quint64 timePlayed);
         void setScaling(const models::SizeScaling scaling);
-        void setMineIndices(const QVector<quint64> mineIndices);
 
     signals:
-        void gridChanged();
-        void rowsChanged();
-        void columnsChanged();
-        void mineCountChanged();
-        void flagCountChanged();
-        void timePlayedChanged();
-        void scalingChanged();
-        void mineIndicesChanged();
+        void gridChanged(const QVector<models::CellModel *> grid);
+        void rowsChanged(const quint64 rows);
+        void columnsChanged(const quint64 columns);
+        void mineCountChanged(const quint64 mineCount);
+        void flagCountChanged(const quint64 flagCount);
+        void timePlayedChanged(const quint64 timePlayed);
+        void scalingChanged(const models::SizeScaling scaling);
 
     private:
 
@@ -93,7 +86,6 @@ class GameModel : public QObject
         qint64 mFlagCount;
         quint64 mTimePlayed;
         SizeScaling mScaling;
-        QVector<quint64> mMineIndices;
 
 };
 

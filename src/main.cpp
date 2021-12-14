@@ -11,7 +11,10 @@
 #include "../inc/models/CellModel.h"
 #include "../inc/models/GameModel.h"
 
+#include "../inc/controllers/observers/GameObserver.h"
+
 #include "../inc/controllers/GameController.h"
+
 int main(int argc, char *argv[])
 {
     // Define start view
@@ -39,11 +42,13 @@ int main(int argc, char *argv[])
 
     // create the GridModel
     QVector<models::CellModel *> grid;
-    QVector<quint64> mineIndices;
-    models::GameModel gameModel(grid, 0, 0, 0, 0, 0, models::SizeScaling::SMALL, mineIndices);
+    models::GameModel gameModel(grid, 0, 0, 0, 0, 0, models::SizeScaling::SMALL);
     
+    // create GameModel-observer
+    observers::GameObserver gameObserver(&gameModel);
+
     // create the GridController
-    controllers::GameController gameController(&gameModel, &gameModel);
+    controllers::GameController gameController(&gameObserver);
 
     // connect models with view
     engine.rootContext()->setContextProperty("gameModel", &gameModel);

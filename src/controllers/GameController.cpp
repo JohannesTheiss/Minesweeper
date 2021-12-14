@@ -4,11 +4,11 @@
 namespace controllers
 {
 
-GameController::GameController(models::GameModel *gameModel, QObject *parent)
+GameController::GameController(observers::GameObserver *gameObserver, QObject *parent)
     : QObject(parent),
       mFirstReveal(true),
       mGameStarted(false),
-      mGameModel(gameModel)
+      mGameObserver(gameObserver)
 {
     // default game configuration
     quint64 rows = 16;
@@ -55,16 +55,16 @@ GameController::~GameController()
     mJsonManager->save(mJsonObjectName, [&](QJsonObject &jsonModel)
     {
         // save rows
-        jsonModel.insert("rows", QString::number(mGameModel->rows()));
+        jsonModel.insert("rows", QString::number(mGameObserver->rows()));
 
         // save columns
-        jsonModel.insert("columns", QString::number(mGameModel->columns()));
+        jsonModel.insert("columns", QString::number(mGameObserver->columns()));
 
         // save mines
-        jsonModel.insert("mines", QString::number(mGameModel->mineCount()));
+        jsonModel.insert("mines", QString::number(mGameObserver->mineCount()));
 
         // save scaling
-        jsonModel.insert("scaling", static_cast<int>(mGameModel->scaling()));
+        jsonModel.insert("scaling", static_cast<int>(mGameObserver->scaling()));
     });
 
     delete mJsonManager;
@@ -72,12 +72,12 @@ GameController::~GameController()
 
 void GameController::updateTime()
 {
-    mGameModel->setTimePlayed(mGameModel->timePlayed() + 1);
+    mGameObserver->setTimePlayed(mGameObserver->timePlayed() + 1);
 }
 
 void GameController::revealCell(const quint64 index)
 {
-    models::CellModel* cell = mGameModel->grid().at(index);
+    models::CellModel* cell = mGameObserver->grid().at(index);
 
     // don't reveal flagged cells
     if(cell->flagged()) return;
@@ -118,7 +118,7 @@ void GameController::revealCell(const quint64 index)
 
 void GameController::revealAllCells()
 {
-    foreach(models::CellModel* cell, mGameModel->grid())
+    foreach(models::CellModel* cell, mGameObserver->grid())
     {
         cell->setHidden(false);
     }
@@ -126,7 +126,7 @@ void GameController::revealAllCells()
 
 void GameController::toggleFlagInCell(const quint64 index)
 {
-    models::CellModel* cell = mGameModel->grid().at(index);
+    models::CellModel* cell = mGameObserver->grid().at(index);
 
     if(cell->hidden())
     {
@@ -150,8 +150,8 @@ void GameController::initGame()
     mGameStarted = false;
     timer->stop();
 
-    mGameModel->setFlagCount(mGameModel->mineCount());
-    mGameModel->setTimePlayed(0);
+    mGameObserver->setFlagCount(mGameObserver->mineCount());
+    mGameObserver->setTimePlayed(0);
 
     generateGrid();
 }
@@ -196,9 +196,9 @@ void GameController::setGameMode(const quint64 numberOfRows,
                                  const quint64 numberOfMines)
 {
     // update the model
-    mGameModel->setRows(numberOfRows);
-    mGameModel->setColumns(numberOfColumns);
-    mGameModel->setMineCount(numberOfMines);
+    mGameObserver->setRows(numberOfRows);
+    mGameObserver->setColumns(numberOfColumns);
+    mGameObserver->setMineCount(numberOfMines);
 
     // initialize the game
     initGame();
@@ -206,12 +206,12 @@ void GameController::setGameMode(const quint64 numberOfRows,
 
 void GameController::setScaling(const int scaling)
 {
-    mGameModel->setScaling(models::SizeScaling(scaling));
+    mGameObserver->setScaling(models::SizeScaling(scaling));
 }
 
 void GameController::generateGrid()
 {
-    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
+    quint64 numberOfCells = mGameObserver->rows() * mGameObserver->columns();
 
     // build a new the grid
     QVector<models::CellModel *> grid(numberOfCells);
@@ -222,14 +222,14 @@ void GameController::generateGrid()
     }
 
     // set the grid
-    mGameModel->setGrid(grid);
+    mGameObserver->setGrid(grid);
 
     generateMines();
 }
 
 void GameController::generateMines()
 {
-    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
+    quint64 numberOfCells = mGameObserver->rows() * mGameObserver->columns();
 
     QVector<quint64> indices(numberOfCells);
     std::iota(indices.begin(), indices.end(), 0); // indices: {0, 1, 2, ..., numberOfCells}
@@ -240,7 +240,7 @@ void GameController::generateMines()
 
     // get the first 'mineCount' indices from the list
     // e.g. if mineCount = 3 then get the first 3 elements from the random indices array
-    QVector<quint64> mineIndices(indices.mid(0, mGameModel->mineCount()));
+    QVector<quint64> mineIndices(indices.mid(0, mGameObserver->mineCount()));
     
     // set mines in grid
     foreach(quint64 mineIndex, mineIndices)
@@ -248,7 +248,7 @@ void GameController::generateMines()
         //qDebug() << "mine: " << mineIndex;
 
         // set bomb
-        mGameModel->grid().at(mineIndex)->setIsBomb(true);
+        mGameObserver->grid().at(mineIndex)->setIsBomb(true);
 
         // culc. the values surrounding cells
         updateSurroundingCell(mineIndex,
@@ -256,12 +256,12 @@ void GameController::generateMines()
     }
 
     // update the mineIndices of the model
-    mGameModel->setMineIndices(mineIndices);
+    mMineIndices = mineIndices;
 }
 
 quint64 GameController::addMine()
 {
-    quint64 numberOfCells = mGameModel->rows() * mGameModel->columns();
+    quint64 numberOfCells = mGameObserver->rows() * mGameObserver->columns();
     quint64 newMineIndex = 0;
 
     bool mineAlreadyExists = false;
@@ -271,7 +271,7 @@ quint64 GameController::addMine()
         newMineIndex = numberOfCells * (rand() / (RAND_MAX + 1.0)); // [0, numberOfCells[
 
         // check if the new mine indices are already mines
-        foreach(quint64 mineIndex, mGameModel->mineIndices())
+        foreach(quint64 mineIndex, mMineIndices)
         {
             // min already exists
             if(newMineIndex == mineIndex)
@@ -284,14 +284,14 @@ quint64 GameController::addMine()
     while(mineAlreadyExists);
     
     // set bomb
-    mGameModel->grid().at(newMineIndex)->setIsBomb(true);
+    mGameObserver->grid().at(newMineIndex)->setIsBomb(true);
 
     // culc. the values surrounding cells
     updateSurroundingCell(newMineIndex,
             std::bind(&GameController::increaseSurroundingBombsCount, this, std::placeholders::_1));
 
     // update the mineIndices of the model
-    mGameModel->appendToMineIndices(newMineIndex);
+    mMineIndices.append(newMineIndex);
 
     return newMineIndex;
 }
@@ -299,10 +299,10 @@ quint64 GameController::addMine()
 void GameController::removeMine(const quint64 mineIndex)
 {
     // change cell
-    mGameModel->grid().at(mineIndex)->setIsBomb(false);
+    mGameObserver->grid().at(mineIndex)->setIsBomb(false);
 
     // remove from gameModel
-    mGameModel->removeFromMineIndices(mineIndex);
+    mMineIndices.removeOne(mineIndex);
 
     // decrease surrounding bomb count
     updateSurroundingCell(mineIndex,
@@ -311,31 +311,31 @@ void GameController::removeMine(const quint64 mineIndex)
 
 void GameController::increaseSurroundingBombsCount(const quint64 cellIndex)
 {
-    models::CellModel *cell = mGameModel->grid().at(cellIndex);
+    models::CellModel *cell = mGameObserver->grid().at(cellIndex);
     cell->setSurroundingBombs(cell->surroundingBombs() + 1);
 }
 
 void GameController::decreaseSurroundingBombsCount(const quint64 cellIndex)
 {
-    models::CellModel *cell = mGameModel->grid().at(cellIndex);
+    models::CellModel *cell = mGameObserver->grid().at(cellIndex);
     cell->setSurroundingBombs(cell->surroundingBombs() - 1);
 }
 
 void GameController::increaseFlagCount()
 {
-    mGameModel->setFlagCount(mGameModel->flagCount() + 1);
+    mGameObserver->setFlagCount(mGameObserver->flagCount() + 1);
 }
 
 void GameController::decreaseFlagCount()
 {
-    mGameModel->setFlagCount(mGameModel->flagCount() - 1);
+    mGameObserver->setFlagCount(mGameObserver->flagCount() - 1);
 }
 
 void GameController::updateSurroundingCell(const quint64 cellIndex,
     const std::function<void(quint64)> updateFunction)
 {
-    quint64 numberOfColumns = mGameModel->columns();
-    quint64 numberOfRow = mGameModel->rows();
+    quint64 numberOfColumns = mGameObserver->columns();
+    quint64 numberOfRow = mGameObserver->rows();
     quint64 columnIndex = cellIndex % numberOfColumns;
 
     bool notFirstColumn = columnIndex > 0;
@@ -395,14 +395,14 @@ void GameController::updateSurroundingCell(const quint64 cellIndex,
 void GameController::checkForWin()
 {
     // check if the game is won now
-    if(mGameModel->flagCount() == 0)
+    if(mGameObserver->flagCount() == 0)
     {
         qDebug() << "check for win";
         bool won = true;
 
-        for(int i = 0; i < mGameModel->grid().size(); i++) 
+        for(int i = 0; i < mGameObserver->grid().size(); i++)
         {
-            models::CellModel *cell = mGameModel->grid().at(i);
+            models::CellModel *cell = mGameObserver->grid().at(i);
             if(cell->hidden() && (!cell->isBomb() || !cell->flagged()))
             {
                 won = false;
