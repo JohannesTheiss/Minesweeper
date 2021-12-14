@@ -15,6 +15,17 @@ QList<models::StatisticEntryModel *> StatisticsModel::statisticEntryModelList()
     return mStatisticEntryModelList;
 }
 
+QList<models::StatisticEntryModel *> *StatisticsModel::statisticEntryModelListRef()
+{
+    return &mStatisticEntryModelList;
+}
+
+void StatisticsModel::appendToEntryList(models::StatisticEntryModel* statisticEntryModel)
+{
+    mStatisticEntryModelList.append(statisticEntryModel);
+    emit statisticEntryModelListChanged();
+}
+
 
 } // namespace models
 

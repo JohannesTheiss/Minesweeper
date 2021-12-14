@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QHash> 
 #include <QPair> 
+#include <QString> 
 
 #include <QDebug>
 
@@ -11,6 +12,7 @@
 
 #include "../models/StatisticsModel.h"
 #include "../models/StatisticEntryModel.h"
+#include "../models/GameMode.h"
 
 namespace controllers
 {
@@ -33,12 +35,12 @@ class StatisticsController : public QObject
                 const bool win);
 
     signals:
+        void appendToEntryList(models::StatisticEntryModel *statisticEntryModel);
 
     private:
-
-        inline uint qHash(models::GameMode &mode) {
-            return qHash(QString(mode.rows));
-        }
+        void increaseNumberOfWins(models::StatisticEntryModel *statisticEntryModel);
+        void increaseNumberOfDefeats(models::StatisticEntryModel *statisticEntryModel);
+        void increaseNumberOfGamesPlayed(models::StatisticEntryModel *statisticEntryModel);
 
         QHash<models::GameMode, QPair<quint64, models::StatisticEntryModel*>> mGameModeStatisticsMap;
         models::StatisticsModel *mStatisticsModel;
