@@ -11,10 +11,10 @@ class StatisticEntryModel : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(quint64 bestTime READ  bestTime CONSTANT)
-    Q_PROPERTY(quint64 numberOfWins READ numberOfWins CONSTANT)
-    Q_PROPERTY(quint64 numberOfDefeats READ numberOfDefeats CONSTANT)
-    Q_PROPERTY(quint64 numberOfGamesPlayed READ numberOfGamesPlayed CONSTANT)
+    Q_PROPERTY(quint64 bestTime READ bestTime NOTIFY bestTimeChanged)
+    Q_PROPERTY(quint64 numberOfWins READ numberOfWins NOTIFY numberOfWinsChanged)
+    Q_PROPERTY(quint64 numberOfDefeats READ numberOfDefeats NOTIFY numberOfDefeatsChanged)
+    Q_PROPERTY(quint64 numberOfGamesPlayed READ numberOfGamesPlayed NOTIFY numberOfGamesPlayedChanged)
     Q_PROPERTY(quint64 numberOfRows READ numberOfRows CONSTANT)
     Q_PROPERTY(quint64 numberOfColumns READ numberOfColumns CONSTANT)
     Q_PROPERTY(quint64 numberOfMines READ numberOfMines CONSTANT)
@@ -33,6 +33,8 @@ class StatisticEntryModel : public QObject
                 const quint64 numberOfMines, 
                 QObject *parent = nullptr);
 
+    public slots:
+        // property getters
         quint64 bestTime();
         quint64 numberOfWins();
         quint64 numberOfDefeats();
@@ -40,6 +42,18 @@ class StatisticEntryModel : public QObject
         quint64 numberOfRows();
         quint64 numberOfColumns();
         quint64 numberOfMines();
+
+        // property setters
+        void setBestTime(const quint64 bestTime);
+        void setNumberOfWins(const quint64 numberOfWins);
+        void setNumberOfDefeats(const quint64 numberOfDefeats);
+        void setNumberOfGamesPlayed(const quint64 numberOfGamesPlayed);
+
+    signals:
+        void bestTimeChanged();
+        void numberOfWinsChanged();
+        void numberOfDefeatsChanged();
+        void numberOfGamesPlayedChanged();
 
     private:
         // highscore time

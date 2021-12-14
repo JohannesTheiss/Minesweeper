@@ -189,6 +189,8 @@ void GameController::endGame(const bool wonOrLost)
         mGameStarted = false;
         timer->stop();
         
+        qDebug() << "time played " << mGameModel->timePlayed();
+        
         emit submitStatistics(mGameModel->rows(),
                 mGameModel->columns(),
                 mGameModel->mineCount(),

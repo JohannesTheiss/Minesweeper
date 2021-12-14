@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
             numberOfRows,
             numberOfColumns,
             numberOfMines);
-    QList<models::StatisticEntryModel *> sList({ &sem });
+    QList<models::StatisticEntryModel *> sList;
     models::StatisticsModel statisticsModel(sList);
 
     // create the StatisticsController

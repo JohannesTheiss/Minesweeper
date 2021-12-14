@@ -8,7 +8,7 @@ import "qrc:/includes"
 Window {
     id: customSettings
 
-    modality: Qt.WindowModal;
+    //modality: Qt.WindowModal;
 
     title: "Minesweeper - Statistics";
 
@@ -182,7 +182,7 @@ Window {
                 spacing: 25
 
                 //model: timeModel;
-                model: statisticsModel.statisticEntryModelList ;
+                model: statisticsModel.statisticEntryModelList;
 
                 delegate: /*PatientElement {                                  //fills the PatientElements with data from backend.patientList
                     parentWindow: patientList

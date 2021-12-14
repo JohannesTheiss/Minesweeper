@@ -9,13 +9,6 @@
 namespace models
 {
 
-struct GameMode
-{
-    quint64 rows;
-    quint64 columns;
-    quint64 mines;
-};
-
 class StatisticsModel : public QObject
 {
     Q_OBJECT
@@ -27,7 +20,10 @@ class StatisticsModel : public QObject
                 QObject *parent = nullptr);
 
         QList<models::StatisticEntryModel *> statisticEntryModelList();
+        QList<models::StatisticEntryModel *> *statisticEntryModelListRef();
 
+    public slots:
+        void appendToEntryList(models::StatisticEntryModel* statisticEntryModel);
 
     signals:
         void statisticEntryModelListChanged();
