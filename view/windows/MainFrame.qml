@@ -120,7 +120,7 @@ ApplicationWindow {
 
                 MenuItem {
                     checkable: true;
-                    checked: gameModel.scaling == SizeScaling.SMALL
+                    checked: gameModel.scaling === SizeScaling.SMALL
 
                     text: qsTr("&Small")
                     onTriggered: gameController.setScaling(SizeScaling.SMALL);
@@ -128,7 +128,7 @@ ApplicationWindow {
 
                 MenuItem {
                     checkable: true;
-                    checked: gameModel.scaling == SizeScaling.MEDIUM
+                    checked: gameModel.scaling === SizeScaling.MEDIUM
 
                     text: qsTr("&Medium")
                     onTriggered: gameController.setScaling(SizeScaling.MEDIUM);
@@ -136,7 +136,7 @@ ApplicationWindow {
 
                 MenuItem {
                     checkable: true;
-                    checked: gameModel.scaling == SizeScaling.LARGE
+                    checked: gameModel.scaling === SizeScaling.LARGE
 
                     text: qsTr("&Large")
                     onTriggered: gameController.setScaling(SizeScaling.LARGE);
@@ -165,6 +165,10 @@ ApplicationWindow {
             MenuItem {
                 icon.source: "qrc:/images/questionTransparent.png";
                 text: qsTr("&Help");
+
+                onTriggered: {
+                    WindowController.openWindow(mainWindow, "qrc:/windows/HelpWindow.qml");
+                }
             }
         }
 
@@ -246,6 +250,23 @@ ApplicationWindow {
             anchors.verticalCenter: parent.verticalCenter
 
             buttonImage: "qrc:/images/newButton.png";
+
+//            MouseArea {
+//                anchors.fill: parent;
+
+//                propagateComposedEvents: true;
+//                hoverEnabled: true;
+
+//                onExited: {
+//                    if(newButton.buttonImage.toString() === "qrc:/images/newButtonPressed.png") {
+//                        newButton.buttonImage = "qrc:/images/newButton.png";
+//                    }
+//                }
+
+//                onClicked: {
+//                    newButton.onClicked();
+//                }
+//            }
 
             onClicked: {
                 gameController.initGame();

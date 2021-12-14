@@ -52,6 +52,7 @@
         <file alias="CustomSettings.qml">view/windows/CustomSettings.qml</file>
         <file alias="MainFrame.qml">view/windows/MainFrame.qml</file>
         <file alias="Statistics.qml">view/windows/Statistics.qml</file>
+        <file>HelpWindow.qml</file>
     </qresource>
     <qresource prefix="/scripts">
         <file alias="Adapter.js">view/scripts/Adapter.js</file>
