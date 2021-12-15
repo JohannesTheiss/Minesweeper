@@ -10,6 +10,7 @@
 namespace observers
 {
 
+// observer-class for the GameModel
 class GameObserver : public QObject
 {
     Q_OBJECT
@@ -19,6 +20,10 @@ class GameObserver : public QObject
 
         ~GameObserver() = default;
 
+        // setters and getters as part of the interface
+        // for any object to communicate with the model via the observer
+
+        // getter methods
         QVector<models::CellModel *> grid() const;
         quint64 rows() const;
         quint64 columns() const;
@@ -27,6 +32,7 @@ class GameObserver : public QObject
         quint64 timePlayed() const;
         models::SizeScaling scaling() const;
 
+        // setter methods
         void setGrid(const QVector<models::CellModel *> grid);
         void setRows(const quint64 rows);
         void setColumns(const quint64 columns);
@@ -36,6 +42,7 @@ class GameObserver : public QObject
         void setScaling(const models::SizeScaling scaling);
 
     signals:
+        // signals that trigger setter operation on the model
         void updateModelGrid(const QVector<models::CellModel *> grid);
         void updateModelRows(const quint64 rows);
         void updateModelColumns(const quint64 columns);
@@ -45,6 +52,7 @@ class GameObserver : public QObject
         void updateModelScaling(const models::SizeScaling scaling);
 
     private slots:
+        // slots that are called when values are updated in the model
         void updateObserverGrid(const QVector<models::CellModel *> grid);
         void updateObserverRows(const quint64 rows);
         void updateObserverColumns(const quint64 columns);
@@ -54,6 +62,7 @@ class GameObserver : public QObject
         void updateObserverScaling(const models::SizeScaling scaling);
 
     private:
+        // initiates all connections between model and observer
         void initObserver(const models::GameModel *gameModel);
 
         QVector<models::CellModel *> mGrid;
