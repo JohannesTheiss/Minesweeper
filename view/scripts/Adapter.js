@@ -2,6 +2,9 @@
 function resolveImage(cell) {
     let imageUrl = "qrc:/cellImages/cell.png";
 
+    // cheat
+    //if(cell.isBomb) imageUrl = "qrc:/images/logo-hs.png"
+
     if(cell.flagged) {
         imageUrl = "qrc:/cellImages/flag.png";
     }
@@ -81,3 +84,32 @@ function getConfigurationString(rows, columns, mines) {
     return displayString;
 }
 
+function solve() {
+    function Timer() {
+        return Qt.createQmlObject("import QtQuick 2.0; Timer {}", mainWindow);
+    }
+
+    let timer = new Timer();
+    let i = 0;
+    function doStep() {
+        if(i >= gameModel.grid.length) timer.stop();
+
+        let cell = gameModel.grid[i];
+        while(!cell.hidden)
+        {
+            cell = gameModel.grid[++i]
+        }
+        if(cell.isBomb) gameController.toggleFlagInCell(i);
+        else if(cell.hidden) gameController.revealCell(i);
+        i++;
+    }
+
+    timer.interval = 100; // 100 ms
+    timer.repeat = true;
+    timer.triggered.connect(doStep);
+
+    timer.start();
+
+    gameController.startGame();
+
+}

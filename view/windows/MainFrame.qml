@@ -169,6 +169,17 @@ ApplicationWindow {
         }
 
         Menu {
+
+            MenuItem {
+                icon.source: "qrc:/images/questionTransparent.png";
+                text: qsTr("&auto solve");
+                onTriggered: Adapter.solve();
+            }
+            MenuItem {
+                icon.source: "qrc:/images/questionTransparent.png";
+                text: qsTr("&reset stats");
+                onTriggered: statisticsController.resetStatistics()
+            }
             title: qsTr(gameModel.columns + "x" + gameModel.rows + "  " + gameModel.mineCount + " Mines");
             enabled: false;
         }
