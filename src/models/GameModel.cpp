@@ -1,7 +1,5 @@
 #include "../../inc/models/GameModel.h"
 
-#include <QDebug>
-
 namespace models
 {
 

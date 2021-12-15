@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
     // create the StatisticsController
     controllers::StatisticsController statisticsController(&statisticsModel);
-    QObject::connect(&gameController, SIGNAL(submitStatistics(const quint64,
+    QObject::connect(&gameController, SIGNAL(gameEnded(const quint64,
                 const quint64,
                 const quint64,
                 const quint64,
@@ -95,18 +95,10 @@ int main(int argc, char *argv[])
 
     // connect controllers with view
     engine.rootContext()->setContextProperty("gameController", &gameController);
+    engine.rootContext()->setContextProperty("statisticsController", &statisticsController);
     
     // Load the start view
     engine.load(url);
-
-
-    // key
-
-    //std::pair<int,int> p = std::make_pair(10,20);
-    //QHash<std::pair<int, int>, int> hash;
-    //hash[p] = 187;
-    //std::cout << hash[std::make_pair(10,20)] << std::endl;
-    
 
     // Start the Application
     int execCode = app.exec();

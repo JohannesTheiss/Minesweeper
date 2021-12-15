@@ -36,12 +36,22 @@ class StatisticsController : public QObject
                 const quint64 time,
                 const bool win);
 
+        void resetStatistics();
+
     private:
         void increaseNumberOfWins(models::StatisticEntryModel *statisticEntryModel);
         void increaseNumberOfDefeats(models::StatisticEntryModel *statisticEntryModel);
         void increaseNumberOfGamesPlayed(models::StatisticEntryModel *statisticEntryModel);
 
         void save(const QPair<quint64, models::StatisticEntryModel*> &indexEntryModelPair);
+        void mapStatisticEntryModelToJsonObject(models::StatisticEntryModel *statisticEntryModel, 
+                QJsonObject &jsonModel);
+        void createDefaultGameModeStatistics();
+        QPair<quint64, models::StatisticEntryModel*> createGameModeStatistics(models::GameMode &gameMode,
+                const quint64 bestTime = 0,
+                const quint64 numberOfWins = 0,
+                const quint64 numberOfDefeats = 0,
+                const quint64 numberOfGamesPlayed = 0);
 
         QHash<models::GameMode, QPair<quint64, models::StatisticEntryModel*>> mGameModeStatisticsMap;
         models::StatisticsModel *mStatisticsModel;

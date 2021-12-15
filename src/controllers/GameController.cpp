@@ -189,9 +189,7 @@ void GameController::endGame(const bool wonOrLost)
         mGameStarted = false;
         timer->stop();
         
-        qDebug() << "time played " << mGameModel->timePlayed();
-        
-        emit submitStatistics(mGameModel->rows(),
+        emit gameEnded(mGameModel->rows(),
                 mGameModel->columns(),
                 mGameModel->mineCount(),
                 mGameModel->timePlayed(),
@@ -253,8 +251,6 @@ void GameController::generateMines()
     // set mines in grid
     foreach(quint64 mineIndex, mineIndices)
     {
-        //qDebug() << "mine: " << mineIndex;
-
         // set bomb
         mGameModel->grid().at(mineIndex)->setIsBomb(true);
 

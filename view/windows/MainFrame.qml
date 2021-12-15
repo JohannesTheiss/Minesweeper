@@ -26,6 +26,19 @@ ApplicationWindow {
         Manager.updateSizeScaling();
     }
 
+    Connections {
+        target: gameController;
+        function onGameEnded(numberOfRow, 
+            numberOfColumns,
+            numberOfMines,
+            timePlayed,
+            won) {
+            // TODO start the end screen HERE
+            // if the game is won the 'won' == true
+            console.log("game won: " + won);
+        }
+    }
+
     MenuBar {
         id: menuBar;
 
