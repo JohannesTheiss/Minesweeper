@@ -189,12 +189,10 @@ void GameController::endGame(const bool wonOrLost)
         mGameStarted = false;
         timer->stop();
         
-        qDebug() << "time played " << mGameModel->timePlayed();
-        
-        emit submitStatistics(mGameModel->rows(),
-                mGameModel->columns(),
-                mGameModel->mineCount(),
-                mGameModel->timePlayed(),
+        emit gameEnded(mGameObserver->rows(),
+                mGameObserver->columns(),
+                mGameObserver->mineCount(),
+                mGameObserver->timePlayed(),
                 wonOrLost);
     }
 }
@@ -253,8 +251,6 @@ void GameController::generateMines()
     // set mines in grid
     foreach(quint64 mineIndex, mineIndices)
     {
-        //qDebug() << "mine: " << mineIndex;
-
         // set bomb
         mGameObserver->grid().at(mineIndex)->setIsBomb(true);
 

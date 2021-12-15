@@ -41,9 +41,8 @@ class JsonManager
         void changeInArray(QString parent, std::function<void(QJsonArray &)> changeFunction) const;
         void saveToArray(const QString arrayName, const int index, std::function<void(QJsonObject &)> appendFunction) const;
 
-
         // Replace a list of objects to JSON to a file with a custom save function
-        void replaceList(const QString parent, const std::function<void(QJsonArray &)> saveFunction) const;
+        void replaceArray(const QString parent, const std::function<void(QJsonArray &)> saveFunction) const;
         
         // Load a JSON object from file with custom load function
         void load(const QString parent, const std::function<void(QJsonValue &)> loadFunction) const;
@@ -56,15 +55,6 @@ class JsonManager
         
         // Remove a JSON object from file with a custom remove function
         void remove(const QString parent, const std::function<void(QJsonArray &)> removeFunction) const;
-
-
-        // ### SEARCH FUNCTIONS ###
-        // Find a JSON object with given key-value-pair in array
-        //int findIndexByKeyValueInArray(const QString key, const QString value, QJsonArray &arr) const;
-
-        // Find a JSON object with given key-value-pair in a file
-        //int findIndexByKeyValueInJsonFile(const QString arrayName, const QString key, const QString value) const;
-   
 
     private:
         // Get path to JSON file from application folder

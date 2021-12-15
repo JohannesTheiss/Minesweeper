@@ -12,35 +12,8 @@ StatisticsController::StatisticsController(models::StatisticsModel *statisticsMo
 {
     mJsonManager = new data::JsonManager("statistics.json");
 
-
     // load from json
     loadStatistics();
-
-
-
-
-    // build the HashMap
-    //models::StatisticEntryModel *sem = new models::StatisticEntryModel(
-                //123,
-                //345, 
-                //12, 
-                //100, 
-                //1, 
-                //2, 
-                //3, 
-                //this);
-
-    //models::GameMode gm({1, 2, 3});
-    //qDebug() << "rows: " << gm.columns;
-
-    //QHash<models::GameMode, QPair<quint64, models::StatisticEntryModel*>> dm;
-    //mGameModeStatisticsMap[gm] = qMakePair(187, sem);
-
-    //models::GameMode gm1({1, 2, 3});
-    //qDebug() << "get: " << mGameModeStatisticsMap[gm1].second->bestTime();
-
-    //qDebug() << QString::number(gm.rows, gm.columns);
-    //QString lol = QString("%1:%2:%3").arg(88).arg(77).arg(99);
 }
 
 StatisticsController::~StatisticsController()
@@ -50,7 +23,7 @@ StatisticsController::~StatisticsController()
 
 void StatisticsController::loadStatistics()
 {
-    quint64 index = 0;
+    bool jsonIsEmpty = true;
     mJsonManager->loadArray(mJsonObjectName, [&](QJsonArray &root) 
     {
         foreach (const QJsonValue &statistics, root)
@@ -78,38 +51,22 @@ void StatisticsController::loadStatistics()
             // get numberOfMines
             quint64 numberOfMines = statisticsObject.value("numberOfMines").toString().toULongLong();
 
-            // create a new statistics entry
-            models::StatisticEntryModel *statisticEntryModel = new models::StatisticEntryModel(
-                    bestTime,
-                    numberOfWins, // wins
-                    numberOfDefeats, // defeats
-                    numberOfGamesPlayed, // gamesPlayed
-                    numberOfRows,
-                    numberOfColumns,
-                    numberOfMines,
-                    this // parent of this object
-                    );
-
-            // append to the displayed list
-            mStatisticsModel->statisticEntryModelListRef()->append(statisticEntryModel);
-
-            // set the index-statisticEntryModel-pair
-            QPair<quint64, models::StatisticEntryModel*> indexEntryModelPair = qMakePair(index, statisticEntryModel);
-
-            // append to HashMap
-            // build the key
             models::GameMode key({numberOfRows, numberOfColumns, numberOfMines});
-            mGameModeStatisticsMap.insert(key, indexEntryModelPair);
-
-            qDebug() << "load: " << numberOfRows << "x" << numberOfColumns << " -> " << numberOfMines << " at: " << index;
-            index++;
+            createGameModeStatistics(
+                    key, 
+                    bestTime,
+                    numberOfWins,
+                    numberOfDefeats,
+                    numberOfGamesPlayed);
         }
+
+        jsonIsEmpty = false;
     });
 
-    if(index == 0)
+    if(jsonIsEmpty)
     {
         // create the default statistics
-
+        createDefaultGameModeStatistics();
     }
 
     // update the view
@@ -137,27 +94,7 @@ void StatisticsController::submitStatistics(const quint64 numberOfRows,
     // check if this configuration (key) doesn't exists
     if(indexEntryModelPairIterator == mGameModeStatisticsMap.end())
     {  
-        // create a new statistics entry
-        models::StatisticEntryModel *statisticEntryModel = new models::StatisticEntryModel(
-                0, // best time
-                0, // wins
-                0, // defeats
-                0, // gamesPlayed
-                numberOfRows,
-                numberOfColumns,
-                numberOfMines,
-                this // parent of this object
-                );
-
-        // append to the displayed list
-        mStatisticsModel->statisticEntryModelListRef()->append(statisticEntryModel);
-
-        // set the index-statisticEntryModel-pair
-        quint64 index = mStatisticsModel->statisticEntryModelListRef()->size() - 1;
-        indexEntryModelPair = qMakePair(index, statisticEntryModel);
-
-        // append to HashMap
-        mGameModeStatisticsMap.insert(key, indexEntryModelPair);
+        indexEntryModelPair = createGameModeStatistics(key);
     }
     else 
     {
@@ -191,6 +128,16 @@ void StatisticsController::submitStatistics(const quint64 numberOfRows,
     emit mStatisticsModel->statisticEntryModelListChanged();
 }
 
+void StatisticsController::resetStatistics()
+{
+    mStatisticsModel->statisticEntryModelListRef()->clear();
+    mGameModeStatisticsMap.clear();
+    createDefaultGameModeStatistics();
+
+    // update the view
+    emit mStatisticsModel->statisticEntryModelListChanged();
+}
+
 void StatisticsController::increaseNumberOfWins(models::StatisticEntryModel *statisticEntryModel)
 {
     statisticEntryModel->setNumberOfWins(statisticEntryModel->numberOfWins() + 1);
@@ -211,30 +158,89 @@ void StatisticsController::save(const QPair<quint64, models::StatisticEntryModel
     models::StatisticEntryModel *statisticEntryModel = indexEntryModelPair.second;
     mJsonManager->saveToArray(mJsonObjectName, indexEntryModelPair.first, [&](QJsonObject &jsonModel)
     {
-        // save best time
-        jsonModel.insert("bestTime", QString::number(statisticEntryModel->bestTime()));
-
-        // save number of wins
-        jsonModel.insert("numberOfWins", QString::number(statisticEntryModel->numberOfWins()));
-
-        // save number of defeats
-        jsonModel.insert("numberOfDefeats", QString::number(statisticEntryModel->numberOfDefeats()));
-
-        // save number of games played
-        jsonModel.insert("numberOfGamesPlayed", QString::number(statisticEntryModel->numberOfGamesPlayed()));
-
-        // save number of rows
-        jsonModel.insert("numberOfRows", QString::number(statisticEntryModel->numberOfRows()));
-
-        // save number of columns
-        jsonModel.insert("numberOfColumns", QString::number(statisticEntryModel->numberOfColumns()));
-
-        // save number of mines
-        jsonModel.insert("numberOfMines", QString::number(statisticEntryModel->numberOfMines()));
-
-        qDebug() << "save: " << statisticEntryModel->numberOfRows() << "x" << statisticEntryModel->numberOfColumns()
-            << " -> " << statisticEntryModel->numberOfMines() << " at: " << (indexEntryModelPair.first);
+        mapStatisticEntryModelToJsonObject(statisticEntryModel, jsonModel);
     });
+}
+
+void StatisticsController::mapStatisticEntryModelToJsonObject(models::StatisticEntryModel *statisticEntryModel, 
+        QJsonObject &jsonModel)
+{
+    // map best time
+    jsonModel.insert("bestTime", QString::number(statisticEntryModel->bestTime()));
+
+    // map number of wins
+    jsonModel.insert("numberOfWins", QString::number(statisticEntryModel->numberOfWins()));
+
+    // map number of defeats
+    jsonModel.insert("numberOfDefeats", QString::number(statisticEntryModel->numberOfDefeats()));
+
+    // map number of games played
+    jsonModel.insert("numberOfGamesPlayed", QString::number(statisticEntryModel->numberOfGamesPlayed()));
+
+    // map number of rows
+    jsonModel.insert("numberOfRows", QString::number(statisticEntryModel->numberOfRows()));
+
+    // map number of columns
+    jsonModel.insert("numberOfColumns", QString::number(statisticEntryModel->numberOfColumns()));
+
+    // map number of mines
+    jsonModel.insert("numberOfMines", QString::number(statisticEntryModel->numberOfMines()));
+}
+
+void StatisticsController::createDefaultGameModeStatistics()
+{
+    int n = 3;
+    models::GameMode keys[] = {{9, 9, 10}, {16, 16, 40}, {16, 30, 99}};
+    models::StatisticEntryModel *entryModels[n];
+
+    for(int i = 0; i < n; ++i)
+    {
+        QPair<quint64, models::StatisticEntryModel*> defaultGameModeStatistics = createGameModeStatistics(keys[i]);
+
+        entryModels[i] = defaultGameModeStatistics.second;
+    }
+
+    mJsonManager->replaceArray(mJsonObjectName, [&](QJsonArray &jsonArray)
+    {
+        // save the default game mode statistics
+        for(int i = 0; i < n; ++i)
+        {
+            QJsonObject bufferObject;
+            mapStatisticEntryModelToJsonObject(entryModels[i], bufferObject);
+
+            jsonArray.push_back(QJsonValue(bufferObject));
+        }
+    });
+}
+
+QPair<quint64, models::StatisticEntryModel*> StatisticsController::createGameModeStatistics(models::GameMode &gameMode,
+    const quint64 bestTime,
+    const quint64 numberOfWins,
+    const quint64 numberOfDefeats,
+    const quint64 numberOfGamesPlayed)
+{
+    models::StatisticEntryModel *statisticEntryModel = new models::StatisticEntryModel(
+        bestTime, // best time
+        numberOfWins, // wins
+        numberOfDefeats, // defeats
+        numberOfGamesPlayed, // gamesPlayed
+        gameMode.rows,
+        gameMode.columns,
+        gameMode.mines,
+        this // parent of this object
+        );
+
+    // append to the displayed list
+    mStatisticsModel->statisticEntryModelListRef()->append(statisticEntryModel);
+
+    // set the index-statisticEntryModel-pair
+    quint64 index = mStatisticsModel->statisticEntryModelListRef()->size() - 1;
+    QPair<quint64, models::StatisticEntryModel*> indexEntryModelPair = qMakePair(index, statisticEntryModel);
+
+    // append to HashMap
+    mGameModeStatisticsMap.insert(gameMode, indexEntryModelPair);
+
+    return indexEntryModelPair;
 }
 
 

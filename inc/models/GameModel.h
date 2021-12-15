@@ -72,7 +72,7 @@ public slots:
         void rowsChanged(const quint64 rows);
         void columnsChanged(const quint64 columns);
         void mineCountChanged(const quint64 mineCount);
-        void flagCountChanged(const quint64 flagCount);
+        void flagCountChanged(const qint64 flagCount);
         void timePlayedChanged(const quint64 timePlayed);
         void scalingChanged(const models::SizeScaling scaling);
 

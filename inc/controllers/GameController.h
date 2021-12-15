@@ -51,7 +51,7 @@ class GameController : public QObject
         void updateTime();
 
     signals:
-        void submitStatistics(const quint64 numberOfRow,
+        void gameEnded(const quint64 numberOfRow,
                 const quint64 numberOfColumns,
                 const quint64 numberOfMines,
                 const quint64 time,

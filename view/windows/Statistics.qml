@@ -5,6 +5,8 @@ import QtQuick.Controls 2.15
 import "qrc:/text"
 import "qrc:/includes"
 
+import "qrc:/scripts/Adapter.js" as Adapter
+
 Window {
     id: customSettings
 
@@ -217,7 +219,8 @@ Window {
                     TextLabel {
                         id: modeStat;
 
-                        text: model.modelData.numberOfColumns + "x" + model.modelData.numberOfRows + " " + model.modelData.numberOfMines + " Mines";
+                        //text: model.modelData.numberOfColumns + "x" + model.modelData.numberOfRows + " " + model.modelData.numberOfMines + " Mines";
+                        text: Adapter.getConfigurationString(model.modelData.numberOfRows, model.modelData.numberOfColumns, model.modelData.numberOfMines);
 
                         width: timeLabel.x - modeLabel.x + modeLabel.leftPadding;
 
