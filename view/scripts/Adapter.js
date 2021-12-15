@@ -67,14 +67,18 @@ function getMinutesFromSeconds(s) {
 //    if (ms < 0)
 //        return "0:00";
 
+    let offset = 590;
+
+    s = s + 590;
+
     let minutes = Math.floor(s / 60);
     let seconds = Math.floor(s % 60);
-    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+    return (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
 
 function flagsToString(flags) {
     if(flags < 0) {
-        return flags;
+        return flags > -10 ? "-0" + Math.abs(flags) : flags;
     }
     else {
         return flags < 10 ? "00" + flags : (flags < 100 ? "0" + flags : flags);

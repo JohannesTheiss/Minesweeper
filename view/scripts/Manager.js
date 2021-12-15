@@ -24,15 +24,15 @@ function updateSizeScaling() {
 
     // TODO may change this vars. to params of this function
     // set min width and height
-    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
     // set max width and height
-    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
     // set width and height
-    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 }
 

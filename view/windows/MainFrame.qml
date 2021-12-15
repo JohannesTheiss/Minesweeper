@@ -57,14 +57,14 @@ ApplicationWindow {
                 onTriggered: {
                     gameController.setGameMode(9, 9, 10);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem {
@@ -77,14 +77,14 @@ ApplicationWindow {
                 onTriggered: {
                     gameController.setGameMode(16, 16, 40);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem {
@@ -97,14 +97,14 @@ ApplicationWindow {
                 onTriggered: {
                     gameController.setGameMode(16, 30, 99);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
             MenuItem {
@@ -202,7 +202,7 @@ ApplicationWindow {
     Rectangle {
         id: statusBar;
 
-        width: Math.max(board.width, 310 * sizeFactor);
+        width: Math.max(board.width, 330 * sizeFactor);
         height: Style.defaultHeight * sizeFactor;
 
         anchors.horizontalCenter: parent.horizontalCenter;
@@ -223,7 +223,7 @@ ApplicationWindow {
 
             font.pointSize: Style.textSize * sizeFactor;
             font.family: "Consolas";
-            color: "blue";
+            color: +text < 0 ? "red" : "blue";
 
             text: Adapter.flagsToString(gameModel.flagCount);
         }
@@ -374,7 +374,7 @@ ApplicationWindow {
         TextLabel {
             id: timeLabel;
 
-            width: 40 * sizeFactor;
+            width: 55 * sizeFactor;
             x: statusBar.width - width;
 
             anchors.verticalCenter: statusBar.verticalCenter;
@@ -412,19 +412,23 @@ ApplicationWindow {
     Rectangle {
         id: winScreen;
 
-        anchors.top: boardTopBorder.bottom;
-        anchors.left: boardLeftBorder.right;
+        anchors.horizontalCenter: boardTopBorder.horizontalCenter;
+        anchors.verticalCenter: boardLeftBorder.verticalCenter;
 
         z: 90;
 
-        width: boardTopBorder.width - 6;
-        height: boardLeftBorder.height - 6;
+//        width: boardTopBorder.width - 6;
+//        height: boardLeftBorder.height - 6;
 
-//        border.width: 1;
-//        border.color: "#000000";
+        width: 330 * sizeFactor;
+        height: 144 * sizeFactor;
+
+        border.width: 1;
+        border.color: "#000000";
         color: "#c0c0c0";
 
         visible: gameModel.flagCount === 0 && !hideWinScreen; //TODO
+
 
         TextLabel {
             id: headerText
@@ -435,7 +439,7 @@ ApplicationWindow {
             text: "You won!\n\n" +
                   "Mode: " + gameModel.columns + "x" + gameModel.rows + " - " + gameModel.mineCount + " Mines\n\n" +
                   "Best Time: " + "999" + "\n\n" +
-                  "Your Time: " + gameModel.timePlayed;
+                  "Your Time: " + Adapter.getMinutesFromSeconds(gameModel.timePlayed);
         }
 
         Button {
@@ -570,7 +574,8 @@ ApplicationWindow {
         width: statusBottomBorder.width;
         height: 3;
 
-        anchors.top: board.bottom;
+        y: bottomOuterBorder.y - 9;
+//        anchors.top: board.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#ffffff";
     }
@@ -580,10 +585,10 @@ ApplicationWindow {
         id: boardRightBorder;
 
         width: 3;
-        height: board.height + 6;
+        height: boardLeftBorder.height;
 
         anchors.right: boardBottomBorder.right;
-        anchors.verticalCenter: board.verticalCenter;
+        anchors.top: boardTopBorder.top;
         color: "#ffffff";
     }
 
@@ -604,10 +609,10 @@ ApplicationWindow {
         id: boardLeftBorder;
 
         width: 3;
-        height: board.height + 6;
+        height: Math.max(board.height, 144 * sizeFactor) + 6;
 
         anchors.left: boardBottomBorder.left;
-        anchors.verticalCenter: board.verticalCenter;
+        anchors.top: boardTopBorder.top;
         color: "#808080";
     }
 
@@ -618,7 +623,8 @@ ApplicationWindow {
         width: statusBar.width + 24;
         height: 3;
 
-        y: boardBottomBorder.y + 9;
+//        y: boardBottomBorder.y + 9;
+        anchors.bottom: leftOuterBorder.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#808080";
     }
@@ -628,10 +634,10 @@ ApplicationWindow {
         id: rightOuterBorder;
 
         width: 3;
-        height: board.height + statusBar.height + 33;
+        height: leftOuterBorder.height;
 
         x: boardRightBorder.x + 9;
-        anchors.bottom: bottomOuterBorder.top;
+        anchors.top: topOuterBorder.top;
         color: "#808080";
     }
 
@@ -652,10 +658,10 @@ ApplicationWindow {
         id: leftOuterBorder;
 
         width: 3;
-        height: board.height + statusBar.height + 36;
+        height: Math.max(board.height, 144 * sizeFactor) + statusBar.height + 36;
 
         x: boardLeftBorder.x - 9;
-        anchors.bottom: bottomOuterBorder.bottom;
+        anchors.top: topOuterBorder.top;
         color: "#ffffff";
 
         Component.onCompleted: {
