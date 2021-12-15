@@ -38,11 +38,18 @@ class JsonManager
         template<typename T>
         void saveValue(QString key, T value) const;
 
+        void changeInArray(QString parent, std::function<void(QJsonArray &)> changeFunction) const;
+        void saveToArray(const QString arrayName, const int index, std::function<void(QJsonObject &)> appendFunction) const;
+
+
         // Replace a list of objects to JSON to a file with a custom save function
         void replaceList(const QString parent, const std::function<void(QJsonArray &)> saveFunction) const;
         
         // Load a JSON object from file with custom load function
         void load(const QString parent, const std::function<void(QJsonValue &)> loadFunction) const;
+
+        // Load a JSON array from file with custom load function
+        void loadArray(const QString parent, const std::function<void(QJsonArray &)> loadFunction) const;
 
         // Load a JsonValue from file and return it
         QJsonValue loadValue(QString key) const;
