@@ -57,13 +57,13 @@ ApplicationWindow {
                 onTriggered: {
                     gameController.setGameMode(9, 9, 10);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
@@ -77,13 +77,13 @@ ApplicationWindow {
                 onTriggered: {
                     gameController.setGameMode(16, 16, 40);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
@@ -97,13 +97,13 @@ ApplicationWindow {
                 onTriggered: {
                     gameController.setGameMode(16, 30, 99);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 330 * sizeFactor) + 24;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
                 }
             }
@@ -202,7 +202,7 @@ ApplicationWindow {
     Rectangle {
         id: statusBar;
 
-        width: Math.max(board.width, 330 * sizeFactor);
+        width: Math.max(board.width, 340 * sizeFactor);
         height: Style.defaultHeight * sizeFactor;
 
         anchors.horizontalCenter: parent.horizontalCenter;
@@ -214,9 +214,8 @@ ApplicationWindow {
         TextLabel {
             id: flagsLabel;
 
-            width: 40 * sizeFactor; // 40 for linux font size
+            //width: 40 * sizeFactor; // 40 for linux font size
             x: 10;
-            z: 10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
@@ -231,7 +230,7 @@ ApplicationWindow {
         Image {
             id: flagImage;
 
-            x: flagsLabel.x + flagsLabel.width;
+            x: flagsLabel.x + flagsLabel.width + 2;
 
             anchors.verticalCenter: statusBar.verticalCenter;
 
@@ -360,7 +359,7 @@ ApplicationWindow {
         }
 
         Image {
-            id: hourglassImage;
+            id: timeImage;
 
             width: 16 * sizeFactor;
             height: 16 * sizeFactor;
@@ -374,8 +373,8 @@ ApplicationWindow {
         TextLabel {
             id: timeLabel;
 
-            width: 55 * sizeFactor;
-            x: statusBar.width - width;
+            //width: 60 * sizeFactor;
+            x: statusBar.width - width - 10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
@@ -420,7 +419,7 @@ ApplicationWindow {
 //        width: boardTopBorder.width - 6;
 //        height: boardLeftBorder.height - 6;
 
-        width: 330 * sizeFactor;
+        width: 340 * sizeFactor;
         height: 144 * sizeFactor;
 
         border.width: 1;
