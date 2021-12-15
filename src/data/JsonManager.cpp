@@ -169,6 +169,60 @@ void JsonManager::saveValue(QString key, T value) const
     write(mPathToJson, document);
 }
 
+void JsonManager::changeInArray(QString parent, std::function<void(QJsonArray &)>changeFunction) const
+{
+    // read data if existing
+    QJsonDocument document = read(mPathToJson);
+    QJsonObject root = document.object();
+    //QJsonValue value = root.value(parent);
+
+    QJsonValueRef valueRef = root.find(parent).value();
+    QJsonArray array = valueRef.toArray(); 
+
+    // make changes
+    changeFunction(array);
+
+    valueRef = array;
+    document.setObject(root);
+
+    write(mPathToJson, document);
+}
+
+void JsonManager::saveToArray(const QString arrayName, const int index, std::function<void(QJsonObject &)> appendFunction) const
+{
+    // read data if existing
+    QJsonDocument document = read(mPathToJson);
+    QJsonObject root = document.object();
+    QJsonValue value = root.value(arrayName);
+    QJsonArray jsonArray = value.toArray(); 
+
+    // create and fill buffer object
+    QJsonObject bufferObject;
+    appendFunction(bufferObject);
+    
+    // if object existing 
+    if(index < jsonArray.size())
+    {
+        // replace the object
+        QJsonValueRef objectRef = jsonArray[index];
+        objectRef = bufferObject;
+        qDebug() << "replace";
+    }
+    else
+    {
+        // create a new object
+        jsonArray.insert(index, QJsonValue(bufferObject));
+        qDebug() << "create new";
+    }
+        
+
+    root.insert(arrayName, QJsonValue(jsonArray));
+
+    // write to json
+    document.setObject(root);
+    write(mPathToJson, document);
+}
+
 // <summary>Replace a list of objects in JSON to a file with a custom save function</summary>
 // <param name="fileName">JSON file name to replace the objects in</param>
 // <param name="parent">JSON parent of the list of objects</param>
@@ -213,6 +267,29 @@ void JsonManager::load(const QString parent, const std::function<void(QJsonValue
 
             // load a custom object
             loadFunction(value);
+        }
+    }
+    catch (...)
+    {
+        throw std::runtime_error("Es konnte nicht von der JSON-Datei gelesen werden.");
+    }
+}
+
+void JsonManager::loadArray(const QString parent, const std::function<void(QJsonArray &)> loadFunction) const
+{
+    try
+    {
+        // read json
+        QJsonObject root = read(mPathToJson).object();
+
+        // load data
+        if(root.contains(parent))
+        {
+            QJsonValue value = root.value(parent);
+            QJsonArray jsonArray = value.toArray(); 
+
+            // load a custom object
+            loadFunction(jsonArray);
         }
     }
     catch (...)

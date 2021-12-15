@@ -25,6 +25,8 @@ class StatisticsController : public QObject
         StatisticsController(models::StatisticsModel *statisticsModel,
                 QObject *parent = nullptr);
 
+        ~StatisticsController();
+
     public slots:
         void loadStatistics();
 
@@ -34,13 +36,12 @@ class StatisticsController : public QObject
                 const quint64 time,
                 const bool win);
 
-    signals:
-        void appendToEntryList(models::StatisticEntryModel *statisticEntryModel);
-
     private:
         void increaseNumberOfWins(models::StatisticEntryModel *statisticEntryModel);
         void increaseNumberOfDefeats(models::StatisticEntryModel *statisticEntryModel);
         void increaseNumberOfGamesPlayed(models::StatisticEntryModel *statisticEntryModel);
+
+        void save(const QPair<quint64, models::StatisticEntryModel*> &indexEntryModelPair);
 
         QHash<models::GameMode, QPair<quint64, models::StatisticEntryModel*>> mGameModeStatisticsMap;
         models::StatisticsModel *mStatisticsModel;
