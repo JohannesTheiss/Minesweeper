@@ -418,9 +418,9 @@ Window {
                 width: 100;
                 height: 30;
 
-                inputMethodHints: Qt.ImhDigitsOnly;
-
                 placeholderText: gameModel.columns;
+
+                validator: IntValidator { }
 
                 onFocusChanged: {
                     if(focus) {
@@ -446,9 +446,9 @@ Window {
                 width: 100;
                 height: 30;
 
-                inputMethodHints: Qt.ImhDigitsOnly;
-
                 placeholderText: gameModel.rows;
+
+                validator: IntValidator { }
 
                 onFocusChanged: {
                     if(focus) {
@@ -474,7 +474,7 @@ Window {
                 width: 100;
                 height: 30;
 
-                inputMethodHints: Qt.ImhDigitsOnly;
+                validator: IntValidator { }
 
                 placeholderText: gameModel.mineCount;
 

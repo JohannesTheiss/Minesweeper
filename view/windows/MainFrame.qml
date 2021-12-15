@@ -21,6 +21,8 @@ ApplicationWindow {
 
     property double sizeFactor: 1.0;
 
+    property bool hideWinScreen: false;
+
     Component.onCompleted: {
         // check if new size scaling is set (from backend side)
         Manager.updateSizeScaling();
@@ -214,7 +216,7 @@ ApplicationWindow {
 
             width: 40 * sizeFactor; // 40 for linux font size
             x: 10;
-            z:10;
+            z: 10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
@@ -229,7 +231,7 @@ ApplicationWindow {
         Image {
             id: flagImage;
 
-            x: flagsLabel.x + flagsLabel.width + 2;
+            x: flagsLabel.x + flagsLabel.width;
 
             anchors.verticalCenter: statusBar.verticalCenter;
 
@@ -251,22 +253,27 @@ ApplicationWindow {
 
             buttonImage: "qrc:/images/newButton.png";
 
-//            MouseArea {
-//                anchors.fill: parent;
+            MouseArea {
+                id: maNewButton;
 
-//                propagateComposedEvents: true;
-//                hoverEnabled: true;
+                hoverEnabled: true;
 
-//                onExited: {
-//                    if(newButton.buttonImage.toString() === "qrc:/images/newButtonPressed.png") {
-//                        newButton.buttonImage = "qrc:/images/newButton.png";
-//                    }
-//                }
+                anchors.fill: parent;
+                z: 3;
 
-//                onClicked: {
-//                    newButton.onClicked();
-//                }
-//            }
+                onContainsPressChanged: {
+                    if(containsPress) {
+                        newButton.buttonImage = "qrc:/images/newButtonPressed.png";
+                    }
+                    else {
+                        newButton.buttonImage = "qrc:/images/newButton.png";
+                    }
+                }
+
+                onClicked: {
+                    newButton.onClicked();
+                }
+            }
 
             onClicked: {
                 gameController.initGame();
@@ -276,14 +283,8 @@ ApplicationWindow {
                     pausePlayButton.buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                 }
-            }
 
-            onPressed: {
-                newButton.buttonImage = "qrc:/images/newButtonPressed.png"
-            }
-
-            onReleased: {
-                newButton.buttonImage = "qrc:/images/newButton.png"
+                hideWinScreen = false;
             }
         }
 
@@ -324,6 +325,28 @@ ApplicationWindow {
 
             buttonImage: "qrc:/images/endButton.png";
 
+            MouseArea {
+                id: maEndButton;
+
+                hoverEnabled: true;
+
+                anchors.fill: parent;
+                z: 3;
+
+                onContainsPressChanged: {
+                    if(containsPress) {
+                        endButton.buttonImage = "qrc:/images/endButtonPressed.png";
+                    }
+                    else {
+                        endButton.buttonImage = "qrc:/images/endButton.png";
+                    }
+                }
+
+                onClicked: {
+                    endButton.onClicked();
+                }
+            }
+
             onClicked: {
                 gameController.endGame();
                 gameController.revealAllCells();
@@ -333,14 +356,6 @@ ApplicationWindow {
                     pausePlayButton.buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                 }
-            }
-
-            onPressed: {
-                endButton.buttonImage = "qrc:/images/endButtonPressed.png"
-            }
-
-            onReleased: {
-                endButton.buttonImage = "qrc:/images/endButton.png"
             }
         }
 
@@ -369,7 +384,7 @@ ApplicationWindow {
             font.family: "Consolas";
             color: "blue";
 
-            text: Adapter.timeToString(gameModel.timePlayed);
+            text: Adapter.getMinutesFromSeconds(gameModel.timePlayed);
         }
     }
 
@@ -392,6 +407,61 @@ ApplicationWindow {
         visible: false;
 
         text: "PAUSED";
+    }
+
+    Rectangle {
+        id: winScreen;
+
+        anchors.top: boardTopBorder.bottom;
+        anchors.left: boardLeftBorder.right;
+
+        z: 90;
+
+        width: boardTopBorder.width - 6;
+        height: boardLeftBorder.height - 6;
+
+//        border.width: 1;
+//        border.color: "#000000";
+        color: "#c0c0c0";
+
+        visible: gameModel.flagCount === 0 && !hideWinScreen; //TODO
+
+        TextLabel {
+            id: headerText
+
+            topPadding: 10;
+            leftPadding: 10;
+
+            text: "You won!\n\n" +
+                  "Mode: " + gameModel.columns + "x" + gameModel.rows + " - " + gameModel.mineCount + " Mines\n\n" +
+                  "Best Time: " + "999" + "\n\n" +
+                  "Your Time: " + gameModel.timePlayed;
+        }
+
+        Button {
+            id: viewBoardButton
+
+            anchors.right: winScreen.right;
+            anchors.bottom: winScreen.bottom;
+
+            anchors.rightMargin: 10
+            anchors.bottomMargin: 10;
+
+            width: 100;
+            height: 30;
+
+            text: "View Board";
+
+            background: Rectangle {
+                anchors.fill: parent;
+
+                color: "#f5f5f5";
+            }
+
+            onClicked: {
+                hideWinScreen = true;
+            }
+        }
     }
 
     //unten
@@ -445,8 +515,6 @@ ApplicationWindow {
     Grid {
         id: board;
 
-        //columns: nWidth;
-        //rows: mHeight;
         columns: gameModel.columns;
         rows: gameModel.rows;
 
@@ -460,7 +528,6 @@ ApplicationWindow {
         Repeater {
             id: cellRepeater;
 
-            //model: nWidth * mHeight;
             model: gameModel.grid
 
             ImageButton {
@@ -476,7 +543,7 @@ ApplicationWindow {
 
                     anchors.fill: parent;
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
-                    enabled: model.modelData.hidden;
+                    enabled: model.modelData.hidden && !(gameModel.flagCount === 0); //TODO
                     onClicked: {
                         gameController.startGame();
                         switch(mouse.button)

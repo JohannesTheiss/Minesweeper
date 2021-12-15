@@ -52,6 +52,26 @@ function timeToString(secs) {
     return (secs < 100 ? '0' : '') + (secs < 10 ? '0' : '') + secs;
 }
 
+// convert milliseconds to "minutes:seconds" format
+// ms: milliseconds
+function getMinutesFromMS(ms) {
+//    if (ms < 0)
+//        return "0:00";
+
+    let minutes = Math.floor(ms / 60000);
+    let seconds = Math.floor(((ms % 60000) / 1000));
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
+function getMinutesFromSeconds(s) {
+//    if (ms < 0)
+//        return "0:00";
+
+    let minutes = Math.floor(s / 60);
+    let seconds = Math.floor(s % 60);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
 function flagsToString(flags) {
     if(flags < 0) {
         return flags;
