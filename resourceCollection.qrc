@@ -40,21 +40,21 @@
     <qresource prefix="/text">
         <file alias="TextBox.qml">view/components/text/TextBox.qml</file>
         <file alias="TextLabel.qml">view/components/text/TextLabel.qml</file>
-        <file alias="MessageBox.qml">view/components/text/MessageBox.qml</file>
         <file alias="InputBox.qml">view/components/text/InputBox.qml</file>
+        <file alias="MessageBox.qml">view/components/text/MessageBox.qml</file>
     </qresource>
     <qresource prefix="/includes">
         <file alias="qmldir">view/includes/qmldir</file>
     </qresource>
     <qresource prefix="/windows">
         <file alias="CustomSettings.qml">view/windows/CustomSettings.qml</file>
+        <file alias="HelpWindow.qml">view/windows/HelpWindow.qml</file>
         <file alias="MainFrame.qml">view/windows/MainFrame.qml</file>
         <file alias="Statistics.qml">view/windows/Statistics.qml</file>
-        <file>HelpWindow.qml</file>
     </qresource>
     <qresource prefix="/scripts">
         <file alias="Adapter.js">view/scripts/Adapter.js</file>
-        <file alias="windowController.js">view/scripts/windowController.js</file>
         <file alias="Manager.js">view/scripts/Manager.js</file>
+        <file alias="windowController.js">view/scripts/windowController.js</file>
     </qresource>
 </RCC>
