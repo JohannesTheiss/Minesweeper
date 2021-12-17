@@ -19,14 +19,14 @@ class StatisticsModel : public QObject
         StatisticsModel(QList<models::StatisticEntryModel *> statisticEntryModelList, 
                 QObject *parent = nullptr);
 
-        QList<models::StatisticEntryModel *> statisticEntryModelList();
-        QList<models::StatisticEntryModel *> *statisticEntryModelListRef();
+        QList<models::StatisticEntryModel *> statisticEntryModelList() const;
+        QList<models::StatisticEntryModel *> &statisticEntryModelListRef();
 
     public slots:
-        void appendToEntryList(models::StatisticEntryModel* statisticEntryModel);
+        void setStatisticsEntryModelList(const QList<models::StatisticEntryModel *> entryModelList);
 
     signals:
-        void statisticEntryModelListChanged();
+        void statisticEntryModelListChanged(QList<models::StatisticEntryModel *> &entryModelList);
 
     private:
         QList<models::StatisticEntryModel *> mStatisticEntryModelList;

@@ -14,6 +14,7 @@
 #include "../inc/models/StatisticsModel.h"
 
 #include "../inc/controllers/observers/GameObserver.h"
+#include "../inc/controllers/observers/StatisticsObserver.h"
 
 #include "../inc/controllers/GameController.h"
 #include "../inc/controllers/StatisticsController.h"
@@ -58,8 +59,11 @@ int main(int argc, char *argv[])
     QList<models::StatisticEntryModel *> sList;
     models::StatisticsModel statisticsModel(sList);
 
+    // create the StatisticsObserver
+    observers::StatisticsObserver statisticsObserver(&statisticsModel);
+
     // create the StatisticsController
-    controllers::StatisticsController statisticsController(&statisticsModel);
+    controllers::StatisticsController statisticsController(&statisticsObserver);
     QObject::connect(&gameController, SIGNAL(gameEnded(const quint64,
                 const quint64,
                 const quint64,
