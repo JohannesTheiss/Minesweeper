@@ -60,3 +60,24 @@ function flagsToString(flags) {
         return flags < 10 ? "00" + flags : (flags < 100 ? "0" + flags : flags);
     }
 }
+
+function getConfigurationString(rows, columns, mines) {
+    let displayString = "";
+    if(rows === 9 && columns === 9 && mines === 10) {
+        displayString = "Beginner";
+    }
+    else if(rows === 16 && columns === 16 && mines === 40) {
+        displayString = "Intermediate";
+    }
+    else if(rows === 16 && columns === 30 && mines === 99) {
+        displayString = "Expert";
+    }
+
+    // default way of displaying
+    if(displayString === "") {
+        displayString = columns + "x" + rows + " - " + mines + " Mines";
+    }
+    
+    return displayString;
+}
+

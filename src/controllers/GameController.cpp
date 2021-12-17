@@ -97,7 +97,7 @@ void GameController::revealCell(const quint64 index)
     if(cell->isBomb())
     {   
         revealAllCells();
-        endGame();
+        endGame(false); // game lost = false
     }
     else if(cell->hidden()) 
     {
@@ -182,12 +182,18 @@ void GameController::togglePauseGame()
     }
 }
 
-void GameController::endGame()
+void GameController::endGame(const bool wonOrLost)
 {
     if(mGameStarted)
     {
         mGameStarted = false;
         timer->stop();
+        
+        emit gameEnded(mGameObserver->rows(),
+                mGameObserver->columns(),
+                mGameObserver->mineCount(),
+                mGameObserver->timePlayed(),
+                wonOrLost);
     }
 }
 
@@ -245,8 +251,6 @@ void GameController::generateMines()
     // set mines in grid
     foreach(quint64 mineIndex, mineIndices)
     {
-        //qDebug() << "mine: " << mineIndex;
-
         // set bomb
         mGameObserver->grid().at(mineIndex)->setIsBomb(true);
 
@@ -413,7 +417,7 @@ void GameController::checkForWin()
         auto t1 = std::chrono::high_resolution_clock::now();
         if(won)
         {
-            endGame();
+            endGame(won); // game won = true
             qDebug() << "u won the game";
         }
 

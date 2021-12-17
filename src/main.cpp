@@ -10,10 +10,14 @@
 
 #include "../inc/models/CellModel.h"
 #include "../inc/models/GameModel.h"
+#include "../inc/models/StatisticEntryModel.h"
+#include "../inc/models/StatisticsModel.h"
 
 #include "../inc/controllers/observers/GameObserver.h"
 
 #include "../inc/controllers/GameController.h"
+#include "../inc/controllers/StatisticsController.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -50,8 +54,25 @@ int main(int argc, char *argv[])
     // create the GridController
     controllers::GameController gameController(&gameObserver);
 
+    // create the StatisticsModel
+    QList<models::StatisticEntryModel *> sList;
+    models::StatisticsModel statisticsModel(sList);
+
+    // create the StatisticsController
+    controllers::StatisticsController statisticsController(&statisticsModel);
+    QObject::connect(&gameController, SIGNAL(gameEnded(const quint64,
+                const quint64,
+                const quint64,
+                const quint64,
+                const bool)), &statisticsController, SLOT(submitStatistics(const quint64,
+                const quint64,
+                const quint64,
+                const quint64,
+                const bool)));
+
     // connect models with view
     engine.rootContext()->setContextProperty("gameModel", &gameModel);
+    engine.rootContext()->setContextProperty("statisticsModel", &statisticsModel);
 
     // connect enum with view
     qmlRegisterUncreatableMetaObject(
@@ -64,6 +85,7 @@ int main(int argc, char *argv[])
 
     // connect controllers with view
     engine.rootContext()->setContextProperty("gameController", &gameController);
+    engine.rootContext()->setContextProperty("statisticsController", &statisticsController);
     
     // Load the start view
     engine.load(url);

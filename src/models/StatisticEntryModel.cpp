@@ -57,5 +57,29 @@ quint64 StatisticEntryModel::numberOfMines()
     return mNumberOfMines;
 }
 
+void StatisticEntryModel::setBestTime(const quint64 bestTime)
+{
+    mBestTime = bestTime;
+    emit bestTimeChanged();
+}
+
+void StatisticEntryModel::setNumberOfWins(const quint64 numberOfWins)
+{
+    mNumberOfWins = numberOfWins;
+    emit numberOfWinsChanged();
+}
+
+void StatisticEntryModel::setNumberOfDefeats(const quint64 numberOfDefeats)
+{
+    mNumberOfDefeats = numberOfDefeats;
+    emit numberOfDefeatsChanged();
+}
+
+void StatisticEntryModel::setNumberOfGamesPlayed(const quint64 numberOfGamesPlayed)
+{
+    mNumberOfGamesPlayed = numberOfGamesPlayed;
+    emit numberOfGamesPlayedChanged();
+}
+
 
 } // namespace models

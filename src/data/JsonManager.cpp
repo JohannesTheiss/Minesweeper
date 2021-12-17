@@ -169,15 +169,64 @@ void JsonManager::saveValue(QString key, T value) const
     write(mPathToJson, document);
 }
 
+void JsonManager::changeInArray(QString parent, std::function<void(QJsonArray &)>changeFunction) const
+{
+    // read data if existing
+    QJsonDocument document = read(mPathToJson);
+    QJsonObject root = document.object();
+    //QJsonValue value = root.value(parent);
+
+    QJsonValueRef valueRef = root.find(parent).value();
+    QJsonArray array = valueRef.toArray(); 
+
+    // make changes
+    changeFunction(array);
+
+    valueRef = array;
+    document.setObject(root);
+
+    write(mPathToJson, document);
+}
+
+void JsonManager::saveToArray(const QString arrayName, const int index, std::function<void(QJsonObject &)> appendFunction) const
+{
+    // read data if existing
+    QJsonDocument document = read(mPathToJson);
+    QJsonObject root = document.object();
+    QJsonValue value = root.value(arrayName);
+    QJsonArray jsonArray = value.toArray(); 
+
+    // create and fill buffer object
+    QJsonObject bufferObject;
+    appendFunction(bufferObject);
+    
+    // if object existing 
+    if(index < jsonArray.size())
+    {
+        // replace the object
+        QJsonValueRef objectRef = jsonArray[index];
+        objectRef = bufferObject;
+    }
+    else
+    {
+        // create a new object
+        jsonArray.insert(index, QJsonValue(bufferObject));
+    }
+
+    root.insert(arrayName, QJsonValue(jsonArray));
+
+    // write to json
+    document.setObject(root);
+    write(mPathToJson, document);
+}
+
 // <summary>Replace a list of objects in JSON to a file with a custom save function</summary>
 // <param name="fileName">JSON file name to replace the objects in</param>
 // <param name="parent">JSON parent of the list of objects</param>
 // <param name="saveFunction">Custom function to replace the list of objects</param>
 // <returns>Nothing</returns>
-void JsonManager::replaceList(const QString parent, const std::function<void(QJsonArray &)> saveFunction) const
+void JsonManager::replaceArray(const QString arrayName, const std::function<void(QJsonArray &)> saveFunction) const
 {
-
-
     // read data if existing
     QJsonDocument document = read(mPathToJson);
     QJsonObject root = document.object();
@@ -187,7 +236,7 @@ void JsonManager::replaceList(const QString parent, const std::function<void(QJs
     saveFunction(bufferArray);
 
     // insert the new list
-    root.insert(parent, QJsonValue(bufferArray));
+    root.insert(arrayName, QJsonValue(bufferArray));
 
     // write to json
     document.setObject(root);
@@ -213,6 +262,29 @@ void JsonManager::load(const QString parent, const std::function<void(QJsonValue
 
             // load a custom object
             loadFunction(value);
+        }
+    }
+    catch (...)
+    {
+        throw std::runtime_error("Es konnte nicht von der JSON-Datei gelesen werden.");
+    }
+}
+
+void JsonManager::loadArray(const QString parent, const std::function<void(QJsonArray &)> loadFunction) const
+{
+    try
+    {
+        // read json
+        QJsonObject root = read(mPathToJson).object();
+
+        // load data
+        if(root.contains(parent))
+        {
+            QJsonValue value = root.value(parent);
+            QJsonArray jsonArray = value.toArray(); 
+
+            // load a custom object
+            loadFunction(jsonArray);
         }
     }
     catch (...)
@@ -258,55 +330,5 @@ void JsonManager::remove(const QString parent, const std::function<void(QJsonArr
     document.setObject(root);
     write(mPathToJson, document);
 }
-
-
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- * 
- * #######################     SEARCH FUNCTIONS     ###########################
- *
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-*/
-// <summary>Find a JSON object with given key-value-pair in array</summary>
-// <param name="key">Key to search for</param>
-// <param name="value">Value to search for</param>
-// <param name="arr">Array to search in</param>
-// <returns>Index of the object with given key-value-pair</returns>
-/*
-int JsonManager::findIndexByKeyValueInArray(const QString key, const QString value, QJsonArray &arr) const
-{
-    int index = 0;
-    bool found = false;
-    for (auto &&ref : arr) 
-    {
-        if (ref.toObject().value(key) == value)
-        {
-            found = true;
-            break;
-        }
-        index++;
-    }
-
-    return found ? index : -1;
-}
-*/
-
-// <summary>Find a JSON object with given key-value-pair in a file</summary>
-// <param name="fileName">JSON file name to search in</param>
-// <param name="arrayName">Name of the array to search in</param>
-// <param name="key">Key to search for</param>
-// <param name="value">Value to search for</param>
-// <returns>Index of the object with given key-value-pair in the file</returns>
-/*
-int JsonManager::findIndexByKeyValueInJsonFile(const QString arrayName, const QString key, const QString value) const
-{
-    int index = -1;
-    load(arrayName, [&](QJsonArray &root)
-    {
-        index = findIndexByKeyValueInArray(key, value, root);
-    });
-
-    return index;
-}
-*/
 
 }
