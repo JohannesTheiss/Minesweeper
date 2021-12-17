@@ -10,20 +10,20 @@ StatisticsModel::StatisticsModel(QList<models::StatisticEntryModel *> statisticE
 {
 }
 
-QList<models::StatisticEntryModel *> StatisticsModel::statisticEntryModelList()
+QList<models::StatisticEntryModel *> StatisticsModel::statisticEntryModelList() const
 {
     return mStatisticEntryModelList;
 }
 
-QList<models::StatisticEntryModel *> *StatisticsModel::statisticEntryModelListRef()
+QList<models::StatisticEntryModel *> &StatisticsModel::statisticEntryModelListRef()
 {
-    return &mStatisticEntryModelList;
+    return mStatisticEntryModelList;
 }
 
-void StatisticsModel::appendToEntryList(models::StatisticEntryModel* statisticEntryModel)
+void StatisticsModel::setStatisticsEntryModelList(const QList<models::StatisticEntryModel *> entryModelList)
 {
-    mStatisticEntryModelList.append(statisticEntryModel);
-    emit statisticEntryModelListChanged();
+    mStatisticEntryModelList = entryModelList;
+    emit statisticEntryModelListChanged(mStatisticEntryModelList);
 }
 
 

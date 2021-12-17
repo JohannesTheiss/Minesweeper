@@ -10,8 +10,10 @@
 
 #include "../data/JsonManager.h"
 
-#include "../models/StatisticsModel.h"
+#include "observers/StatisticsObserver.h"
+
 #include "../models/StatisticEntryModel.h"
+#include "../models/StatisticsModel.h"
 #include "../models/GameMode.h"
 
 namespace controllers
@@ -22,7 +24,7 @@ class StatisticsController : public QObject
     Q_OBJECT
 
     public:
-        StatisticsController(models::StatisticsModel *statisticsModel,
+        StatisticsController(observers::StatisticsObserver *statisticsObserver,
                 QObject *parent = nullptr);
 
         ~StatisticsController();
@@ -54,7 +56,7 @@ class StatisticsController : public QObject
                 const quint64 numberOfGamesPlayed = 0);
 
         QHash<models::GameMode, QPair<quint64, models::StatisticEntryModel*>> mGameModeStatisticsMap;
-        models::StatisticsModel *mStatisticsModel;
+        observers::StatisticsObserver *mStatisticsObserver;
 
         data::JsonManager *mJsonManager;
         const QString mJsonObjectName = "statistics";

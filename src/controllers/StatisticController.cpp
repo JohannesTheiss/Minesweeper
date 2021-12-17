@@ -5,10 +5,10 @@ namespace controllers
 {
 
 
-StatisticsController::StatisticsController(models::StatisticsModel *statisticsModel,
+StatisticsController::StatisticsController(observers::StatisticsObserver *statisticsObserver,
     QObject *parent)
     : QObject(parent),
-      mStatisticsModel(statisticsModel)
+      mStatisticsObserver(statisticsObserver)
 {
     mJsonManager = new data::JsonManager("statistics.json");
 
@@ -70,7 +70,8 @@ void StatisticsController::loadStatistics()
     }
 
     // update the view
-    emit mStatisticsModel->statisticEntryModelListChanged();
+    emit mStatisticsObserver->statisticEntryModelListChangedPassthrough(
+                mStatisticsObserver->statisticEntryModelListRef());
 }
 
 void StatisticsController::submitStatistics(const quint64 numberOfRows,
@@ -125,17 +126,19 @@ void StatisticsController::submitStatistics(const quint64 numberOfRows,
     save(indexEntryModelPair);
 
     // update the view
-    emit mStatisticsModel->statisticEntryModelListChanged();
+    emit mStatisticsObserver->statisticEntryModelListChangedPassthrough(
+                mStatisticsObserver->statisticEntryModelListRef());
 }
 
 void StatisticsController::resetStatistics()
 {
-    mStatisticsModel->statisticEntryModelListRef()->clear();
+    mStatisticsObserver->statisticEntryModelListRef().clear();
     mGameModeStatisticsMap.clear();
     createDefaultGameModeStatistics();
 
     // update the view
-    emit mStatisticsModel->statisticEntryModelListChanged();
+    emit mStatisticsObserver->statisticEntryModelListChangedPassthrough(
+                mStatisticsObserver->statisticEntryModelListRef());
 }
 
 void StatisticsController::increaseNumberOfWins(models::StatisticEntryModel *statisticEntryModel)
@@ -189,7 +192,7 @@ void StatisticsController::mapStatisticEntryModelToJsonObject(models::StatisticE
 
 void StatisticsController::createDefaultGameModeStatistics()
 {
-    int n = 3;
+    const int n = 3;
     models::GameMode keys[] = {{9, 9, 10}, {16, 16, 40}, {16, 30, 99}};
     models::StatisticEntryModel *entryModels[n];
 
@@ -231,10 +234,10 @@ QPair<quint64, models::StatisticEntryModel*> StatisticsController::createGameMod
         );
 
     // append to the displayed list
-    mStatisticsModel->statisticEntryModelListRef()->append(statisticEntryModel);
+    mStatisticsObserver->statisticEntryModelListRef().append(statisticEntryModel);
 
     // set the index-statisticEntryModel-pair
-    quint64 index = mStatisticsModel->statisticEntryModelListRef()->size() - 1;
+    quint64 index = mStatisticsObserver->statisticEntryModelListRef().size() - 1;
     QPair<quint64, models::StatisticEntryModel*> indexEntryModelPair = qMakePair(index, statisticEntryModel);
 
     // append to HashMap
