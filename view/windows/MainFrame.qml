@@ -552,20 +552,7 @@ ApplicationWindow {
                     anchors.fill: parent;
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
                     enabled: model.modelData.hidden && !isGameWon
-                    onClicked: {
-                        gameController.startGame();
-                        switch(mouse.button)
-                        {
-                            case Qt.LeftButton:
-                                gameController.revealCell(model.index);
-                                break;
-
-                            case Qt.MiddleButton:
-                            case Qt.RightButton:
-                                gameController.toggleFlagInCell(model.index);
-                                break;
-                        }
-                    }
+                    onClicked: Manager.clickCell(model, mouse.button, cell);
                 }
             }
         }

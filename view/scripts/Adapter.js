@@ -8,8 +8,16 @@ function resolveImage(cell) {
 
     // if revealed
     if(!cell.hidden) {
-        if(cell.isBomb) {
+        if(cell.isBomb && cell.flagged) {
+            imageUrl = "qrc:/cellImages/flag.png";
+        } 
+        else 
+        if(cell.isBomb && !cell.flagged) {
             imageUrl = "qrc:/cellImages/mine.png";
+        }
+        else 
+        if(!cell.isBomb && cell.flagged) {
+            imageUrl = "qrc:/cellImages/mineX.png";
         }
         else {
             switch(cell.surroundingBombs) {

@@ -36,3 +36,21 @@ function updateSizeScaling() {
     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 }
 
+function clickCell(model, mouseButton, cell) {
+    gameController.startGame();
+    switch(mouseButton)
+    {
+        case Qt.LeftButton:
+            gameController.revealCell(model.index);
+            if(model.modelData.isBomb) { 
+                cell.buttonImage = "qrc:/cellImages/mineRed.png";
+            }
+            break;
+
+        case Qt.MiddleButton:
+        case Qt.RightButton:
+            gameController.toggleFlagInCell(model.index);
+            break;
+    }
+}
+
