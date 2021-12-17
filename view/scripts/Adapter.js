@@ -75,7 +75,7 @@ function getConfigurationString(rows, columns, mines) {
 
     // default way of displaying
     if(displayString === "") {
-        displayString = columns + "x" + rows + " " + mines + " Mines";
+        displayString = columns + "x" + rows + " - " + mines + " Mines";
     }
     
     return displayString;
