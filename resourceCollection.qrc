@@ -30,15 +30,11 @@
         <file alias="helpTime.png">view/images/helpTime.png</file>
         <file alias="logo-hs.ico">view/images/logo-hs.ico</file>
         <file alias="logo-hs.png">view/images/logo-hs.png</file>
-        <file alias="new.png">view/images/new.png</file>
         <file alias="newButton.png">view/images/newButton.png</file>
         <file alias="newButtonPressed.png">view/images/newButtonPressed.png</file>
-        <file alias="pause.png">view/images/pause.png</file>
         <file alias="pauseButton.png">view/images/pauseButton.png</file>
-        <file alias="play.png">view/images/play.png</file>
         <file alias="playButtonPressed.png">view/images/playButtonPressed.png</file>
         <file alias="questionTransparent.png">view/images/questionTransparent.png</file>
-        <file alias="stop.png">view/images/stop.png</file>
         <file alias="timerTransparent.png">view/images/timerTransparent.png</file>
     </qresource>
     <qresource prefix="/text">
