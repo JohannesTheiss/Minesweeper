@@ -125,39 +125,6 @@ Window {
             color: "#000000";
         }
 
-        ListModel {
-            id: timeModel;
-            
-
-            //ListElement {
-                //mode: "Beginner";
-                //time: 20;
-                //games: 1;
-                //won: 1;
-            //}
-
-            //ListElement {
-                //mode: "Intermediate";
-                //time: 20;
-                //games: 1;
-                //won: 1;
-            //}
-
-            //ListElement {
-                //mode: "Expert";
-                //time: 20;
-                //games: 1;
-                //won: 1;
-            //}
-
-            //ListElement {
-                //mode: "999x999 - 999 Mines";
-                //time: 20;
-                //games: 1;
-                //won: 1;
-            //}
-        }
-
         ScrollView {
             id: scrollview
 
@@ -183,7 +150,6 @@ Window {
                 clip: true
                 spacing: 25
 
-                //model: timeModel;
                 model: statisticsModel.statisticEntryModelList;
 
                 delegate: /*PatientElement {                                  //fills the PatientElements with data from backend.patientList

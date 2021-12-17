@@ -55,20 +55,6 @@ int main(int argc, char *argv[])
     controllers::GameController gameController(&gameObserver);
 
     // create the StatisticsModel
-    quint64 bestTime = 187;
-    quint64 numberOfWins = 187;
-    quint64 numberOfDefeats = 1;
-    quint64 numberOfGamesPlayed = 1;
-    quint64 numberOfRows = 5;
-    quint64 numberOfColumns = 5;
-    quint64 numberOfMines = 10;
-    models::StatisticEntryModel sem(bestTime,
-            numberOfWins,
-            numberOfDefeats,
-            numberOfGamesPlayed,
-            numberOfRows,
-            numberOfColumns,
-            numberOfMines);
     QList<models::StatisticEntryModel *> sList;
     models::StatisticsModel statisticsModel(sList);
 
