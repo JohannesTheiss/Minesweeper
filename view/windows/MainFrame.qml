@@ -416,9 +416,6 @@ ApplicationWindow {
 
         z: 90;
 
-//        width: boardTopBorder.width - 6;
-//        height: boardLeftBorder.height - 6;
-
         width: 340 * sizeFactor;
         height: 144 * sizeFactor;
 
@@ -437,7 +434,7 @@ ApplicationWindow {
 
             text: "You won!\n\n" +
                   "Mode: " + gameModel.columns + "x" + gameModel.rows + " - " + gameModel.mineCount + " Mines\n\n" +
-                  "Best Time: " + "999" + "\n\n" +
+                  "Best Time: " + Adapter.getMinutesFromSeconds(999) + "\n\n" +
                   "Your Time: " + Adapter.getMinutesFromSeconds(gameModel.timePlayed);
         }
 
