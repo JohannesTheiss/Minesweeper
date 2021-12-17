@@ -128,6 +128,8 @@ void StatisticsController::submitStatistics(const quint64 numberOfRows,
     // update the view
     emit mStatisticsObserver->statisticEntryModelListChangedPassthrough(
                 mStatisticsObserver->statisticEntryModelListRef());
+
+    emit gameEnded(indexEntryModelPair.second->bestTime(), win); 
 }
 
 void StatisticsController::resetStatistics()

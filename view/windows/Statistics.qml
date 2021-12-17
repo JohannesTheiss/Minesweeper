@@ -12,14 +12,17 @@ Window {
 
     title: "Minesweeper - Statistics";
 
-    width: 545;
-    height: 365;
+    width: screenBorder.width + 40
+    height: screenBorder.height + 40
 
-    minimumWidth: 545;
-    minimumHeight: 365;
+    //width: 545;
+    //height: 365;
 
-    maximumWidth: 545;
-    maximumHeight: 365;
+    //minimumWidth: 545;
+    //minimumHeight: 365;
+
+    //maximumWidth: 545;
+    //maximumHeight: 365;
 
     visible: true;
 
@@ -28,9 +31,13 @@ Window {
     Rectangle {
         id: screenBorder
 
-        width: statisticsWindow.width - 40;
-        height: statisticsWindow.height - 40;
+        //width: statisticsWindow.width - 40;
+        //height: statisticsWindow.height - 40;
+        //width: (modeLabel.leftPadding*2) + modeLabel.width + headerRow.leftPadding + headerRow.width;
+        width: headerRow.width + headerRow.anchors.leftMargin*2;
+        height: 325
 
+        
         x: 20;
         y: 20;
 
@@ -95,6 +102,8 @@ Window {
                     resetAccept.visible = false;
                     scrollview.enabled = true;
                     resetButton.enabled = true;
+
+                    statisticsController.resetStatistics();
                 }
             }
 
@@ -126,27 +135,42 @@ Window {
             }
         }
 
-        TextLabel {
-            id: modeLabel
+        //TextLabel {
+            //id: modeLabel
 
-            leftPadding: 20;
-            topPadding: 20;
+            //leftPadding: 20;
+            //topPadding: 20;
 
-            font.pointSize: 10;
+            //font.pointSize: 10;
 
-            text: "Mode"
-        }
+            //text: "Mode"
+        //}
 
         Row {
             id: headerRow;
 
-            anchors.top: modeLabel.top;
-            anchors.left: modeLabel.right;
+            //anchors.top: modeLabel.top;
+            //anchors.left: modeLabel.right;
+            anchors.top: screenBorder.top;
+            anchors.left: screenBorder.left;
+            //anchors.right: screenBorder.right;
+            anchors.leftMargin: 20;
+            //anchors.rightMargin: 20;
 
-            leftPadding: 100;
+            //leftPadding: 100;
+            //rightPadding: 20;
             topPadding: 20;
 
             spacing: 15;
+
+            TextLabel {
+                id: modeLabel
+
+                font.pointSize: 10;
+                rightPadding: 100;
+
+                text: "Mode"
+            }
 
             TextLabel {
                 id: timeLabel
@@ -188,8 +212,7 @@ Window {
 
             anchors.top: headerRow.bottom;
             anchors.topMargin: 5;
-            anchors.left: modeLabel.left;
-            anchors.leftMargin: modeLabel.leftPadding;
+            anchors.left: headerRow.left;
             anchors.right: headerRow.right;
 
             color: "#000000";
@@ -205,18 +228,19 @@ Window {
 
                 TextLabel {
                     id: modeStat;
-
+                        
+                    //width: modeLabel.width
                     font.pointSize: 10;
-                    text: mode;
+                    text: Adapter.getConfigurationString(model.modelData.numberOfRows, model.modelData.numberOfColumns, model.modelData.numberOfMines);
                 }
 
                 TextLabel {
                     id: timeStat;
 
-                    x: 133;
+                    x: modeLabel.width + headerRow.spacing
 
                     font.pointSize: 10;
-                    text: time;
+                    text: model.modelData.bestTime;
                 }
 
                 TextLabel {
@@ -225,7 +249,7 @@ Window {
                     x: timeStat.x + timeLabel.width + headerRow.spacing;
 
                     font.pointSize: 10;
-                    text: games;
+                    text: model.modelData.numberOfGamesPlayed;
                 }
 
                 TextLabel {
@@ -234,7 +258,7 @@ Window {
                     x: gamesStat.x + gamesLabel.width + headerRow.spacing;
 
                     font.pointSize: 10;
-                    text: won;
+                    text: model.modelData.numberOfWins;
                 }
 
                 TextLabel {
@@ -243,7 +267,7 @@ Window {
                     x: wonStat.x + wonLabel.width + headerRow.spacing;
 
                     font.pointSize: 10;
-                    text: games - won;
+                    text: model.modelData.numberOfDefeats;
                 }
             }
         }
@@ -266,7 +290,7 @@ Window {
                 clip: true;
                 spacing: 5;
 
-                model: timeModel;
+                model: statisticsModel.statisticEntryModelList;
 
                 delegate: statsDelegate;
             }

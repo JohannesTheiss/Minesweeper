@@ -23,21 +23,22 @@ ApplicationWindow {
 
     property bool hideWinScreen: false;
 
+    property bool isGameWon: false;
+    property int bestTimeForGameMode: 0;
+
     Component.onCompleted: {
         // check if new size scaling is set (from backend side)
         Manager.updateSizeScaling();
     }
 
     Connections {
-        target: gameController;
-        function onGameEnded(numberOfRow, 
-            numberOfColumns,
-            numberOfMines,
-            timePlayed,
-            won) {
+        target: statisticsController;
+        function onGameEnded(bestTime, won) {
             // TODO start the end screen HERE
             // if the game is won the 'won' == true
             console.log("game won: " + won);
+            isGameWon = won;
+            bestTimeForGameMode = bestTime
         }
     }
 
@@ -283,7 +284,7 @@ ApplicationWindow {
                     pauseText.visible = false;
                 }
 
-                hideWinScreen = false;
+                hideWinScreen = isGameWon = false;
             }
         }
 
@@ -423,7 +424,7 @@ ApplicationWindow {
         border.color: "#000000";
         color: "#c0c0c0";
 
-        visible: gameModel.flagCount === 0 && !hideWinScreen; //TODO
+        visible: isGameWon && !hideWinScreen; //TODO
 
 
         TextLabel {
@@ -432,9 +433,10 @@ ApplicationWindow {
             topPadding: 10;
             leftPadding: 10;
 
-            text: "You won!\n\n" +
+            text: (gameModel.timePlayed === bestTimeForGameMode ? "You set a new BEST TIME" : "You won!") +  "\n\n" +
                   "Mode: " + gameModel.columns + "x" + gameModel.rows + " - " + gameModel.mineCount + " Mines\n\n" +
-                  "Best Time: " + Adapter.getMinutesFromSeconds(999) + "\n\n" +
+                  "Best Time: " + Adapter.getMinutesFromSeconds(bestTimeForGameMode) 
+                  + "\n\n" +
                   "Your Time: " + Adapter.getMinutesFromSeconds(gameModel.timePlayed);
         }
 
@@ -543,7 +545,7 @@ ApplicationWindow {
 
                     anchors.fill: parent;
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
-                    enabled: model.modelData.hidden && !(gameModel.flagCount === 0); //TODO
+                    enabled: model.modelData.hidden && !isGameWon
                     onClicked: {
                         gameController.startGame();
                         switch(mouse.button)
