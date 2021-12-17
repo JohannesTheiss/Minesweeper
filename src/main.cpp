@@ -97,7 +97,8 @@ int main(int argc, char *argv[])
     // Start the Application
     int execCode = app.exec();
 
-    // save current state of the software to JSON
+    // save the running game as lose
+    gameController.endGame(false);
 
     return execCode;
 }

@@ -147,6 +147,8 @@ void GameController::toggleFlagInCell(const quint64 index)
 
 void GameController::initGame()
 {
+    endGame(false);
+
     mGameStarted = false;
     timer->stop();
 
