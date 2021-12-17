@@ -354,7 +354,7 @@ ApplicationWindow {
             }
 
             onClicked: {
-                gameController.endGame();
+                gameController.endGame(false);
                 gameController.revealAllCells();
 
                 if (board.visible === false) {
