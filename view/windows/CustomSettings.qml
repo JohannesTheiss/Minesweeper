@@ -538,6 +538,8 @@ Window {
                 parentWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                 parentWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
+                isGameWon = false;
+
                 customSettings.close();
             }
         }

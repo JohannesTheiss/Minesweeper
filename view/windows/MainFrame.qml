@@ -66,6 +66,8 @@ ApplicationWindow {
 
                     mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                    isGameWon = false;
                 }
             }
             MenuItem {
@@ -86,6 +88,8 @@ ApplicationWindow {
 
                     mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                    isGameWon = false;
                 }
             }
             MenuItem {
@@ -106,6 +110,8 @@ ApplicationWindow {
 
                     mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                    isGameWon = false;
                 }
             }
             MenuItem {
