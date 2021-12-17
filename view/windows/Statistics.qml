@@ -240,7 +240,7 @@ Window {
                     x: modeLabel.width + headerRow.spacing
 
                     font.pointSize: 10;
-                    text: model.modelData.bestTime;
+                    text: model.modelData.numberOfWins !== 0 ? Adapter.getMinutesFromSeconds(model.modelData.bestTime) : "-";
                 }
 
                 TextLabel {
