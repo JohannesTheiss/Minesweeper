@@ -152,7 +152,7 @@ Window {
             topPadding: 15;
             leftPadding: 20;
 
-            text: "Menu-Numbers:"
+            text: "Menu-Counters:"
         }
 
         Grid {
