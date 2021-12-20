@@ -49,9 +49,9 @@ ApplicationWindow {
             title: qsTr("&Game");
 
             MenuItem {
-                icon.source: !checked ? "qrc:/cellImages/empty.png" : "";
+                icon.source: "qrc:/cellImages/empty.png";
 
-                checkable: false;
+                checkable: true;
                 checked: gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10;
 
                 text: qsTr("&Beginner");
@@ -71,9 +71,9 @@ ApplicationWindow {
                 }
             }
             MenuItem {
-                icon.source: !checked ? "qrc:/cellImages/mine.png" : "";
+                icon.source: "qrc:/cellImages/mine.png";
 
-                checkable: false;
+                checkable: true;
                 checked: gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40;
 
                 text: qsTr("&Intermediate");
@@ -93,9 +93,9 @@ ApplicationWindow {
                 }
             }
             MenuItem {
-                icon.source: !checked ? "qrc:/cellImages/mineRed.png" : "";
+                icon.source: "qrc:/cellImages/mineRed.png";
 
-                checkable: false;
+                checkable: true;
                 checked: gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99;
 
                 text: qsTr("&Expert");
