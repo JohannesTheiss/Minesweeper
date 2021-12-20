@@ -11,9 +11,9 @@ GameController::GameController(observers::GameObserver *gameObserver, QObject *p
       mGameObserver(gameObserver)
 {
     // default game configuration
-    quint64 rows = 16;
-    quint64 columns = 16;
-    quint64 mines = 40;
+    quint64 rows = 9;
+    quint64 columns = 9;
+    quint64 mines = 10;
 
     // create timer and connect it to a slot
     timer = new QTimer(this);;
@@ -26,22 +26,14 @@ GameController::GameController(observers::GameObserver *gameObserver, QObject *p
     {
         QJsonObject configuration = jsonModel.toObject();
 
-        quint64 loadedRows = configuration.value("rows").toString().toULongLong();
-        quint64 loadedColumns = configuration.value("columns").toString().toULongLong();
-        quint64 loadedMines = configuration.value("mines").toString().toULongLong();
+        // set to the last configuration
+        rows = configuration.value("rows").toString().toULongLong();
+        columns = configuration.value("columns").toString().toULongLong();
+        mines = configuration.value("mines").toString().toULongLong();
 
         // load and set the size scaling
         int loadedScaling = configuration.value("scaling").toInt();
         setScaling(loadedScaling);
-
-        // if the configuration not empty
-        if(loadedRows != 0 && loadedColumns != 0 && loadedMines != 0)
-        {
-            // set to the last configuration
-            rows = loadedRows;
-            columns = loadedColumns;
-            mines = loadedMines;
-        }
     });
 
     setGameMode(rows, columns, mines);
@@ -147,6 +139,8 @@ void GameController::toggleFlagInCell(const quint64 index)
 
 void GameController::initGame()
 {
+    endGame(false);
+
     mGameStarted = false;
     timer->stop();
 
@@ -197,10 +191,25 @@ void GameController::endGame(const bool wonOrLost)
     }
 }
 
-void GameController::setGameMode(const quint64 numberOfRows,
-                                 const quint64 numberOfColumns,
-                                 const quint64 numberOfMines)
+void GameController::setGameMode(quint64 numberOfRows,
+                                 quint64 numberOfColumns,
+                                 quint64 numberOfMines)
 {
+    if(numberOfRows == 0)
+    {
+        numberOfRows = 1;
+    }
+
+    if(numberOfColumns == 0) 
+    {
+        numberOfColumns = 1;
+    }
+
+    if(numberOfMines >= (numberOfRows * numberOfRows))
+    {
+        numberOfMines = (numberOfRows * numberOfColumns) - 1;
+    }
+
     // update the model
     mGameObserver->setRows(numberOfRows);
     mGameObserver->setColumns(numberOfColumns);

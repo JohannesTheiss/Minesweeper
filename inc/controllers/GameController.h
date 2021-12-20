@@ -43,9 +43,9 @@ class GameController : public QObject
         void togglePauseGame();
         void endGame(const bool wonOrLost);
 
-        void setGameMode(const quint64 numberOfRows,
-                         const quint64 numberOfColumns,
-                         const quint64 numberOfMines);
+        void setGameMode(quint64 numberOfRows,
+                         quint64 numberOfColumns,
+                         quint64 numberOfMines);
         void setScaling(const int scaling);
 
         void updateTime();

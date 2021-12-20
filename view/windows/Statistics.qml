@@ -8,36 +8,30 @@ import "qrc:/includes"
 import "qrc:/scripts/Adapter.js" as Adapter
 
 Window {
-    id: customSettings
-
-    //modality: Qt.WindowModal;
+    id: statisticsWindow
 
     title: "Minesweeper - Statistics";
 
-    width: 545;
-    height: 350;
+    width: screenBorder.width + 40
+    height: screenBorder.height + 40
 
-    minimumWidth: 545;
-    minimumHeight: 350;
+    minimumWidth: screenBorder.width + 40
+    minimumHeight: screenBorder.height + 40
 
-    maximumWidth: 545;
-    maximumHeight: 350;
+    maximumWidth: screenBorder.width + 40
+    maximumHeight: screenBorder.height + 40
 
     visible: true;
 
     color: "#c0c0c0";
 
-    Component.onCompleted: {
-        console.log("modeLabelWidth " + modeLabel.width)
-        console.log("headerWidth " + headerLine.width)
-    }
-
     Rectangle {
         id: screenBorder
 
-        width: customSettings.width - 40;
-        height: customSettings.height - 40;
+        width: headerRow.width + headerRow.anchors.leftMargin*2;
+        height: 325
 
+        
         x: 20;
         y: 20;
 
@@ -55,27 +49,105 @@ Window {
             text: "Statistics";
         }
 
-        TextLabel {
-            id: modeLabel
+        Rectangle {
+            id: resetAccept;
 
-            leftPadding: 20;
-            topPadding: 20;
+            anchors.centerIn: parent;
+            z: 90;
 
-            font.pointSize: 10;
+            width: 400;
+            height: 150;
 
-            text: "Mode"
+            border.width: 1;
+            border.color: "#000000";
+            color: "#c0c0c0";
+
+            visible: false;
+
+            TextLabel {
+                anchors.centerIn: parent;
+
+                horizontalAlignment: Text.AlignHCenter;
+
+                text: "You are about to delete all saved statistics.\nAre you sure?";
+            }
+
+            Button {
+                id: acceptButton
+
+                anchors.right: cancelButton.left;
+                anchors.bottom: parent.bottom;
+
+                anchors.rightMargin: 10
+                anchors.bottomMargin: 10;
+
+                width: 100;
+                height: 30;
+
+                text: "Accept";
+
+                background: Rectangle {
+                    anchors.fill: parent;
+
+                    color: "#f5f5f5";
+                }
+
+                onClicked: {
+                    resetAccept.visible = false;
+                    scrollview.enabled = true;
+                    resetButton.enabled = true;
+
+                    statisticsController.resetStatistics();
+                }
+            }
+
+            Button {
+                id: cancelButton
+
+                anchors.right: parent.right;
+                anchors.bottom: parent.bottom;
+
+                anchors.rightMargin: 10
+                anchors.bottomMargin: 10;
+
+                width: 100;
+                height: 30;
+
+                text: "Cancel";
+
+                background: Rectangle {
+                    anchors.fill: parent;
+
+                    color: "#f5f5f5";
+                }
+
+                onClicked: {
+                    resetAccept.visible = false;
+                    scrollview.enabled = true;
+                    resetButton.enabled = true;
+                }
+            }
         }
 
         Row {
             id: headerRow;
 
-            anchors.top: modeLabel.top;
-            anchors.left: modeLabel.right;
+            anchors.top: screenBorder.top;
+            anchors.left: screenBorder.left;
 
-            leftPadding: 100;
+            anchors.leftMargin: 20;
             topPadding: 20;
 
             spacing: 15;
+
+            TextLabel {
+                id: modeLabel
+
+                font.pointSize: 10;
+                rightPadding: 100;
+
+                text: "Mode"
+            }
 
             TextLabel {
                 id: timeLabel
@@ -113,133 +185,117 @@ Window {
         Rectangle {
             id: headerLine;
 
-//            width: headerRow.width;
             height: 1;
 
             anchors.top: headerRow.bottom;
             anchors.topMargin: 5;
-            anchors.left: modeLabel.left;
-            anchors.leftMargin: modeLabel.leftPadding;
+            anchors.left: headerRow.left;
             anchors.right: headerRow.right;
 
             color: "#000000";
         }
 
-        ScrollView {
-            id: scrollview
+        Component {
+            id: statsDelegate
 
-            anchors {top: headerLine.bottom; right: parent.right; left: parent.left; bottom: parent.bottom; topMargin: 5;
-                    bottomMargin: 10; leftMargin: 20;/*leftMargin: Window.window.width / Style.percentageEdge*/}
-            x: Window.window.width / Style.percentageEdge
-            ScrollBar.vertical.policy: ScrollBar.AsNeeded
-            ScrollBar.vertical.interactive: true
-            ScrollBar.horizontal.interactive: false
-            bottomPadding: 5
+            Item {
+                id: ma
 
-            ButtonGroup {                                                   //used for checking if all CheckBoxes of the PatientElements are checked
-                id: patientCheckGroup
+                height: modeStat.height;
 
-                exclusive: false
+                TextLabel {
+                    id: modeStat;
+
+                    font.pointSize: 10;
+                    text: Adapter.getConfigurationString(model.modelData.numberOfRows, model.modelData.numberOfColumns, model.modelData.numberOfMines);
+                }
+
+                TextLabel {
+                    id: timeStat;
+
+                    x: modeLabel.width + headerRow.spacing
+
+                    font.pointSize: 10;
+                    text: model.modelData.numberOfWins !== 0 ? Adapter.getMinutesFromSeconds(model.modelData.bestTime) : "-";
+                }
+
+                TextLabel {
+                    id: gamesStat;
+
+                    x: timeStat.x + timeLabel.width + headerRow.spacing;
+
+                    font.pointSize: 10;
+                    text: model.modelData.numberOfGamesPlayed;
+                }
+
+                TextLabel {
+                    id: wonStat;
+
+                    x: gamesStat.x + gamesLabel.width + headerRow.spacing;
+
+                    font.pointSize: 10;
+                    text: model.modelData.numberOfWins;
+                }
+
+                TextLabel {
+                    id: lostStat;
+
+                    x: wonStat.x + wonLabel.width + headerRow.spacing;
+
+                    font.pointSize: 10;
+                    text: model.modelData.numberOfDefeats;
+                }
             }
+        }
 
-            ListView {                                                      //holds the PatientElements
-                id: listview
-                orientation: Qt.Vertical
+     ScrollView {
+            id: scrollview;
 
-                anchors.fill: parent
-                clip: true
-                spacing: 25
+            anchors { top: headerLine.bottom; right: headerLine.right; left: headerLine.left;
+                    bottom: screenBorder.bottom; topMargin: 5; bottomMargin: 55; }
+            ScrollBar.vertical.policy: ScrollBar.AsNeeded;
+            ScrollBar.vertical.interactive: true;
+            ScrollBar.horizontal.visible : false;
+            bottomPadding: 10;
+
+            ListView {
+                id: listview;
+
+                orientation: Qt.Vertical;
+                anchors.fill: parent;
+                clip: true;
+                spacing: 5;
 
                 model: statisticsModel.statisticEntryModelList;
 
-                delegate: /*PatientElement {                                  //fills the PatientElements with data from backend.patientList
-                    parentWindow: patientList
-                    numOfLabels: numOfColumns
-                    listModel: model
-                }*/
-//                Row {
-//                    spacing: 25;
+                delegate: statsDelegate;
+            }
+        }
+        
+         Button {
+            id: resetButton
 
-//                    TextLabel {
-//                        text: mode;
-//                    }
+            anchors.right: screenBorder.right;
+            anchors.bottom: screenBorder.bottom;
 
-//                    TextLabel {
-//                        text: time;
-//                    }
+            anchors.rightMargin: 10
+            anchors.bottomMargin: 10;
 
-//                    TextLabel {
-//                        text: games;
-//                    }
+            width: 100;
+            height: 30;
 
-//                    TextLabel {
-//                        text: won;
-//                    }
+            text: "Reset Stats";
 
-//                    TextLabel {
-//                        text: games - won;
-//                    }
-//                }
+            background: Rectangle {
+                anchors.fill: parent;
 
-                Item {
-                    TextLabel {
-                        id: modeStat;
+                color: "#f5f5f5";
+            }
 
-                        //text: model.modelData.numberOfColumns + "x" + model.modelData.numberOfRows + " " + model.modelData.numberOfMines + " Mines";
-                        text: Adapter.getConfigurationString(model.modelData.numberOfRows, model.modelData.numberOfColumns, model.modelData.numberOfMines);
-
-                        width: timeLabel.x - modeLabel.x + modeLabel.leftPadding;
-
-                        horizontalAlignment: Text.AlignLeft
-
-                        font.pointSize: 10;
-
-                        anchors.left: headerLine.left;
-                    }
-
-                    TextLabel {
-                        id: timeStat
-
-                        x: 133;
-
-                        text: model.modelData.bestTime;
-
-                        font.pointSize: 10;
-
-                    }
-
-                    TextLabel {
-                        id: gamesStat;
-
-                        x: timeStat.x + timeLabel.width + headerRow.spacing;
-
-                        text: model.modelData.numberOfGamesPlayed;
-
-                        anchors.left: gamesLabel.left;
-                    }
-
-                    TextLabel {
-                        id: wonStat;
-
-                        x: gamesStat.x + gamesLabel.width + headerRow.spacing;
-
-                        //text: won;
-                        text: model.modelData.numberOfWins;
-
-                        anchors.left: wonLabel.left;
-                    }
-
-                    TextLabel {
-                        id: lostStat;
-
-                        x: wonStat.x + wonLabel.width + headerRow.spacing;
-
-                        //text: games - won;
-                        text: model.modelData.numberOfDefeats;
-
-                        anchors.left: lostLabel.left;
-                    }
-                }
+            onClicked: {
+                resetAccept.visible = true;
+                scrollview.enabled = false;
+                resetButton.enabled = false;
             }
         }
     }

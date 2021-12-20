@@ -8,8 +8,16 @@ function resolveImage(cell) {
 
     // if revealed
     if(!cell.hidden) {
-        if(cell.isBomb) {
+        if(cell.isBomb && cell.flagged) {
+            imageUrl = "qrc:/cellImages/flag.png";
+        } 
+        else 
+        if(cell.isBomb && !cell.flagged) {
             imageUrl = "qrc:/cellImages/mine.png";
+        }
+        else 
+        if(!cell.isBomb && cell.flagged) {
+            imageUrl = "qrc:/cellImages/mineX.png";
         }
         else {
             switch(cell.surroundingBombs) {
@@ -52,9 +60,17 @@ function timeToString(secs) {
     return (secs < 100 ? '0' : '') + (secs < 10 ? '0' : '') + secs;
 }
 
+// convert seconds to "minutes:seconds" format
+// s: seconds
+function getMinutesFromSeconds(s) {
+    let minutes = Math.floor(s / 60);
+    let seconds = Math.floor(s % 60);
+    return (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
 function flagsToString(flags) {
     if(flags < 0) {
-        return flags;
+        return flags > -10 ? "-0" + Math.abs(flags) : flags;
     }
     else {
         return flags < 10 ? "00" + flags : (flags < 100 ? "0" + flags : flags);

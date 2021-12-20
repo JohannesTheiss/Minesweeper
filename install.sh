@@ -39,7 +39,7 @@ sudo cp -r . ${installationPath}
 
 dotDesktopFolder=/usr/share/applications
 echo -e "\e[1;32mcopy .desktop file to ${dotDesktopFolder}\e[0m" 
-sudo cp mp3player.desktop ${dotDesktopFolder}
+sudo cp minesweeper.desktop ${dotDesktopFolder}
 
 echo
 echo -e "\e[1;32mInstallation complete.\e[0m" 

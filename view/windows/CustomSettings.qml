@@ -418,9 +418,9 @@ Window {
                 width: 100;
                 height: 30;
 
-                inputMethodHints: Qt.ImhDigitsOnly;
-
                 placeholderText: gameModel.columns;
+
+                validator: IntValidator { bottom: 0 }
 
                 onFocusChanged: {
                     if(focus) {
@@ -446,9 +446,9 @@ Window {
                 width: 100;
                 height: 30;
 
-                inputMethodHints: Qt.ImhDigitsOnly;
-
                 placeholderText: gameModel.rows;
+
+                validator: IntValidator { bottom: 0 }
 
                 onFocusChanged: {
                     if(focus) {
@@ -474,7 +474,7 @@ Window {
                 width: 100;
                 height: 30;
 
-                inputMethodHints: Qt.ImhDigitsOnly;
+                validator: IntValidator { bottom: 0 }
 
                 placeholderText: gameModel.mineCount;
 
@@ -488,9 +488,9 @@ Window {
         }
 
         Button {
-            id: okButton
+            id: applyButton
 
-            anchors.right: screenBorder.right;
+            anchors.right: cancelButton.left;
             anchors.bottom: screenBorder.bottom;
 
             anchors.rightMargin: 10
@@ -529,14 +529,44 @@ Window {
                         break;
                 }
 
-                parentWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                parentWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                parentWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                parentWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                parentWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                parentWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                parentWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                parentWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                parentWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                parentWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                parentWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                parentWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                isGameWon = false;
+                hideWinScreen = false;
+
+                customSettings.close();
+            }
+        }
+
+        Button {
+            id: cancelButton
+
+            anchors.right: screenBorder.right;
+            anchors.bottom: screenBorder.bottom;
+
+            anchors.rightMargin: 10
+            anchors.bottomMargin: 10;
+
+            width: 100;
+            height: 30;
+
+            text: "Cancel";
+
+            background: Rectangle {
+                anchors.fill: parent;
+
+                color: "#f5f5f5";
+            }
+
+            onClicked: {
+                customSettings.close();
             }
         }
     }

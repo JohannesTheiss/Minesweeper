@@ -40,6 +40,9 @@ class StatisticsController : public QObject
 
         void resetStatistics();
 
+    signals:
+        void gameEnded(const quint64 bestTime, const bool won);
+    
     private:
         void increaseNumberOfWins(models::StatisticEntryModel *statisticEntryModel);
         void increaseNumberOfDefeats(models::StatisticEntryModel *statisticEntryModel);

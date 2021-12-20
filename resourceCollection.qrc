@@ -19,30 +19,26 @@
         <file alias="two.png">view/images/cellImages/two.png</file>
     </qresource>
     <qresource prefix="/controls">
-        <file alias="IconButton.qml">view/components/controls/IconButton.qml</file>
         <file alias="ImageButton.qml">view/components/controls/ImageButton.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="endButton.png">view/images/endButton.png</file>
         <file alias="endButtonPressed.png">view/images/endButtonPressed.png</file>
         <file alias="flagTransparent.png">view/images/flagTransparent.png</file>
+        <file alias="helpFlag.png">view/images/helpFlag.png</file>
+        <file alias="helpTime.png">view/images/helpTime.png</file>
         <file alias="logo-hs.ico">view/images/logo-hs.ico</file>
         <file alias="logo-hs.png">view/images/logo-hs.png</file>
-        <file alias="new.png">view/images/new.png</file>
         <file alias="newButton.png">view/images/newButton.png</file>
         <file alias="newButtonPressed.png">view/images/newButtonPressed.png</file>
-        <file alias="pause.png">view/images/pause.png</file>
         <file alias="pauseButton.png">view/images/pauseButton.png</file>
-        <file alias="play.png">view/images/play.png</file>
         <file alias="playButtonPressed.png">view/images/playButtonPressed.png</file>
         <file alias="questionTransparent.png">view/images/questionTransparent.png</file>
-        <file alias="stop.png">view/images/stop.png</file>
         <file alias="timerTransparent.png">view/images/timerTransparent.png</file>
     </qresource>
     <qresource prefix="/text">
         <file alias="TextBox.qml">view/components/text/TextBox.qml</file>
         <file alias="TextLabel.qml">view/components/text/TextLabel.qml</file>
-        <file alias="MessageBox.qml">view/components/text/MessageBox.qml</file>
         <file alias="InputBox.qml">view/components/text/InputBox.qml</file>
     </qresource>
     <qresource prefix="/includes">
@@ -50,12 +46,12 @@
     </qresource>
     <qresource prefix="/windows">
         <file alias="CustomSettings.qml">view/windows/CustomSettings.qml</file>
+        <file alias="HelpWindow.qml">view/windows/HelpWindow.qml</file>
         <file alias="MainFrame.qml">view/windows/MainFrame.qml</file>
         <file alias="Statistics.qml">view/windows/Statistics.qml</file>
     </qresource>
     <qresource prefix="/scripts">
         <file alias="Adapter.js">view/scripts/Adapter.js</file>
-        <file alias="windowController.js">view/scripts/windowController.js</file>
         <file alias="Manager.js">view/scripts/Manager.js</file>
     </qresource>
 </RCC>

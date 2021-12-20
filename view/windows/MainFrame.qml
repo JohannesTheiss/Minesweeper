@@ -13,7 +13,6 @@ import "qrc:/includes"
 import "qrc:/text"
 
 import "qrc:/scripts/Adapter.js" as Adapter
-import "qrc:/scripts/windowController.js" as WindowController
 import "qrc:/scripts/Manager.js" as Manager
 
 ApplicationWindow {
@@ -21,21 +20,22 @@ ApplicationWindow {
 
     property double sizeFactor: 1.0;
 
+    property bool hideWinScreen: false;
+
+    property bool isGameWon: false;
+    property int bestTimeForGameMode: 0;
+
     Component.onCompleted: {
         // check if new size scaling is set (from backend side)
         Manager.updateSizeScaling();
     }
 
     Connections {
-        target: gameController;
-        function onGameEnded(numberOfRow, 
-            numberOfColumns,
-            numberOfMines,
-            timePlayed,
-            won) {
-            // TODO start the end screen HERE
-            // if the game is won the 'won' == true
+        target: statisticsController;
+        function onGameEnded(bestTime, won) {
             console.log("game won: " + won);
+            isGameWon = won;
+            bestTimeForGameMode = bestTime
         }
     }
 
@@ -46,70 +46,79 @@ ApplicationWindow {
             title: qsTr("&Game");
 
             MenuItem {
-                icon.source: !checked ? "qrc:/cellImages/empty.png" : "";
+                icon.source: "qrc:/cellImages/empty.png";
 
-                checkable: false;
+                checkable: true;
                 checked: gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10;
 
                 text: qsTr("&Beginner");
                 onTriggered: {
                     gameController.setGameMode(9, 9, 10);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                    isGameWon = false;
+                    hideWinScreen = false;
                 }
             }
             MenuItem {
-                icon.source: !checked ? "qrc:/cellImages/mine.png" : "";
+                icon.source: "qrc:/cellImages/mine.png";
 
-                checkable: false;
+                checkable: true;
                 checked: gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40;
 
                 text: qsTr("&Intermediate");
                 onTriggered: {
                     gameController.setGameMode(16, 16, 40);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                    isGameWon = false;
+                    hideWinScreen = false;
                 }
             }
             MenuItem {
-                icon.source: !checked ? "qrc:/cellImages/mineRed.png" : "";
+                icon.source: "qrc:/cellImages/mineRed.png";
 
-                checkable: false;
+                checkable: true;
                 checked: gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99;
 
                 text: qsTr("&Expert");
                 onTriggered: {
                     gameController.setGameMode(16, 30, 99);
 
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 310 * sizeFactor) + 24;
-                    mainWindow.height = gameModel.rows * Style.cellHeight * sizeFactor + statusBar.height + 36;
+                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
+                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
+
+                    isGameWon = false;
+                    hideWinScreen = false;
                 }
             }
             MenuItem {
                 text: qsTr("&Custom...")
 
                 onTriggered: {
-                    WindowController.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml",  { parentWindow: mainWindow });
+                    Manager.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml",  { parentWindow: mainWindow });
                 }
             }
 
@@ -120,7 +129,7 @@ ApplicationWindow {
 
                 MenuItem {
                     checkable: true;
-                    checked: gameModel.scaling == SizeScaling.SMALL
+                    checked: gameModel.scaling === SizeScaling.SMALL
 
                     text: qsTr("&Small")
                     onTriggered: gameController.setScaling(SizeScaling.SMALL);
@@ -128,7 +137,7 @@ ApplicationWindow {
 
                 MenuItem {
                     checkable: true;
-                    checked: gameModel.scaling == SizeScaling.MEDIUM
+                    checked: gameModel.scaling === SizeScaling.MEDIUM
 
                     text: qsTr("&Medium")
                     onTriggered: gameController.setScaling(SizeScaling.MEDIUM);
@@ -136,7 +145,7 @@ ApplicationWindow {
 
                 MenuItem {
                     checkable: true;
-                    checked: gameModel.scaling == SizeScaling.LARGE
+                    checked: gameModel.scaling === SizeScaling.LARGE
 
                     text: qsTr("&Large")
                     onTriggered: gameController.setScaling(SizeScaling.LARGE);
@@ -158,13 +167,17 @@ ApplicationWindow {
                 text: qsTr("&Statistics");
 
                 onTriggered: {
-                    WindowController.openWindow(mainWindow, "qrc:/windows/Statistics.qml");
+                    Manager.openWindow(mainWindow, "qrc:/windows/Statistics.qml");
                 }
             }
 
             MenuItem {
                 icon.source: "qrc:/images/questionTransparent.png";
                 text: qsTr("&Help");
+
+                onTriggered: {
+                    Manager.openWindow(mainWindow, "qrc:/windows/HelpWindow.qml");
+                }
             }
         }
 
@@ -196,7 +209,7 @@ ApplicationWindow {
     Rectangle {
         id: statusBar;
 
-        width: Math.max(board.width, 310 * sizeFactor);
+        width: Math.max(board.width, 340 * sizeFactor);
         height: Style.defaultHeight * sizeFactor;
 
         anchors.horizontalCenter: parent.horizontalCenter;
@@ -208,16 +221,14 @@ ApplicationWindow {
         TextLabel {
             id: flagsLabel;
 
-            width: 40 * sizeFactor; // 40 for linux font size
             x: 10;
-            z:10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
 
             font.pointSize: Style.textSize * sizeFactor;
             font.family: "Consolas";
-            color: "blue";
+            color: +text < 0 ? "red" : "blue";
 
             text: Adapter.flagsToString(gameModel.flagCount);
         }
@@ -247,6 +258,28 @@ ApplicationWindow {
 
             buttonImage: "qrc:/images/newButton.png";
 
+            MouseArea {
+                id: maNewButton;
+
+                hoverEnabled: true;
+
+                anchors.fill: parent;
+                z: 3;
+
+                onContainsPressChanged: {
+                    if(containsPress) {
+                        newButton.buttonImage = "qrc:/images/newButtonPressed.png";
+                    }
+                    else {
+                        newButton.buttonImage = "qrc:/images/newButton.png";
+                    }
+                }
+
+                onClicked: {
+                    newButton.onClicked();
+                }
+            }
+
             onClicked: {
                 gameController.initGame();
 
@@ -255,14 +288,8 @@ ApplicationWindow {
                     pausePlayButton.buttonImage = "qrc:/images/pauseButton.png";
                     pauseText.visible = false;
                 }
-            }
 
-            onPressed: {
-                newButton.buttonImage = "qrc:/images/newButtonPressed.png"
-            }
-
-            onReleased: {
-                newButton.buttonImage = "qrc:/images/newButton.png"
+                hideWinScreen = isGameWon = false;
             }
         }
 
@@ -303,8 +330,30 @@ ApplicationWindow {
 
             buttonImage: "qrc:/images/endButton.png";
 
+            MouseArea {
+                id: maEndButton;
+
+                hoverEnabled: true;
+
+                anchors.fill: parent;
+                z: 3;
+
+                onContainsPressChanged: {
+                    if(containsPress) {
+                        endButton.buttonImage = "qrc:/images/endButtonPressed.png";
+                    }
+                    else {
+                        endButton.buttonImage = "qrc:/images/endButton.png";
+                    }
+                }
+
+                onClicked: {
+                    endButton.onClicked();
+                }
+            }
+
             onClicked: {
-                gameController.endGame();
+                gameController.endGame(false);
                 gameController.revealAllCells();
 
                 if (board.visible === false) {
@@ -313,18 +362,10 @@ ApplicationWindow {
                     pauseText.visible = false;
                 }
             }
-
-            onPressed: {
-                endButton.buttonImage = "qrc:/images/endButtonPressed.png"
-            }
-
-            onReleased: {
-                endButton.buttonImage = "qrc:/images/endButton.png"
-            }
         }
 
         Image {
-            id: hourglassImage;
+            id: timeImage;
 
             width: 16 * sizeFactor;
             height: 16 * sizeFactor;
@@ -338,8 +379,7 @@ ApplicationWindow {
         TextLabel {
             id: timeLabel;
 
-            width: 40 * sizeFactor;
-            x: statusBar.width - width;
+            x: statusBar.width - width - 10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
@@ -348,7 +388,7 @@ ApplicationWindow {
             font.family: "Consolas";
             color: "blue";
 
-            text: Adapter.timeToString(gameModel.timePlayed);
+            text: Adapter.getMinutesFromSeconds(Math.min(gameModel.timePlayed, 5999));
         }
     }
 
@@ -371,6 +411,65 @@ ApplicationWindow {
         visible: false;
 
         text: "PAUSED";
+    }
+
+    Rectangle {
+        id: winScreen;
+
+        anchors.horizontalCenter: boardTopBorder.horizontalCenter;
+        anchors.verticalCenter: boardLeftBorder.verticalCenter;
+
+        z: 90;
+
+        width: winText.width + viewBoardButton.width + 30;
+        height: winText.height + 20;
+
+        border.width: 1;
+        border.color: "#000000";
+        color: "#c0c0c0";
+
+        visible: isGameWon && !hideWinScreen; //TODO
+
+
+        TextLabel {
+            id: winText
+
+            topPadding: 10;
+            leftPadding: 10;
+
+            font.pointSize: 8.0 * sizeFactor;
+
+            text: (gameModel.timePlayed === bestTimeForGameMode ? "<b>New BEST TIME!</b>" : "<b>You won!</b>") +  "<br><br>" +
+                  "<b>Mode: </b>" + Adapter.getConfigurationString(gameModel.rows, gameModel.columns, gameModel.mineCount) + "<br><br>" +
+                  "<b>Best Time: </b>" + Adapter.getMinutesFromSeconds(bestTimeForGameMode)
+                  + "<br><br>" +
+                  "<b>Your Time: </b>" + Adapter.getMinutesFromSeconds(gameModel.timePlayed);
+        }
+
+        Button {
+            id: viewBoardButton
+
+            anchors.right: winScreen.right;
+            anchors.bottom: winScreen.bottom;
+
+            anchors.rightMargin: 10
+            anchors.bottomMargin: 10;
+
+            width: 100;
+            height: 30;
+
+            text: "View Board";
+
+            background: Rectangle {
+                anchors.fill: parent;
+
+                color: "#f5f5f5";
+            }
+
+            onClicked: {
+                hideWinScreen = true;
+            }
+        }
     }
 
     //unten
@@ -424,8 +523,6 @@ ApplicationWindow {
     Grid {
         id: board;
 
-        //columns: nWidth;
-        //rows: mHeight;
         columns: gameModel.columns;
         rows: gameModel.rows;
 
@@ -439,7 +536,6 @@ ApplicationWindow {
         Repeater {
             id: cellRepeater;
 
-            //model: nWidth * mHeight;
             model: gameModel.grid
 
             ImageButton {
@@ -455,21 +551,8 @@ ApplicationWindow {
 
                     anchors.fill: parent;
                     acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
-                    enabled: model.modelData.hidden;
-                    onClicked: {
-                        gameController.startGame();
-                        switch(mouse.button)
-                        {
-                            case Qt.LeftButton:
-                                gameController.revealCell(model.index);
-                                break;
-
-                            case Qt.MiddleButton:
-                            case Qt.RightButton:
-                                gameController.toggleFlagInCell(model.index);
-                                break;
-                        }
-                    }
+                    enabled: model.modelData.hidden && !isGameWon
+                    onClicked: Manager.clickCell(model, mouse.button, cell);
                 }
             }
         }
@@ -482,7 +565,7 @@ ApplicationWindow {
         width: statusBottomBorder.width;
         height: 3;
 
-        anchors.top: board.bottom;
+        y: bottomOuterBorder.y - 9;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#ffffff";
     }
@@ -492,10 +575,10 @@ ApplicationWindow {
         id: boardRightBorder;
 
         width: 3;
-        height: board.height + 6;
+        height: boardLeftBorder.height;
 
         anchors.right: boardBottomBorder.right;
-        anchors.verticalCenter: board.verticalCenter;
+        anchors.top: boardTopBorder.top;
         color: "#ffffff";
     }
 
@@ -516,10 +599,10 @@ ApplicationWindow {
         id: boardLeftBorder;
 
         width: 3;
-        height: board.height + 6;
+        height: Math.max(board.height, 144 * sizeFactor) + 6;
 
         anchors.left: boardBottomBorder.left;
-        anchors.verticalCenter: board.verticalCenter;
+        anchors.top: boardTopBorder.top;
         color: "#808080";
     }
 
@@ -530,7 +613,7 @@ ApplicationWindow {
         width: statusBar.width + 24;
         height: 3;
 
-        y: boardBottomBorder.y + 9;
+        anchors.bottom: leftOuterBorder.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#808080";
     }
@@ -540,10 +623,10 @@ ApplicationWindow {
         id: rightOuterBorder;
 
         width: 3;
-        height: board.height + statusBar.height + 33;
+        height: leftOuterBorder.height;
 
         x: boardRightBorder.x + 9;
-        anchors.bottom: bottomOuterBorder.top;
+        anchors.top: topOuterBorder.top;
         color: "#808080";
     }
 
@@ -564,10 +647,10 @@ ApplicationWindow {
         id: leftOuterBorder;
 
         width: 3;
-        height: board.height + statusBar.height + 36;
+        height: Math.max(board.height, 144 * sizeFactor) + statusBar.height + 36;
 
         x: boardLeftBorder.x - 9;
-        anchors.bottom: bottomOuterBorder.bottom;
+        anchors.top: topOuterBorder.top;
         color: "#ffffff";
 
         Component.onCompleted: {
