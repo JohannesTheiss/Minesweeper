@@ -14,13 +14,13 @@ Window {
 
 //    width: 460;
     width: screenBorder.width + 40;
-    height: 350;
+    height: screenBorder.height + 40;
 
     minimumWidth: screenBorder.width + 40;
-    minimumHeight: 350;
+    minimumHeight: screenBorder.height + 40;
 
     maximumWidth: screenBorder.width + 40;
-    maximumHeight: 350;
+    maximumHeight: screenBorder.height + 40;
 
     visible: true;
 
@@ -31,7 +31,8 @@ Window {
 
 //        width: helpWindow.width - 40;
         width: numbersGrid.width + 40;
-        height: helpWindow.height - 40;
+//        height: helpWindow.height - 40;
+        height: buttonsHeader.topPadding + buttonsHeader.height + buttonsGrid.height + numbersHeader.height + numbersGrid.height + controlsHeader.height + controlsGrid.height;
 
         x: 20;
         y: 20;
