@@ -420,7 +420,7 @@ Window {
 
                 placeholderText: gameModel.columns;
 
-                validator: IntValidator { bottom: 1 }
+                validator: IntValidator { bottom: 0 }
 
                 onFocusChanged: {
                     if(focus) {
@@ -448,7 +448,7 @@ Window {
 
                 placeholderText: gameModel.rows;
 
-                validator: IntValidator { bottom: 1 }
+                validator: IntValidator { bottom: 0 }
 
                 onFocusChanged: {
                     if(focus) {
