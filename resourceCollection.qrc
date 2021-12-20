@@ -19,7 +19,6 @@
         <file alias="two.png">view/images/cellImages/two.png</file>
     </qresource>
     <qresource prefix="/controls">
-        <file alias="IconButton.qml">view/components/controls/IconButton.qml</file>
         <file alias="ImageButton.qml">view/components/controls/ImageButton.qml</file>
     </qresource>
     <qresource prefix="/images">
@@ -41,7 +40,6 @@
         <file alias="TextBox.qml">view/components/text/TextBox.qml</file>
         <file alias="TextLabel.qml">view/components/text/TextLabel.qml</file>
         <file alias="InputBox.qml">view/components/text/InputBox.qml</file>
-        <file alias="MessageBox.qml">view/components/text/MessageBox.qml</file>
     </qresource>
     <qresource prefix="/includes">
         <file alias="qmldir">view/includes/qmldir</file>
