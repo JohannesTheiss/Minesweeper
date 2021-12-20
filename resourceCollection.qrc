@@ -53,6 +53,5 @@
     <qresource prefix="/scripts">
         <file alias="Adapter.js">view/scripts/Adapter.js</file>
         <file alias="Manager.js">view/scripts/Manager.js</file>
-        <file alias="windowController.js">view/scripts/windowController.js</file>
     </qresource>
 </RCC>

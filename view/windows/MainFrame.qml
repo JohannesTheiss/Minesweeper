@@ -13,7 +13,6 @@ import "qrc:/includes"
 import "qrc:/text"
 
 import "qrc:/scripts/Adapter.js" as Adapter
-import "qrc:/scripts/windowController.js" as WindowController
 import "qrc:/scripts/Manager.js" as Manager
 
 ApplicationWindow {
@@ -119,7 +118,7 @@ ApplicationWindow {
                 text: qsTr("&Custom...")
 
                 onTriggered: {
-                    WindowController.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml",  { parentWindow: mainWindow });
+                    Manager.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml",  { parentWindow: mainWindow });
                 }
             }
 
@@ -168,7 +167,7 @@ ApplicationWindow {
                 text: qsTr("&Statistics");
 
                 onTriggered: {
-                    WindowController.openWindow(mainWindow, "qrc:/windows/Statistics.qml");
+                    Manager.openWindow(mainWindow, "qrc:/windows/Statistics.qml");
                 }
             }
 
@@ -177,7 +176,7 @@ ApplicationWindow {
                 text: qsTr("&Help");
 
                 onTriggered: {
-                    WindowController.openWindow(mainWindow, "qrc:/windows/HelpWindow.qml");
+                    Manager.openWindow(mainWindow, "qrc:/windows/HelpWindow.qml");
                 }
             }
         }
