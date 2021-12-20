@@ -68,6 +68,7 @@ ApplicationWindow {
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
                     isGameWon = false;
+                    hideWinScreen = false;
                 }
             }
             MenuItem {
@@ -90,6 +91,7 @@ ApplicationWindow {
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
                     isGameWon = false;
+                    hideWinScreen = false;
                 }
             }
             MenuItem {
@@ -112,6 +114,7 @@ ApplicationWindow {
                     mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
                     isGameWon = false;
+                    hideWinScreen = false;
                 }
             }
             MenuItem {
