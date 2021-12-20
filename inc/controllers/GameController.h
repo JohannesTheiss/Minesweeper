@@ -35,7 +35,8 @@ class GameController : public QObject
         GameController(observers::GameObserver *gameObserver,
                 QObject *parent = nullptr);
 
-        /* Custom destructor for GameController-objects
+        /* 
+         * Custom destructor for GameController-objects
          * it saves the current game configuration to JSON
          */
         ~GameController();
@@ -114,7 +115,7 @@ class GameController : public QObject
         void removeMine(const quint64 mineIndex);
 
         // Increase the surrounding bombs count of a cell at a given index by one
-        void increaseSurrou3ndingBombsCount(const quint64 cellIndex);
+        void increaseSurroundingBombsCount(const quint64 cellIndex);
 
         // Decrease the surrounding bombs count of a cell at a given index by one
         void decreaseSurroundingBombsCount(const quint64 cellIndex);
@@ -135,14 +136,23 @@ class GameController : public QObject
         // Check if the game is won
         void checkForWin();
 
+        // mFirstReveal is needed if the first reveal is a bomb
         bool mFirstReveal;
+
+        // Holds all indices of the mines in the current game
+        QVector<quint64> mMineIndices;
+
+        // State if the game is started
         bool mGameStarted;
+
+        // Timer to get the time played
         QTimer *timer;
 
-        QVector<quint64> mMineIndices;
+        // GameObserver for the GameModel
         observers::GameObserver *mGameObserver;
-        data::JsonManager *mJsonManager;
 
+        // JsonManager properties
+        data::JsonManager *mJsonManager;
         const QString mJsonObjectName = "configuration";
 };
 
