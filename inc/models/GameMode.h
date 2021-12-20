@@ -1,6 +1,8 @@
 #ifndef GAMEMODE_H
 #define GAMEMODE_H
 
+#include <QObject>
+
 namespace models
 {
 
