@@ -34,8 +34,6 @@ ApplicationWindow {
     Connections {
         target: statisticsController;
         function onGameEnded(bestTime, won) {
-            // TODO start the end screen HERE
-            // if the game is won the 'won' == true
             console.log("game won: " + won);
             isGameWon = won;
             bestTimeForGameMode = bestTime
@@ -224,7 +222,6 @@ ApplicationWindow {
         TextLabel {
             id: flagsLabel;
 
-            //width: 40 * sizeFactor; // 40 for linux font size
             x: 10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
@@ -570,7 +567,6 @@ ApplicationWindow {
         height: 3;
 
         y: bottomOuterBorder.y - 9;
-//        anchors.top: board.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#ffffff";
     }
@@ -618,7 +614,6 @@ ApplicationWindow {
         width: statusBar.width + 24;
         height: 3;
 
-//        y: boardBottomBorder.y + 9;
         anchors.bottom: leftOuterBorder.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#808080";

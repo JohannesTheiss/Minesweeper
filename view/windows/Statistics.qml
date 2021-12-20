@@ -28,9 +28,6 @@ Window {
     Rectangle {
         id: screenBorder
 
-        //width: statisticsWindow.width - 40;
-        //height: statisticsWindow.height - 40;
-        //width: (modeLabel.leftPadding*2) + modeLabel.width + headerRow.leftPadding + headerRow.width;
         width: headerRow.width + headerRow.anchors.leftMargin*2;
         height: 325
 
@@ -132,30 +129,13 @@ Window {
             }
         }
 
-        //TextLabel {
-            //id: modeLabel
-
-            //leftPadding: 20;
-            //topPadding: 20;
-
-            //font.pointSize: 10;
-
-            //text: "Mode"
-        //}
-
         Row {
             id: headerRow;
 
-            //anchors.top: modeLabel.top;
-            //anchors.left: modeLabel.right;
             anchors.top: screenBorder.top;
             anchors.left: screenBorder.left;
-            //anchors.right: screenBorder.right;
-            anchors.leftMargin: 20;
-            //anchors.rightMargin: 20;
 
-            //leftPadding: 100;
-            //rightPadding: 20;
+            anchors.leftMargin: 20;
             topPadding: 20;
 
             spacing: 15;
@@ -225,8 +205,7 @@ Window {
 
                 TextLabel {
                     id: modeStat;
-                        
-                    //width: modeLabel.width
+
                     font.pointSize: 10;
                     text: Adapter.getConfigurationString(model.modelData.numberOfRows, model.modelData.numberOfColumns, model.modelData.numberOfMines);
                 }

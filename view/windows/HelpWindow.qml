@@ -8,11 +8,8 @@ import "qrc:/includes"
 Window {
     id: helpWindow
 
-//    modality: Qt.WindowModal;
-
     title: "Minesweeper - Game Information";
 
-//    width: 460;
     width: screenBorder.width + 40;
     height: screenBorder.height + 40;
 
@@ -29,9 +26,7 @@ Window {
     Rectangle {
         id: screenBorder
 
-//        width: helpWindow.width - 40;
         width: numbersGrid.width + 40;
-//        height: helpWindow.height - 40;
         height: buttonsHeader.topPadding + buttonsHeader.height + buttonsGrid.height + numbersHeader.height + numbersGrid.height + controlsHeader.height + controlsGrid.height;
 
         x: 20;
@@ -276,7 +271,7 @@ Window {
                 height: flagsImage.height;
                 verticalAlignment: Text.AlignVCenter;
 
-                text: ": Unset Flag";
+                text: ": Set/Unset Flag";
             }
         }
     }
