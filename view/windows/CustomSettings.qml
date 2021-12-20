@@ -420,7 +420,7 @@ Window {
 
                 placeholderText: gameModel.columns;
 
-                validator: IntValidator { }
+                validator: IntValidator { bottom: 1 }
 
                 onFocusChanged: {
                     if(focus) {
@@ -448,7 +448,7 @@ Window {
 
                 placeholderText: gameModel.rows;
 
-                validator: IntValidator { }
+                validator: IntValidator { bottom: 1 }
 
                 onFocusChanged: {
                     if(focus) {
@@ -474,7 +474,7 @@ Window {
                 width: 100;
                 height: 30;
 
-                validator: IntValidator { }
+                validator: IntValidator { bottom: 0 }
 
                 placeholderText: gameModel.mineCount;
 
