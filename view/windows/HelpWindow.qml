@@ -10,15 +10,16 @@ Window {
 
 //    modality: Qt.WindowModal;
 
-    title: "Minesweeper - Custom Settings";
+    title: "Minesweeper - Game Information";
 
-    width: 460;
+//    width: 460;
+    width: screenBorder.width + 40;
     height: 350;
 
-    minimumWidth: 460;
+    minimumWidth: screenBorder.width + 40;
     minimumHeight: 350;
 
-    maximumWidth: 460;
+    maximumWidth: screenBorder.width + 40;
     maximumHeight: 350;
 
     visible: true;
@@ -28,7 +29,8 @@ Window {
     Rectangle {
         id: screenBorder
 
-        width: helpWindow.width - 40;
+//        width: helpWindow.width - 40;
+        width: numbersGrid.width + 40;
         height: helpWindow.height - 40;
 
         x: 20;
@@ -55,10 +57,6 @@ Window {
             leftPadding: 20;
 
             text: "Menu-Buttons:"
-
-//                  \n- New: Start a new Game\n- ||: Pause/Unpause Game\n- End: Give up and reveal all Cells\n\n" +
-//                  "Menu-Numbers:\n- Left: Number of Mines/Flags left\n- Right: Time since the Game started\n         Used for Highscores\n\n" +
-//                  "Controls:\n- Left-Click: Reveal Cell\n- Right-Click: Set/Unset Flag\n- Middle-Click: Unset Flag";
         }
 
         Grid {

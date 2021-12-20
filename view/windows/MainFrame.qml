@@ -380,7 +380,6 @@ ApplicationWindow {
         TextLabel {
             id: timeLabel;
 
-            //width: 60 * sizeFactor;
             x: statusBar.width - width - 10;
 
             anchors.verticalCenter: statusBar.verticalCenter;
@@ -390,7 +389,7 @@ ApplicationWindow {
             font.family: "Consolas";
             color: "blue";
 
-            text: Adapter.getMinutesFromSeconds(gameModel.timePlayed);
+            text: Adapter.getMinutesFromSeconds(Math.min(gameModel.timePlayed, 5999));
         }
     }
 
@@ -423,8 +422,8 @@ ApplicationWindow {
 
         z: 90;
 
-        width: 340 * sizeFactor;
-        height: 144 * sizeFactor;
+        width: winText.width + viewBoardButton.width + 30;
+        height: winText.height + 20;
 
         border.width: 1;
         border.color: "#000000";
@@ -434,16 +433,18 @@ ApplicationWindow {
 
 
         TextLabel {
-            id: headerText
+            id: winText
 
             topPadding: 10;
             leftPadding: 10;
 
-            text: (gameModel.timePlayed === bestTimeForGameMode ? "You set a new BEST TIME" : "You won!") +  "\n\n" +
-                  "Mode: " + gameModel.columns + "x" + gameModel.rows + " - " + gameModel.mineCount + " Mines\n\n" +
-                  "Best Time: " + Adapter.getMinutesFromSeconds(bestTimeForGameMode) 
-                  + "\n\n" +
-                  "Your Time: " + Adapter.getMinutesFromSeconds(gameModel.timePlayed);
+            font.pointSize: 8.0 * sizeFactor;
+
+            text: (gameModel.timePlayed === bestTimeForGameMode ? "<b>New BEST TIME!</b>" : "<b>You won!</b>") +  "<br><br>" +
+                  "<b>Mode: </b>" + Adapter.getConfigurationString(gameModel.rows, gameModel.columns, gameModel.mineCount) + "<br><br>" +
+                  "<b>Best Time: </b>" + Adapter.getMinutesFromSeconds(bestTimeForGameMode)
+                  + "<br><br>" +
+                  "<b>Your Time: </b>" + Adapter.getMinutesFromSeconds(gameModel.timePlayed);
         }
 
         Button {

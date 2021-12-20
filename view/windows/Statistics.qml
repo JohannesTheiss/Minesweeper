@@ -15,14 +15,11 @@ Window {
     width: screenBorder.width + 40
     height: screenBorder.height + 40
 
-    //width: 545;
-    //height: 365;
+    minimumWidth: screenBorder.width + 40
+    minimumHeight: screenBorder.height + 40
 
-    //minimumWidth: 545;
-    //minimumHeight: 365;
-
-    //maximumWidth: 545;
-    //maximumHeight: 365;
+    maximumWidth: screenBorder.width + 40
+    maximumHeight: screenBorder.height + 40
 
     visible: true;
 
@@ -64,7 +61,7 @@ Window {
             width: 400;
             height: 150;
 
-            border.width: 2;
+            border.width: 1;
             border.color: "#000000";
             color: "#c0c0c0";
 

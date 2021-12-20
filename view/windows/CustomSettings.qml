@@ -539,6 +539,7 @@ Window {
                 parentWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
 
                 isGameWon = false;
+                hideWinScreen = false;
 
                 customSettings.close();
             }
