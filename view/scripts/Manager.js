@@ -43,7 +43,8 @@ function clickCell(model, mouseButton, cell) {
         case Qt.LeftButton:
             if(!model.modelData.flagged) {
                 gameController.revealCell(model.index);
-                if(model.modelData.isBomb) {
+
+                if(model.modelData.isBomb) { 
                     cell.buttonImage = "qrc:/cellImages/mineRed.png";
                 }
             }
