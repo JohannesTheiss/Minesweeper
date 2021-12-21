@@ -3,15 +3,13 @@ import QtQuick 2.15
 import "qrc:/includes"
 
 /* @parameters
- * id: identifier for TextLabel                         (e.g. id: nameLabel;)
+ * id: identifier for TextLabel                         (e.g. id: flagsLabel;)
  * width: width of the TextLabel                        (e.g. width: 100;)
- * text: text that should be shown in the TextLabel     (e.g. text: "Name:";)
+ * text: text that should be shown in the TextLabel     (e.g. text: "099";)
  */
 Text {
     font.family: Style.font;
-    font.pointSize: Style.textSize;
+    font.pointSize: Style.largeFontSize;
     color: Style.fontColor;
-//    verticalAlignment: Text.AlignVCenter;
     clip: true;
-//    elide: Text.ElideRight;
 }

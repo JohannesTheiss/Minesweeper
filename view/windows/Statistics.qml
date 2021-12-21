@@ -2,8 +2,9 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-import "qrc:/text"
 import "qrc:/includes"
+import "qrc:/text"
+import "qrc:/popups"
 
 import "qrc:/scripts/Adapter.js" as Adapter
 
@@ -30,7 +31,6 @@ Window {
 
         width: headerRow.width + headerRow.anchors.leftMargin*2;
         height: 325
-
         
         x: 20;
         y: 20;
@@ -49,84 +49,11 @@ Window {
             text: "Statistics";
         }
 
-        Rectangle {
-            id: resetAccept;
+        ResetPopup {
+            id: resetPopup;
 
-            anchors.centerIn: parent;
-            z: 90;
-
-            width: 400;
-            height: 150;
-
-            border.width: 1;
-            border.color: "#000000";
-            color: "#c0c0c0";
-
-            visible: false;
-
-            TextLabel {
-                anchors.centerIn: parent;
-
-                horizontalAlignment: Text.AlignHCenter;
-
-                text: "You are about to delete all saved statistics.\nAre you sure?";
-            }
-
-            Button {
-                id: acceptButton
-
-                anchors.right: cancelButton.left;
-                anchors.bottom: parent.bottom;
-
-                anchors.rightMargin: 10
-                anchors.bottomMargin: 10;
-
-                width: 100;
-                height: 30;
-
-                text: "Accept";
-
-                background: Rectangle {
-                    anchors.fill: parent;
-
-                    color: "#f5f5f5";
-                }
-
-                onClicked: {
-                    resetAccept.visible = false;
-                    scrollview.enabled = true;
-                    resetButton.enabled = true;
-
-                    statisticsController.resetStatistics();
-                }
-            }
-
-            Button {
-                id: cancelButton
-
-                anchors.right: parent.right;
-                anchors.bottom: parent.bottom;
-
-                anchors.rightMargin: 10
-                anchors.bottomMargin: 10;
-
-                width: 100;
-                height: 30;
-
-                text: "Cancel";
-
-                background: Rectangle {
-                    anchors.fill: parent;
-
-                    color: "#f5f5f5";
-                }
-
-                onClicked: {
-                    resetAccept.visible = false;
-                    scrollview.enabled = true;
-                    resetButton.enabled = true;
-                }
-            }
+            passedScrollview: scrollview;
+            passedButton: resetButton;
         }
 
         Row {
@@ -145,7 +72,6 @@ Window {
 
                 font.pointSize: 10;
                 rightPadding: 100;
-
                 text: "Mode"
             }
 
@@ -153,7 +79,6 @@ Window {
                 id: timeLabel
 
                 font.pointSize: 10;
-
                 text: "Best Time"
             }
 
@@ -161,7 +86,6 @@ Window {
                 id: gamesLabel
 
                 font.pointSize: 10;
-
                 text: "Games Played"
             }
 
@@ -169,7 +93,6 @@ Window {
                 id: wonLabel
 
                 font.pointSize: 10;
-
                 text: "Games Won"
             }
 
@@ -177,7 +100,6 @@ Window {
                 id: lostLabel
 
                 font.pointSize: 10;
-
                 text: "Games Lost"
             }
         }
@@ -193,59 +115,6 @@ Window {
             anchors.right: headerRow.right;
 
             color: "#000000";
-        }
-
-        Component {
-            id: statsDelegate
-
-            Item {
-                id: ma
-
-                height: modeStat.height;
-
-                TextLabel {
-                    id: modeStat;
-
-                    font.pointSize: 10;
-                    text: Adapter.getConfigurationString(model.modelData.numberOfRows, model.modelData.numberOfColumns, model.modelData.numberOfMines);
-                }
-
-                TextLabel {
-                    id: timeStat;
-
-                    x: modeLabel.width + headerRow.spacing
-
-                    font.pointSize: 10;
-                    text: model.modelData.numberOfWins !== 0 ? Adapter.getMinutesFromSeconds(model.modelData.bestTime) : "-";
-                }
-
-                TextLabel {
-                    id: gamesStat;
-
-                    x: timeStat.x + timeLabel.width + headerRow.spacing;
-
-                    font.pointSize: 10;
-                    text: model.modelData.numberOfGamesPlayed;
-                }
-
-                TextLabel {
-                    id: wonStat;
-
-                    x: gamesStat.x + gamesLabel.width + headerRow.spacing;
-
-                    font.pointSize: 10;
-                    text: model.modelData.numberOfWins;
-                }
-
-                TextLabel {
-                    id: lostStat;
-
-                    x: wonStat.x + wonLabel.width + headerRow.spacing;
-
-                    font.pointSize: 10;
-                    text: model.modelData.numberOfDefeats;
-                }
-            }
         }
 
      ScrollView {
@@ -268,7 +137,13 @@ Window {
 
                 model: statisticsModel.statisticEntryModelList;
 
-                delegate: statsDelegate;
+                delegate: StatsDelegate {
+                    headerR: headerRow;
+                    modeL: modeLabel;
+                    timeL: timeLabel;
+                    gamesL: gamesLabel;
+                    wonL: wonLabel;
+                }
             }
         }
         
@@ -293,7 +168,7 @@ Window {
             }
 
             onClicked: {
-                resetAccept.visible = true;
+                resetPopup.visible = true;
                 scrollview.enabled = false;
                 resetButton.enabled = false;
             }

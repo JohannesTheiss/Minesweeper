@@ -20,6 +20,9 @@
     </qresource>
     <qresource prefix="/controls">
         <file alias="ImageButton.qml">view/components/controls/ImageButton.qml</file>
+        <file alias="MinesweeperMenuBar.qml">view/components/controls/MinesweeperMenuBar.qml</file>
+        <file alias="CustomRadioButton.qml">view/components/controls/CustomRadioButton.qml</file>
+        <file alias="CustomMouseArea.qml">view/components/controls/CustomMouseArea.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="endButton.png">view/images/endButton.png</file>
@@ -36,10 +39,15 @@
         <file alias="questionTransparent.png">view/images/questionTransparent.png</file>
         <file alias="timerTransparent.png">view/images/timerTransparent.png</file>
     </qresource>
+    <qresource prefix="/popups">
+        <file alias="WinPopup.qml">view/components/popups/WinPopup.qml</file>
+        <file alias="ResetPopup.qml">view/components/popups/ResetPopup.qml</file>
+    </qresource>
     <qresource prefix="/text">
         <file alias="TextBox.qml">view/components/text/TextBox.qml</file>
         <file alias="TextLabel.qml">view/components/text/TextLabel.qml</file>
         <file alias="InputBox.qml">view/components/text/InputBox.qml</file>
+        <file alias="StatsDelegate.qml">view/components/text/StatsDelegate.qml</file>
     </qresource>
     <qresource prefix="/includes">
         <file alias="qmldir">view/includes/qmldir</file>

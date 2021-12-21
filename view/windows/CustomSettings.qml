@@ -2,15 +2,19 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-import "qrc:/text"
+import "qrc:/controls"
 import "qrc:/includes"
+import "qrc:/text"
+
+import "qrc:/scripts/Manager.js" as Manager
 
 Window {
     id: customSettings
 
-    property string boardSize;
+    property string difficulty;
 
     property var parentWindow;
+    property var parentStatusBar;
 
     modality: Qt.WindowModal;
 
@@ -32,19 +36,19 @@ Window {
     Component.onCompleted: {
         if (gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10) {
             beginnerRadio.checked = true;
-            boardSize = "beginner";
+            difficulty = "beginner";
         }
         else if (gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40) {
             intermediateRadio.checked = true;
-            boardSize = "intermediate";
+            difficulty = "intermediate";
         }
         else if (gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99) {
             expertRadio.checked = true;
-            boardSize = "expert";
+            difficulty = "expert";
         }
         else {
             customRadio.checked = true;
-            boardSize = "custom";
+            difficulty = "custom";
         }
     }
 
@@ -71,80 +75,30 @@ Window {
             text: "Difficulty Level";
         }
 
-        MouseArea {
+        //CustomMouseAreas are used to be able to click the whole row next to a RadioButton to check this RadioButton
+        CustomMouseArea {
             id: maBeginner;
 
-            width: 430;
-            height: beginnerLabel.height;
-
-            x: beginnerRadio.x
-            y: beginnerLabel.y
-            z: 90;
-
-            onClicked: {
-                if(!beginnerRadio.checked) {
-                    beginnerRadio.toggle();
-                    beginnerRadio.onClicked();
-                    beginnerRadio.forceActiveFocus();
-                }
-            }
+            radioButton: beginnerRadio;
         }
 
-        MouseArea {
+        CustomMouseArea {
             id: maIntermediate;
 
-            width: 430;
-            height: intermediateLabel.height;
-
-            x: intermediateRadio.x
-            y: intermediateLabel.y
-            z: 90;
-
-            onClicked: {
-                if(!intermediateRadio.checked) {
-                    intermediateRadio.toggle();
-                    intermediateRadio.onClicked();
-                    intermediateRadio.forceActiveFocus();
-                }
-            }
+            radioButton: intermediateRadio;
         }
 
-        MouseArea {
+        CustomMouseArea {
             id: maExpert;
 
-            width: 430;
-            height: expertLabel.height;
-
-            x: expertRadio.x
-            y: expertLabel.y
-            z: 90;
-
-            onClicked: {
-                if(!expertRadio.checked) {
-                    expertRadio.toggle();
-                    expertRadio.onClicked();
-                    expertRadio.forceActiveFocus();
-                }
-            }
+            radioButton: expertRadio;
         }
 
-        MouseArea {
+        CustomMouseArea {
             id: maCustom;
 
             width: 110;
-            height: customLabel.height;
-
-            x: customRadio.x
-            y: customLabel.y
-            z: 90;
-
-            onClicked: {
-                if(!customRadio.checked) {
-                    customRadio.toggle();
-                    customRadio.onClicked();
-                    customRadio.forceActiveFocus();
-                }
-            }
+            radioButton: customRadio;
         }
 
         Grid {
@@ -159,38 +113,11 @@ Window {
             columnSpacing: 15;
             rowSpacing: 10;
 
-            RadioButton {
-                id: beginnerRadio
-
-                implicitWidth: 20
-                implicitHeight: 20
-
-                checked: true
-                x: 15;
-
-                indicator: Rectangle {
-                    id: indicatorRect
-
-                    anchors.fill: parent;
-
-                    radius: 13
-                    border.width: 1;
-                    border.color: "#595959";
-
-                    Rectangle {
-                        width: 10
-                        height: 10
-
-                        anchors.centerIn: parent;
-
-                        radius: 7
-                        color: "#595959";
-                        visible: beginnerRadio.checked
-                    }
-                }
+            CustomRadioButton {
+                id: beginnerRadio;
 
                 onClicked: {
-                    boardSize = "beginner";
+                    difficulty = "beginner";
                 }
             }
 
@@ -224,35 +151,11 @@ Window {
                 text: "10 Mines";
             }
 
-            RadioButton {
-                id: intermediateRadio
-
-                implicitWidth: 20
-                implicitHeight: 20
-
-                indicator: Rectangle {
-                    id: indicatorRect2
-
-                    anchors.fill: parent;
-
-                    radius: 13
-                    border.width: 1;
-                    border.color: "#595959";
-
-                    Rectangle {
-                        width: 10
-                        height: 10
-
-                        anchors.centerIn: parent;
-
-                        radius: 7
-                        color: "#595959";
-                        visible: intermediateRadio.checked
-                    }
-                }
+            CustomRadioButton {
+                id: intermediateRadio;
 
                 onClicked: {
-                    boardSize = "intermediate";
+                    difficulty = "intermediate";
                 }
             }
 
@@ -286,35 +189,11 @@ Window {
                 text: "40 Mines";
             }
 
-            RadioButton {
-                id: expertRadio
-
-                implicitWidth: 20
-                implicitHeight: 20
-
-                indicator: Rectangle {
-                    id: indicatorRect3
-
-                    anchors.fill: parent;
-
-                    radius: 13
-                    border.width: 1;
-                    border.color: "#595959";
-
-                    Rectangle {
-                        width: 10
-                        height: 10
-
-                        anchors.centerIn: parent;
-
-                        radius: 7
-                        color: "#595959";
-                        visible: expertRadio.checked
-                    }
-                }
+            CustomRadioButton {
+                id: expertRadio;
 
                 onClicked: {
-                    boardSize = "expert";
+                    difficulty = "expert";
                 }
             }
 
@@ -348,35 +227,11 @@ Window {
                 text: "99 Mines";
             }
 
-            RadioButton {
-                id: customRadio
-
-                implicitWidth: 20
-                implicitHeight: 20
-
-                indicator: Rectangle {
-                    id: indicatorRect4
-
-                    anchors.fill: parent;
-
-                    radius: 13
-                    border.width: 1;
-                    border.color: "#595959";
-
-                    Rectangle {
-                        width: 10
-                        height: 10
-
-                        anchors.centerIn: parent;
-
-                        radius: 7
-                        color: "#595959";
-                        visible: customRadio.checked
-                    }
-                }
+            CustomRadioButton {
+                id: customRadio;
 
                 onClicked: {
-                    boardSize = "custom";
+                    difficulty = "custom";
                 }
             }
 
@@ -392,6 +247,8 @@ Window {
         }
 
         Grid {
+            id: customGrid;
+
             leftPadding: 60;
 
             columnSpacing: 10;
@@ -425,7 +282,7 @@ Window {
                 onFocusChanged: {
                     if(focus) {
                         customRadio.checked = true;
-                        boardSize = "custom";
+                        difficulty = "custom";
                     }
                 }
             }
@@ -453,7 +310,7 @@ Window {
                 onFocusChanged: {
                     if(focus) {
                         customRadio.checked = true;
-                        boardSize = "custom";
+                        difficulty = "custom";
                     }
                 }
             }
@@ -481,7 +338,7 @@ Window {
                 onFocusChanged: {
                     if(focus) {
                         customRadio.checked = true;
-                        boardSize = "custom";
+                        difficulty = "custom";
                     }
                 }
             }
@@ -508,7 +365,7 @@ Window {
             }
 
             onClicked: {
-                switch (boardSize)
+                switch (difficulty)
                 {
                     case "beginner":
                         gameController.setGameMode(9, 9, 10);
@@ -529,17 +386,8 @@ Window {
                         break;
                 }
 
-                parentWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                parentWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                parentWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                parentWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                parentWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                parentWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                isGameWon = false;
-                hideWinScreen = false;
+                Manager.resizeWindow(parentWindow, parentStatusBar);
+                Manager.resetForNewGame(mainWindow);
 
                 customSettings.close();
             }

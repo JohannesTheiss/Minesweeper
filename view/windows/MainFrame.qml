@@ -10,6 +10,7 @@ import Backend.Game 1.0
 
 import "qrc:/controls"
 import "qrc:/includes"
+import "qrc:/popups"
 import "qrc:/text"
 
 import "qrc:/scripts/Adapter.js" as Adapter
@@ -20,14 +21,14 @@ ApplicationWindow {
 
     property double sizeFactor: 1.0;
 
-    property bool hideWinScreen: false;
+    property bool hideWinPopup: false;
 
     property bool isGameWon: false;
     property int bestTimeForGameMode: 0;
 
     Component.onCompleted: {
         // check if new size scaling is set (from backend side)
-        Manager.updateSizeScaling();
+        Manager.updateSizeScaling(mainWindow, statusBar);
     }
 
     Connections {
@@ -39,170 +40,15 @@ ApplicationWindow {
         }
     }
 
-    MenuBar {
+    MinesweeperMenuBar {
         id: menuBar;
 
-        Menu {
-            title: qsTr("&Game");
-
-            MenuItem {
-                icon.source: "qrc:/cellImages/empty.png";
-
-                checkable: true;
-                checked: gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10;
-
-                text: qsTr("&Beginner");
-                onTriggered: {
-                    gameController.setGameMode(9, 9, 10);
-
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    isGameWon = false;
-                    hideWinScreen = false;
-                }
-            }
-            MenuItem {
-                icon.source: "qrc:/cellImages/mine.png";
-
-                checkable: true;
-                checked: gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40;
-
-                text: qsTr("&Intermediate");
-                onTriggered: {
-                    gameController.setGameMode(16, 16, 40);
-
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    isGameWon = false;
-                    hideWinScreen = false;
-                }
-            }
-            MenuItem {
-                icon.source: "qrc:/cellImages/mineRed.png";
-
-                checkable: true;
-                checked: gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99;
-
-                text: qsTr("&Expert");
-                onTriggered: {
-                    gameController.setGameMode(16, 30, 99);
-
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    isGameWon = false;
-                    hideWinScreen = false;
-                }
-            }
-            MenuItem {
-                text: qsTr("&Custom...")
-
-                onTriggered: {
-                    Manager.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml",  { parentWindow: mainWindow });
-                }
-            }
-
-            MenuSeparator { }
-
-            Menu {
-                title: qsTr("&Size");
-
-                MenuItem {
-                    checkable: true;
-                    checked: gameModel.scaling === SizeScaling.SMALL
-
-                    text: qsTr("&Small")
-                    onTriggered: gameController.setScaling(SizeScaling.SMALL);
-                }
-
-                MenuItem {
-                    checkable: true;
-                    checked: gameModel.scaling === SizeScaling.MEDIUM
-
-                    text: qsTr("&Medium")
-                    onTriggered: gameController.setScaling(SizeScaling.MEDIUM);
-                }
-
-                MenuItem {
-                    checkable: true;
-                    checked: gameModel.scaling === SizeScaling.LARGE
-
-                    text: qsTr("&Large")
-                    onTriggered: gameController.setScaling(SizeScaling.LARGE);
-
-                }
-
-                Connections {
-                    target: gameModel
-                    function onScalingChanged() { Manager.updateSizeScaling(); }
-                }
-            }
-        }
-
-        Menu {
-            title: qsTr("&Extras")
-
-            MenuItem {
-                icon.source: "qrc:/images/flagTransparent.png";
-                text: qsTr("&Statistics");
-
-                onTriggered: {
-                    Manager.openWindow(mainWindow, "qrc:/windows/Statistics.qml");
-                }
-            }
-
-            MenuItem {
-                icon.source: "qrc:/images/questionTransparent.png";
-                text: qsTr("&Help");
-
-                onTriggered: {
-                    Manager.openWindow(mainWindow, "qrc:/windows/HelpWindow.qml");
-                }
-            }
-        }
-
-        Menu {
-            title: qsTr(gameModel.columns + "x" + gameModel.rows + "  " + gameModel.mineCount + " Mines");
-            enabled: false;
-        }
+        parentWindow: mainWindow;
+        passedStatusBar: statusBar;
     }
-
-    property int nWidth: 30;
-    property int mHeight: 16;
-    property int numOfMines: 99;
 
     title: "Minesweeper";
     visible: true;
-
-    width: topOuterBorder.width;
-    height: leftOuterBorder.height;
-
-    //Minimum Size
-    minimumWidth: topOuterBorder.width;
-    minimumHeight: leftOuterBorder.height;
-
-    maximumWidth: topOuterBorder.width;
-    maximumHeight: leftOuterBorder.height;
 
     color: "#c0c0c0";
 
@@ -226,7 +72,7 @@ ApplicationWindow {
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
 
-            font.pointSize: Style.textSize * sizeFactor;
+            font.pointSize: Style.largeFontSize * sizeFactor;
             font.family: "Consolas";
             color: +text < 0 ? "red" : "blue";
 
@@ -289,7 +135,7 @@ ApplicationWindow {
                     pauseText.visible = false;
                 }
 
-                hideWinScreen = isGameWon = false;
+                hideWinPopup = isGameWon = false;
             }
         }
 
@@ -384,91 +230,11 @@ ApplicationWindow {
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
 
-            font.pointSize: Style.textSize * sizeFactor;
+            font.pointSize: Style.largeFontSize * sizeFactor;
             font.family: "Consolas";
             color: "blue";
 
             text: Adapter.getMinutesFromSeconds(Math.min(gameModel.timePlayed, 5999));
-        }
-    }
-
-    TextLabel {
-        id: pauseText
-
-        width: boardTopBorder.width - 6;
-        height: boardLeftBorder.height - 6;
-
-        anchors.top: boardTopBorder.bottom;
-        anchors.left: boardLeftBorder.right;
-
-        verticalAlignment: Text.AlignVCenter;
-        horizontalAlignment: Text.AlignHCenter;
-
-        color: "blue";
-        fontSizeMode: Text.Fit;
-        font.pointSize: 30;
-
-        visible: false;
-
-        text: "PAUSED";
-    }
-
-    Rectangle {
-        id: winScreen;
-
-        anchors.horizontalCenter: boardTopBorder.horizontalCenter;
-        anchors.verticalCenter: boardLeftBorder.verticalCenter;
-
-        z: 90;
-
-        width: winText.width + viewBoardButton.width + 30;
-        height: winText.height + 20;
-
-        border.width: 1;
-        border.color: "#000000";
-        color: "#c0c0c0";
-
-        visible: isGameWon && !hideWinScreen; //TODO
-
-
-        TextLabel {
-            id: winText
-
-            topPadding: 10;
-            leftPadding: 10;
-
-            font.pointSize: 8.0 * sizeFactor;
-
-            text: (gameModel.timePlayed === bestTimeForGameMode ? "<b>New BEST TIME!</b>" : "<b>You won!</b>") +  "<br><br>" +
-                  "<b>Mode: </b>" + Adapter.getConfigurationString(gameModel.rows, gameModel.columns, gameModel.mineCount) + "<br><br>" +
-                  "<b>Best Time: </b>" + Adapter.getMinutesFromSeconds(bestTimeForGameMode)
-                  + "<br><br>" +
-                  "<b>Your Time: </b>" + Adapter.getMinutesFromSeconds(gameModel.timePlayed);
-        }
-
-        Button {
-            id: viewBoardButton
-
-            anchors.right: winScreen.right;
-            anchors.bottom: winScreen.bottom;
-
-            anchors.rightMargin: 10
-            anchors.bottomMargin: 10;
-
-            width: 100;
-            height: 30;
-
-            text: "View Board";
-
-            background: Rectangle {
-                anchors.fill: parent;
-
-                color: "#f5f5f5";
-            }
-
-            onClicked: {
-                hideWinScreen = true;
-            }
         }
     }
 
@@ -482,7 +248,7 @@ ApplicationWindow {
         anchors.top: statusBar.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#ffffff";
-    }     
+    }
 
     //rechts
     Rectangle {
@@ -506,6 +272,33 @@ ApplicationWindow {
         anchors.bottom: statusBar.top;
         anchors.horizontalCenter: statusBar.horizontalCenter;
         color: "#808080";
+    }
+
+    TextLabel {
+        id: pauseText
+
+        width: boardTopBorder.width - 6;
+        height: boardLeftBorder.height - 6;
+
+        anchors.top: boardTopBorder.bottom;
+        anchors.left: boardLeftBorder.right;
+
+        verticalAlignment: Text.AlignVCenter;
+        horizontalAlignment: Text.AlignHCenter;
+
+        color: "blue";
+        fontSizeMode: Text.Fit;
+        font.pointSize: 30;
+
+        visible: false;
+
+        text: "PAUSED";
+    }
+
+    WinPopup {
+        parentWindow: mainWindow;
+        topAnchor: boardTopBorder;
+        leftAnchor: boardLeftBorder;
     }
 
     //links
