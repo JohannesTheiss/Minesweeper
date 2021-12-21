@@ -4,7 +4,10 @@
 namespace controllers
 {
 
-
+// <summary> Custom constructor for StatisticsController-objects
+//           it creates the JsonManager and loads the statistics </summary>
+// <param name="statisticsObserver"> Pointer to a StatisticsObserver-object </param>
+// <param name="parent"> Optional pointer to a parent object </param>
 StatisticsController::StatisticsController(observers::StatisticsObserver *statisticsObserver,
     QObject *parent)
     : QObject(parent),
@@ -12,15 +15,20 @@ StatisticsController::StatisticsController(observers::StatisticsObserver *statis
 {
     mJsonManager = new data::JsonManager("statistics.json");
 
-    // load from json
+    // load all statistic from json
     loadStatistics();
 }
 
+// <summary> Custom destructor for StatisticsController-objects
+//           it deletes the JsonManager</summary>
 StatisticsController::~StatisticsController()
 {
     delete mJsonManager;
 }
 
+// <summary> Load all statistics from JSON
+//           and if it is empty, create the default game mode statistics </summary>
+// <returns> Nothing </returns>
 void StatisticsController::loadStatistics()
 {
     bool jsonIsEmpty = true;
@@ -74,7 +82,14 @@ void StatisticsController::loadStatistics()
                 mStatisticsObserver->statisticEntryModelListRef());
 }
 
-void StatisticsController::submitStatistics(const quint64 numberOfRows,
+// <summary> Create a new statistic with given the information </summary>
+// <param name="numberOfRows"> The number of rows for this statistic </param>
+// <param name="numberOfColumns"> The number of columns for this statistic </param>
+// <param name="numberOfMines"> The number of mines for this statistic </param>
+// <param name="timePlayed"> The time played for this statistic </param>
+// <param name="win"> Is 'true' if the game is won, else 'false' </param>
+// <returns> Nothing </returns>
+void StatisticsController::createStatistic(const quint64 numberOfRows,
     const quint64 numberOfColumns,
     const quint64 numberOfMines,
     const quint64 timePlayed,
@@ -132,6 +147,8 @@ void StatisticsController::submitStatistics(const quint64 numberOfRows,
     emit gameEnded(indexEntryModelPair.second->bestTime(), win); 
 }
 
+// <summary> Reset all statistic and create the default game mode statistics </summary>
+// <returns> Nothing </returns>
 void StatisticsController::resetStatistics()
 {
     mStatisticsObserver->statisticEntryModelListRef().clear();
@@ -143,21 +160,33 @@ void StatisticsController::resetStatistics()
                 mStatisticsObserver->statisticEntryModelListRef());
 }
 
+// <summary> Increase the number of wins by one </summary>
+// <param name="statisticEntryModel"> The statistics entry model to save the new win count to </param>
+// <returns> Nothing </returns>
 void StatisticsController::increaseNumberOfWins(models::StatisticEntryModel *statisticEntryModel)
 {
     statisticEntryModel->setNumberOfWins(statisticEntryModel->numberOfWins() + 1);
 }
 
+// <summary> Increase the number of defeats by one </summary>
+// <param name="statisticEntryModel"> The statistics entry model to save the new defeat count to </param>
+// <returns> Nothing </returns>
 void StatisticsController::increaseNumberOfDefeats(models::StatisticEntryModel *statisticEntryModel)
 {
     statisticEntryModel->setNumberOfDefeats(statisticEntryModel->numberOfDefeats() + 1);
 }
 
+// <summary> Increase the number of games played by one </summary>
+// <param name="statisticEntryModel"> The statistics entry model to save the new games played count to </param>
+// <returns> Nothing </returns>
 void StatisticsController::increaseNumberOfGamesPlayed(models::StatisticEntryModel *statisticEntryModel)
 {
     statisticEntryModel->setNumberOfGamesPlayed(statisticEntryModel->numberOfGamesPlayed() + 1);
 }
 
+// <summary> Save a new statistics object to JSON </summary>
+// <param name="indexEntryModelPair"> Holds the index in the JSON-Array to insert the StatisticEntryModel </param>
+// <returns> Nothing </returns>
 void StatisticsController::save(const QPair<quint64, models::StatisticEntryModel*> &indexEntryModelPair)
 {
     models::StatisticEntryModel *statisticEntryModel = indexEntryModelPair.second;
@@ -167,6 +196,10 @@ void StatisticsController::save(const QPair<quint64, models::StatisticEntryModel
     });
 }
 
+// <summary> Maps the StatisticEntryModel to a QJsonObject </summary>
+// <param name="statisticEntryModel"> StatisticEntryModel that will be mapped </param>
+// <param name="jsonModel"> The result QJsonObject with the StatisticEntryModel information </param>
+// <returns> Nothing </returns>
 void StatisticsController::mapStatisticEntryModelToJsonObject(models::StatisticEntryModel *statisticEntryModel, 
         QJsonObject &jsonModel)
 {
@@ -192,10 +225,17 @@ void StatisticsController::mapStatisticEntryModelToJsonObject(models::StatisticE
     jsonModel.insert("numberOfMines", QString::number(statisticEntryModel->numberOfMines()));
 }
 
+// <summary> Create the default game mode statistic,
+//           for Beginner, Intermediate and Expert </summary>
+// <returns> Nothing </returns>
 void StatisticsController::createDefaultGameModeStatistics()
 {
     const int n = 3;
-    models::GameMode keys[] = {{9, 9, 10}, {16, 16, 40}, {16, 30, 99}};
+    models::GameMode keys[] = {
+        {9, 9, 10},   // Beginner
+        {16, 16, 40}, // Intermediate
+        {16, 30, 99}  // Expert
+    };
     models::StatisticEntryModel *entryModels[n];
 
     for(int i = 0; i < n; ++i)
@@ -205,6 +245,7 @@ void StatisticsController::createDefaultGameModeStatistics()
         entryModels[i] = defaultGameModeStatistics.second;
     }
 
+    // save the defaultGameModeStatistics to JSON
     mJsonManager->replaceArray(mJsonObjectName, [&](QJsonArray &jsonArray)
     {
         // save the default game mode statistics
@@ -218,6 +259,13 @@ void StatisticsController::createDefaultGameModeStatistics()
     });
 }
 
+// <summary> Create a new game mode statistic with given information </summary>
+// <param name="gameMode"> The game mode for the statistic </param>
+// <param name="bestTime"> Optional if there is a new best time</param>
+// <param name="numberOfWins"> Optional the number of wins in this game mode </param>
+// <param name="numberOfDefeats"> Optional the number of defeats in this game mode </param>
+// <param name="numberOfGamesPlayed"> Optional the number of games played in the game mode </param>
+// <returns> QPair of the index in the JSON-Array and the StatisticEntryModel-object which is displayed </returns>
 QPair<quint64, models::StatisticEntryModel*> StatisticsController::createGameModeStatistics(models::GameMode &gameMode,
     const quint64 bestTime,
     const quint64 numberOfWins,
@@ -225,10 +273,10 @@ QPair<quint64, models::StatisticEntryModel*> StatisticsController::createGameMod
     const quint64 numberOfGamesPlayed)
 {
     models::StatisticEntryModel *statisticEntryModel = new models::StatisticEntryModel(
-        bestTime, // best time
-        numberOfWins, // wins
-        numberOfDefeats, // defeats
-        numberOfGamesPlayed, // gamesPlayed
+        bestTime,
+        numberOfWins,
+        numberOfDefeats,
+        numberOfGamesPlayed,
         gameMode.rows,
         gameMode.columns,
         gameMode.mines,
@@ -250,5 +298,3 @@ QPair<quint64, models::StatisticEntryModel*> StatisticsController::createGameMod
 
 
 } // namespace controllers
-
-

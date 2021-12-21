@@ -4,6 +4,10 @@
 namespace controllers
 {
 
+// <summary> Custom constructor for GameController-objects
+//           it creates a timer and loads/sets the last game configuration </summary>
+// <param name="gameObserver"> Pointer to a GameObserver-object </param>
+// <param name="parent"> Optional pointer to a parent object </param>
 GameController::GameController(observers::GameObserver *gameObserver, QObject *parent)
     : QObject(parent),
       mFirstReveal(true),
@@ -32,13 +36,14 @@ GameController::GameController(observers::GameObserver *gameObserver, QObject *p
         mines = configuration.value("mines").toString().toULongLong();
 
         // load and set the size scaling
-        int loadedScaling = configuration.value("scaling").toInt();
-        setScaling(loadedScaling);
+        setScaling(configuration.value("scaling").toInt());
     });
 
     setGameMode(rows, columns, mines);
 }
 
+// <summary> Custom destructor for GameController-objects
+//           it saves the current game configuration to JSON</summary>
 GameController::~GameController()
 {
     mGameStarted = false;
@@ -62,11 +67,11 @@ GameController::~GameController()
     delete mJsonManager;
 }
 
-void GameController::updateTime()
-{
-    mGameObserver->setTimePlayed(mGameObserver->timePlayed() + 1);
-}
-
+// <summary> Reveal the cell at the given index,
+//           check if the game is won or lost
+//           and may reveal surrounding cells as well</summary>
+// <param name="index"> Index of cell to reveal </param>
+// <returns> Nothing </returns>
 void GameController::revealCell(const quint64 index)
 {
     models::CellModel* cell = mGameObserver->grid().at(index);
@@ -108,6 +113,8 @@ void GameController::revealCell(const quint64 index)
     }
 }
 
+// <summary> Reveal all cells on the grid </summary>
+// <returns> Nothing </returns>
 void GameController::revealAllCells()
 {
     foreach(models::CellModel* cell, mGameObserver->grid())
@@ -116,6 +123,9 @@ void GameController::revealAllCells()
     }
 }
 
+// <summary> Toggle the flag within a cell at the given index </summary>
+// <param name="index"> Index of a cell to toggle the flag at </param>
+// <returns> Nothing </returns>
 void GameController::toggleFlagInCell(const quint64 index)
 {
     models::CellModel* cell = mGameObserver->grid().at(index);
@@ -137,6 +147,11 @@ void GameController::toggleFlagInCell(const quint64 index)
     }
 }
 
+// <summary> Initialize the game by 
+//           end the current game,
+//           reset the flag count, time played
+//           and generate a new grid </summary>
+// <returns> Nothing </returns>
 void GameController::initGame()
 {
     endGame(false);
@@ -150,6 +165,10 @@ void GameController::initGame()
     generateGrid();
 }
 
+// <summary> Start the game by
+//           reset mFirstReveal, mGameStarted
+//           and start the timer </summary>
+// <returns> Nothing </returns>
 void GameController::startGame()
 {
     if(!mGameStarted)
@@ -161,6 +180,8 @@ void GameController::startGame()
     }
 }
 
+// <summary> Toggle the game state between pause and play </summary>
+// <returns> Nothing </returns>
 void GameController::togglePauseGame()
 {
     if(mGameStarted)
@@ -176,6 +197,10 @@ void GameController::togglePauseGame()
     }
 }
 
+// <summary> End the current game 
+//           and submit the needed information to the statistics controller </summary>
+// <param name="wonOrLost"> Is 'true' if the game is won, otherwise 'false' </param>
+// <returns> Nothing </returns>
 void GameController::endGame(const bool wonOrLost)
 {
     if(mGameStarted)
@@ -191,6 +216,11 @@ void GameController::endGame(const bool wonOrLost)
     }
 }
 
+// <summary> Set a new game mode and initialize it </summary>
+// <param name="numberOfRows"> The new number of rows </param>
+// <param name="numberOfColumns"> The new number of columns </param>
+// <param name="numberOfMines"> The new number of mines </param>
+// <returns> Nothing </returns>
 void GameController::setGameMode(quint64 numberOfRows,
                                  quint64 numberOfColumns,
                                  quint64 numberOfMines)
@@ -219,11 +249,24 @@ void GameController::setGameMode(quint64 numberOfRows,
     initGame();
 }
 
+// <summary> Set the scaling of the application </summary>
+// <param name="scaling"> Enum for the scaling </param>
+// <returns> Nothing </returns>
 void GameController::setScaling(const int scaling)
 {
     mGameObserver->setScaling(models::SizeScaling(scaling));
 }
 
+// <summary> Increase the current time played by one </summary>
+// <returns> Nothing </returns>
+void GameController::updateTime()
+{
+    mGameObserver->setTimePlayed(mGameObserver->timePlayed() + 1);
+}
+
+// <summary> Generate a new grid by 
+//           the rows and columns from the GameModel </summary>
+// <returns> Nothing </returns>
 void GameController::generateGrid()
 {
     quint64 numberOfCells = mGameObserver->rows() * mGameObserver->columns();
@@ -232,16 +275,24 @@ void GameController::generateGrid()
     QVector<models::CellModel *> grid(numberOfCells);
     for (int i = 0; i < grid.size(); ++i)
     {
-        // set CellModel(hidden = true, flagged = false, isBomb = false, surroundingBombs = 0)
-        grid[i] = new models::CellModel(true, false, false, 0);
+        grid[i] = new models::CellModel(
+                true,  // hidden
+                false, // flagged
+                false, // isBomb
+                0      // surroundingBombs
+                );
     }
 
-    // set the grid
+    // set the grid to the model
     mGameObserver->setGrid(grid);
 
+    // generate all mines for the new grid
     generateMines();
 }
 
+// <summary> Generate all mines for the grid by 
+//           the mine counter from the GameModel </summary>
+// <returns> Nothing </returns>
 void GameController::generateMines()
 {
     quint64 numberOfCells = mGameObserver->rows() * mGameObserver->columns();
@@ -263,15 +314,17 @@ void GameController::generateMines()
         // set bomb
         mGameObserver->grid().at(mineIndex)->setIsBomb(true);
 
-        // culc. the values surrounding cells
+        // increase the value of the surrounding cell by one
         updateSurroundingCell(mineIndex,
                 std::bind(&GameController::increaseSurroundingBombsCount, this, std::placeholders::_1));
     }
 
-    // update the mineIndices of the model
+    // update the mineIndices
     mMineIndices = mineIndices;
 }
 
+// <summary> Add one new mine at random position in the current grid </summary>
+// <returns> Index of the new mine </returns>
 quint64 GameController::addMine()
 {
     quint64 numberOfCells = mGameObserver->rows() * mGameObserver->columns();
@@ -309,6 +362,10 @@ quint64 GameController::addMine()
     return newMineIndex;
 }
 
+// <summary> Remove one mine at a given index 
+//           from the current grid </summary>
+// <param name="mineIndex"> Index of the mine that will be removed</param>
+// <returns> Nothing </returns>
 void GameController::removeMine(const quint64 mineIndex)
 {
     // change cell
@@ -322,28 +379,44 @@ void GameController::removeMine(const quint64 mineIndex)
             std::bind(&GameController::decreaseSurroundingBombsCount, this, std::placeholders::_1));
 }
 
+// <summary> Increase the surrounding bombs count
+//           of a cell at a given index by one</summary>
+// <param name="cellIndex"> Index of the cell that will get the increase </param>
+// <returns> Nothing </returns>
 void GameController::increaseSurroundingBombsCount(const quint64 cellIndex)
 {
     models::CellModel *cell = mGameObserver->grid().at(cellIndex);
     cell->setSurroundingBombs(cell->surroundingBombs() + 1);
 }
 
+// <summary> Decrease the surrounding bombs count
+//           of a cell at a given index by one</summary>
+// <param name="cellIndex"> Index of the cell that will get the decrease </param>
+// <returns> Nothing </returns>
 void GameController::decreaseSurroundingBombsCount(const quint64 cellIndex)
 {
     models::CellModel *cell = mGameObserver->grid().at(cellIndex);
     cell->setSurroundingBombs(cell->surroundingBombs() - 1);
 }
 
+// <summary> Increase the flag count by one </summary>
+// <returns> Nothing </returns>
 void GameController::increaseFlagCount()
 {
     mGameObserver->setFlagCount(mGameObserver->flagCount() + 1);
 }
 
+// <summary> Decrease the flag count by one </summary>
+// <returns> Nothing </returns>
 void GameController::decreaseFlagCount()
 {
     mGameObserver->setFlagCount(mGameObserver->flagCount() - 1);
 }
 
+// <summary> Update all surrounding cells of a given index 
+//           with a given update function </summary>
+// <param name="cellIndex"> Cell index to update the surrounding cells </param>
+// <returns> Nothing </returns>
 void GameController::updateSurroundingCell(const quint64 cellIndex,
     const std::function<void(quint64)> updateFunction)
 {
@@ -405,14 +478,13 @@ void GameController::updateSurroundingCell(const quint64 cellIndex,
     }
 }
 
+// <summary> Check if the game is won </summary>
+// <returns> Nothing </returns>
 void GameController::checkForWin()
 {
-    // check if the game is won now
     if(mGameObserver->flagCount() == 0)
     {
-        qDebug() << "check for win";
         bool won = true;
-
         for(int i = 0; i < mGameObserver->grid().size(); i++)
         {
             models::CellModel *cell = mGameObserver->grid().at(i);
@@ -423,21 +495,13 @@ void GameController::checkForWin()
             }
         }
 
-        auto t1 = std::chrono::high_resolution_clock::now();
         if(won)
         {
             endGame(won); // game won = true
-            qDebug() << "u won the game";
         }
-
-        auto t2 = std::chrono::high_resolution_clock::now();
-        auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-        std::cout << "checkForWin = " << ms_int.count() << " ms"<< std::endl;
     }
 }
 
 
 } // namespace controllers
-
-
 

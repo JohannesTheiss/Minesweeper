@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
                 const quint64,
                 const quint64,
                 const quint64,
-                const bool)), &statisticsController, SLOT(submitStatistics(const quint64,
+                const bool)), &statisticsController, SLOT(createStatistic(const quint64,
                 const quint64,
                 const quint64,
                 const quint64,
