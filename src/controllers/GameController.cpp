@@ -22,7 +22,7 @@ GameController::GameController(observers::GameObserver *gameObserver, QObject *p
     // create timer and connect it to a slot
     timer = new QTimer(this);;
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
-    timer->setInterval(1000); // 1 ms
+    timer->setInterval(1000); // 1 s
 
     // load last configuration from json
     mJsonManager = new data::JsonManager("gameConfiguration.json");
@@ -332,12 +332,12 @@ quint64 GameController::addMine()
     do 
     {
         mineAlreadyExists = false;
-        newMineIndex = numberOfCells * (rand() / (RAND_MAX + 1.0)); // [0, numberOfCells[
+        newMineIndex = numberOfCells * (rand() / (RAND_MAX + 1.0)); // is in [0, numberOfCells[
 
         // check if the new mine indices are already mines
         foreach(quint64 mineIndex, mMineIndices)
         {
-            // min already exists
+            // mine already exists
             if(newMineIndex == mineIndex)
             {
                 mineAlreadyExists = true;

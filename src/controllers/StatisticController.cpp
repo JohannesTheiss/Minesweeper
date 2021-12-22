@@ -230,15 +230,15 @@ void StatisticsController::mapStatisticEntryModelToJsonObject(models::StatisticE
 // <returns> Nothing </returns>
 void StatisticsController::createDefaultGameModeStatistics()
 {
-    const int n = 3;
+    const int numberOfDefaultGameModes = 3;
     models::GameMode keys[] = {
         {9, 9, 10},   // Beginner
         {16, 16, 40}, // Intermediate
         {16, 30, 99}  // Expert
     };
-    models::StatisticEntryModel *entryModels[n];
+    models::StatisticEntryModel *entryModels[numberOfDefaultGameModes];
 
-    for(int i = 0; i < n; ++i)
+    for(int i = 0; i < numberOfDefaultGameModes; ++i)
     {
         QPair<quint64, models::StatisticEntryModel*> defaultGameModeStatistics = createGameModeStatistics(keys[i]);
 
@@ -249,7 +249,7 @@ void StatisticsController::createDefaultGameModeStatistics()
     mJsonManager->replaceArray(mJsonObjectName, [&](QJsonArray &jsonArray)
     {
         // save the default game mode statistics
-        for(int i = 0; i < n; ++i)
+        for(int i = 0; i < numberOfDefaultGameModes; ++i)
         {
             QJsonObject bufferObject;
             mapStatisticEntryModelToJsonObject(entryModels[i], bufferObject);
@@ -266,7 +266,8 @@ void StatisticsController::createDefaultGameModeStatistics()
 // <param name="numberOfDefeats"> Optional the number of defeats in this game mode </param>
 // <param name="numberOfGamesPlayed"> Optional the number of games played in the game mode </param>
 // <returns> QPair of the index in the JSON-Array and the StatisticEntryModel-object which is displayed </returns>
-QPair<quint64, models::StatisticEntryModel*> StatisticsController::createGameModeStatistics(models::GameMode &gameMode,
+QPair<quint64, models::StatisticEntryModel*> StatisticsController::createGameModeStatistics(
+    models::GameMode &gameMode,
     const quint64 bestTime,
     const quint64 numberOfWins,
     const quint64 numberOfDefeats,

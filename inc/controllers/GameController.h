@@ -1,23 +1,18 @@
 #ifndef GAMECONTROLLER_H
 #define GAMECONTROLLER_H
 
+// STL
 #include <random>
 #include <numeric>
 #include <iterator>
-
 #include <iostream>
+
+// QT
+#include <QObject>
 #include <QTimer>
 
-#include <QObject>
-
-#include <QDebug>
-
 #include "../data/JsonManager.h"
-
 #include "observers/GameObserver.h"
-
-#include "../models/CellModel.h"
-#include "../models/GameModel.h"
 
 namespace controllers
 {

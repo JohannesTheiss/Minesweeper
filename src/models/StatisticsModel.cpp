@@ -3,7 +3,7 @@
 namespace models
 {
 
-// <summary> Custom constructor for StatisticsModel-objects</summary>
+// <summary> Custom constructor for StatisticsModel-objects </summary>
 // <param name="statisticEntryModelList"> QList of StatisticEntryModel pointers </param>
 // <param name="parent"> Optional pointer to a parent object </param>
 StatisticsModel::StatisticsModel(QList<models::StatisticEntryModel *> statisticEntryModelList,

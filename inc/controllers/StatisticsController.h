@@ -1,19 +1,14 @@
 #ifndef STATISTICSCONTROLLER_H
 #define STATISTICSCONTROLLER_H
 
+// QT
 #include <QObject>
 #include <QHash> 
 #include <QPair> 
 #include <QString> 
 
-#include <QDebug>
-
 #include "../data/JsonManager.h"
-
 #include "observers/StatisticsObserver.h"
-
-#include "../models/StatisticEntryModel.h"
-#include "../models/StatisticsModel.h"
 #include "../models/GameMode.h"
 
 namespace controllers
@@ -83,7 +78,8 @@ class StatisticsController : public QObject
         void createDefaultGameModeStatistics();
 
         // Create a new game mode statistic with given information 
-        QPair<quint64, models::StatisticEntryModel*> createGameModeStatistics(models::GameMode &gameMode,
+        QPair<quint64, models::StatisticEntryModel*> createGameModeStatistics(
+                models::GameMode &gameMode,
                 const quint64 bestTime = 0,
                 const quint64 numberOfWins = 0,
                 const quint64 numberOfDefeats = 0,

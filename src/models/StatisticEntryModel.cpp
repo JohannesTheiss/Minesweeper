@@ -3,7 +3,7 @@
 namespace models
 {
 
-// <summary> Custom constructor for statisticEntryModel </summary>
+// <summary> Custom constructor for StatisticEntryModel </summary>
 // <param name="bestTime"> quint64 number of seconds that narks the best time
 //                         a user needed to finish the game </param>
 // <param name="numberOfWins"> quint64 number of wins in the current configuration </param>

@@ -3,6 +3,9 @@
 namespace data 
 {
 
+// <summary> Custom constructor JsonManager
+//           it resolve the path to the given JSON-File </summary>
+// <param name="fileName">  </param>
 JsonManager::JsonManager(const QString fileName)
     : mFileName(fileName)
 {
@@ -106,7 +109,6 @@ void JsonManager::save(const QString parent, const std::function<void(QJsonObjec
     // read data if existing
     QJsonDocument document = read(mPathToJson);
     QJsonObject root = document.object();
-    QJsonValue value = root.value(parent);
 
     // create and fill buffer object
     QJsonObject bufferObject;
@@ -169,12 +171,15 @@ void JsonManager::saveValue(QString key, T value) const
     write(mPathToJson, document);
 }
 
+// <summary>Change values within a JSON-Array with a custom change function</summary>
+// <param name="parent">The JSON-Parent of the array </param>
+// <param name="changeFunction">The custom change function</param>
+// <returns>Nothing</returns>
 void JsonManager::changeInArray(QString parent, std::function<void(QJsonArray &)>changeFunction) const
 {
     // read data if existing
     QJsonDocument document = read(mPathToJson);
     QJsonObject root = document.object();
-    //QJsonValue value = root.value(parent);
 
     QJsonValueRef valueRef = root.find(parent).value();
     QJsonArray array = valueRef.toArray(); 
@@ -188,6 +193,12 @@ void JsonManager::changeInArray(QString parent, std::function<void(QJsonArray &)
     write(mPathToJson, document);
 }
 
+// <summary>Create or replace a JSON-Object within a JSON-Array at a given index
+//          and custom append function</summary>
+// <param name="arrayName">The name of the JSON-Array </param>
+// <param name="index">The index of the JSON-Object within the JSON-Array</param>
+// <param name="appendFunction">The custom append function</param>
+// <returns>Nothing</returns>
 void JsonManager::saveToArray(const QString arrayName, const int index, std::function<void(QJsonObject &)> appendFunction) const
 {
     // read data if existing
@@ -247,7 +258,7 @@ void JsonManager::replaceArray(const QString arrayName, const std::function<void
 // <param name="fileName">JSON file name to read the object from</param>
 // <param name="parent">JSON parent to read the object from</param>
 // <param name="loadFunction">Custom load function to read a custom object</param>
-// <returns>Nothing</returns
+// <returns>Nothing</returns>
 void JsonManager::load(const QString parent, const std::function<void(QJsonValue &)> loadFunction) const
 {
     try
@@ -270,6 +281,10 @@ void JsonManager::load(const QString parent, const std::function<void(QJsonValue
     }
 }
 
+// <summary>Load a JSON-Array from file with custom load function</summary>
+// <param name="parent">JSON parent to read the array from</param>
+// <param name="loadFunction">Custom load function to read a array</param>
+// <returns>Nothing</returns>
 void JsonManager::loadArray(const QString parent, const std::function<void(QJsonArray &)> loadFunction) const
 {
     try
@@ -318,7 +333,7 @@ void JsonManager::remove(const QString parent, const std::function<void(QJsonArr
 
     // get reference from the array
     QJsonValueRef valueRef = root.find(parent).value();
-    QJsonArray arr = valueRef.toArray(); 
+    QJsonArray arr = valueRef.toArray();
 
     // make changes
     removeFunction(arr);

@@ -2,7 +2,6 @@
 #define STATISTICSOBSERVER_H
 
 #include <QObject>
-#include <QDebug>
 
 #include "../../models/StatisticEntryModel.h"
 #include "../../models/StatisticsModel.h"
@@ -10,7 +9,7 @@
 namespace observers
 {
 
-// observer-class for the GameModel
+// observer-class for the StatisticsModel
 class StatisticsObserver : public QObject
 {
     Q_OBJECT

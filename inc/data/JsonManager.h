@@ -25,6 +25,10 @@ namespace data
 class JsonManager
 {
     public:
+        /*
+         * Custom constructor JsonManager
+         * it resolve the path to the given JSON-File
+        */
         JsonManager(const QString fileName);
 
         // ### Basic JSON operations ###
@@ -38,7 +42,13 @@ class JsonManager
         template<typename T>
         void saveValue(QString key, T value) const;
 
+        // Change values within a JSON-Array with a custom change function
         void changeInArray(QString parent, std::function<void(QJsonArray &)> changeFunction) const;
+
+        /*
+         * Create or replace a JSON-Object within a JSON-Array at a given index
+         * and custom append function
+         */
         void saveToArray(const QString arrayName, const int index, std::function<void(QJsonObject &)> appendFunction) const;
 
         // Replace a list of objects to JSON to a file with a custom save function

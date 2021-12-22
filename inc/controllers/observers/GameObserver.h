@@ -2,7 +2,6 @@
 #define GAMEOBSERVER_H
 
 #include <QObject>
-#include <QDebug>
 
 #include "../../models/CellModel.h"
 #include "../../models/GameModel.h"

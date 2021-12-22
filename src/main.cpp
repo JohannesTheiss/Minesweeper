@@ -2,20 +2,19 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-
 #include <QObject>
-#include <QVector>
 
-#include <QDebug>
-
+// Models
 #include "../inc/models/CellModel.h"
 #include "../inc/models/GameModel.h"
 #include "../inc/models/StatisticEntryModel.h"
 #include "../inc/models/StatisticsModel.h"
 
+// Observers
 #include "../inc/controllers/observers/GameObserver.h"
 #include "../inc/controllers/observers/StatisticsObserver.h"
 
+// Controllers
 #include "../inc/controllers/GameController.h"
 #include "../inc/controllers/StatisticsController.h"
 
@@ -43,8 +42,6 @@ int main(int argc, char *argv[])
         },
         Qt::QueuedConnection);
 
-    // Connect frontend with backend
-
     // create the GridModel
     QVector<models::CellModel *> grid;
     models::GameModel gameModel(grid, 0, 0, 0, 0, 0, models::SizeScaling::SMALL);
@@ -64,6 +61,8 @@ int main(int argc, char *argv[])
 
     // create the StatisticsController
     controllers::StatisticsController statisticsController(&statisticsObserver);
+
+    // connect gameController.gameEnded with statisticsController.createStatistic
     QObject::connect(&gameController, SIGNAL(gameEnded(const quint64,
                 const quint64,
                 const quint64,
@@ -78,7 +77,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("gameModel", &gameModel);
     engine.rootContext()->setContextProperty("statisticsModel", &statisticsModel);
 
-    // connect enum with view
+    // connect the models::SizeScaling enum with view
     qmlRegisterUncreatableMetaObject(
       models::staticMetaObject, 
       "Backend.Game",
@@ -96,7 +95,8 @@ int main(int argc, char *argv[])
 
     // Start the Application
     int execCode = app.exec();
-
+    
+    // if the Application is closed
     // save the running game as lose
     gameController.endGame(false);
 
