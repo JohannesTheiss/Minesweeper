@@ -2,43 +2,46 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-import "qrc:/text"
 import "qrc:/includes"
+import "qrc:/text"
+import "qrc:/popups"
 
 import "qrc:/scripts/Adapter.js" as Adapter
 
 Window {
-    id: statisticsWindow
+    id: statisticsWindow;
 
     title: "Minesweeper - Statistics";
 
-    width: screenBorder.width + 40
-    height: screenBorder.height + 40
+    property real calcWidth: screenBorder.width + 40;
+    property real calcHeight: screenBorder.height + 40;
 
-    minimumWidth: screenBorder.width + 40
-    minimumHeight: screenBorder.height + 40
+    width: calcWidth;
+    height: calcHeight;
 
-    maximumWidth: screenBorder.width + 40
-    maximumHeight: screenBorder.height + 40
+    minimumWidth: calcWidth;
+    minimumHeight: calcHeight;
+
+    maximumWidth: calcWidth;
+    maximumHeight: calcHeight;
 
     visible: true;
 
-    color: "#c0c0c0";
+    color: Style.windowBackground;
 
     Rectangle {
-        id: screenBorder
+        id: screenBorder;
 
-        width: headerRow.width + headerRow.anchors.leftMargin*2;
-        height: 325
-
+        width: headerRow.width + headerRow.anchors.leftMargin * 2;
+        height: 325;
         
         x: 20;
         y: 20;
 
-        border.width: 1;
-        border.color: "#595959";
+        border.width: Style.borderWidth;
+        border.color: Style.popupRectBorder;
 
-        color: "#c0c0c0";
+        color: Style.windowBackground;
 
         TextBox {
             id: headerLabel;
@@ -49,84 +52,11 @@ Window {
             text: "Statistics";
         }
 
-        Rectangle {
-            id: resetAccept;
+        ResetPopup {                                        //resetPopup is opened when resetButton is clicked
+            id: resetPopup;
 
-            anchors.centerIn: parent;
-            z: 90;
-
-            width: 400;
-            height: 150;
-
-            border.width: 1;
-            border.color: "#000000";
-            color: "#c0c0c0";
-
-            visible: false;
-
-            TextLabel {
-                anchors.centerIn: parent;
-
-                horizontalAlignment: Text.AlignHCenter;
-
-                text: "You are about to delete all saved statistics.\nAre you sure?";
-            }
-
-            Button {
-                id: acceptButton
-
-                anchors.right: cancelButton.left;
-                anchors.bottom: parent.bottom;
-
-                anchors.rightMargin: 10
-                anchors.bottomMargin: 10;
-
-                width: 100;
-                height: 30;
-
-                text: "Accept";
-
-                background: Rectangle {
-                    anchors.fill: parent;
-
-                    color: "#f5f5f5";
-                }
-
-                onClicked: {
-                    resetAccept.visible = false;
-                    scrollview.enabled = true;
-                    resetButton.enabled = true;
-
-                    statisticsController.resetStatistics();
-                }
-            }
-
-            Button {
-                id: cancelButton
-
-                anchors.right: parent.right;
-                anchors.bottom: parent.bottom;
-
-                anchors.rightMargin: 10
-                anchors.bottomMargin: 10;
-
-                width: 100;
-                height: 30;
-
-                text: "Cancel";
-
-                background: Rectangle {
-                    anchors.fill: parent;
-
-                    color: "#f5f5f5";
-                }
-
-                onClicked: {
-                    resetAccept.visible = false;
-                    scrollview.enabled = true;
-                    resetButton.enabled = true;
-                }
-            }
+            passedScrollview: scrollview;
+            passedButton: resetButton;
         }
 
         Row {
@@ -141,44 +71,39 @@ Window {
             spacing: 15;
 
             TextLabel {
-                id: modeLabel
+                id: modeLabel;
 
-                font.pointSize: 10;
+                font.pointSize: Style.standardFontSize;
                 rightPadding: 100;
-
-                text: "Mode"
+                text: "Mode";
             }
 
             TextLabel {
-                id: timeLabel
+                id: timeLabel;
 
-                font.pointSize: 10;
-
-                text: "Best Time"
+                font.pointSize: Style.standardFontSize;
+                text: "Best Time";
             }
 
             TextLabel {
-                id: gamesLabel
+                id: gamesLabel;
 
-                font.pointSize: 10;
-
-                text: "Games Played"
+                font.pointSize: Style.standardFontSize;
+                text: "Games Played";
             }
 
             TextLabel {
-                id: wonLabel
+                id: wonLabel;
 
-                font.pointSize: 10;
-
-                text: "Games Won"
+                font.pointSize: Style.standardFontSize;
+                text: "Games Won";
             }
 
             TextLabel {
-                id: lostLabel
+                id: lostLabel;
 
-                font.pointSize: 10;
-
-                text: "Games Lost"
+                font.pointSize: Style.standardFontSize;
+                text: "Games Lost";
             }
         }
 
@@ -192,60 +117,7 @@ Window {
             anchors.left: headerRow.left;
             anchors.right: headerRow.right;
 
-            color: "#000000";
-        }
-
-        Component {
-            id: statsDelegate
-
-            Item {
-                id: ma
-
-                height: modeStat.height;
-
-                TextLabel {
-                    id: modeStat;
-
-                    font.pointSize: 10;
-                    text: Adapter.getConfigurationString(model.modelData.numberOfRows, model.modelData.numberOfColumns, model.modelData.numberOfMines);
-                }
-
-                TextLabel {
-                    id: timeStat;
-
-                    x: modeLabel.width + headerRow.spacing
-
-                    font.pointSize: 10;
-                    text: model.modelData.numberOfWins !== 0 ? Adapter.getMinutesFromSeconds(model.modelData.bestTime) : "-";
-                }
-
-                TextLabel {
-                    id: gamesStat;
-
-                    x: timeStat.x + timeLabel.width + headerRow.spacing;
-
-                    font.pointSize: 10;
-                    text: model.modelData.numberOfGamesPlayed;
-                }
-
-                TextLabel {
-                    id: wonStat;
-
-                    x: gamesStat.x + gamesLabel.width + headerRow.spacing;
-
-                    font.pointSize: 10;
-                    text: model.modelData.numberOfWins;
-                }
-
-                TextLabel {
-                    id: lostStat;
-
-                    x: wonStat.x + wonLabel.width + headerRow.spacing;
-
-                    font.pointSize: 10;
-                    text: model.modelData.numberOfDefeats;
-                }
-            }
+            color: Style.statisticsHeaderline;
         }
 
      ScrollView {
@@ -268,34 +140,40 @@ Window {
 
                 model: statisticsModel.statisticEntryModelList;
 
-                delegate: statsDelegate;
+                delegate: StatsDelegate {
+                    headerR: headerRow;
+                    modeL: modeLabel;
+                    timeL: timeLabel;
+                    gamesL: gamesLabel;
+                    wonL: wonLabel;
+                }
             }
         }
         
          Button {
-            id: resetButton
+            id: resetButton;
 
             anchors.right: screenBorder.right;
             anchors.bottom: screenBorder.bottom;
 
-            anchors.rightMargin: 10
+            anchors.rightMargin: 10;
             anchors.bottomMargin: 10;
 
-            width: 100;
-            height: 30;
+            width: Style.standardButtonWidth;
+            height: Style.standardButtonHeight;
 
             text: "Reset Stats";
 
             background: Rectangle {
                 anchors.fill: parent;
 
-                color: "#f5f5f5";
+                color: Style.standardButtonBackground;
             }
 
             onClicked: {
-                resetAccept.visible = true;
-                scrollview.enabled = false;
-                resetButton.enabled = false;
+                resetPopup.visible = true;                  //opens resetPopup
+                scrollview.enabled = false;                 //disables scrollview while resetPopup is visible
+                resetButton.enabled = false;                //disables itself while resetPopup is visible
             }
         }
     }

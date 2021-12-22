@@ -5,16 +5,15 @@ import QtQuick.Window 2.15
 import "qrc:/includes"
 
 /* @parameters
- * id: identifier for TextBox                       (e.g. id: nameBox)
- * width: width of the TextBox                      (e.g. width: 100)
- * text: text that should be shown in the TextBox   (e.g. text: "Max Mustermann")
+ * id: identifier for TextBox                       (e.g. id: header;)
+ * text: text that should be shown in the TextBox   (e.g. text: "Custom Settings";)
  */
 TextField {
     id: textField
 
     height: Style.defaultHeight
     font.family: Style.font
-    font.pointSize: Style.textSize
+    font.pointSize: Style.largeFontSize
     color: Style.fontColor
 
     readOnly: true                              //nothing should be entered in TextBox

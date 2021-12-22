@@ -55,11 +55,6 @@ function resolveImage(cell) {
     return imageUrl;
 }
 
-function timeToString(secs) {
-    if(secs === undefined) return '000';
-    return (secs < 100 ? '0' : '') + (secs < 10 ? '0' : '') + secs;
-}
-
 // convert seconds to "minutes:seconds" format
 // s: seconds
 function getMinutesFromSeconds(s) {
@@ -68,6 +63,7 @@ function getMinutesFromSeconds(s) {
     return (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
 
+// convert flagCount to string with leading zeros
 function flagsToString(flags) {
     if(flags < 0) {
         return flags > -10 ? "-0" + Math.abs(flags) : flags;
@@ -77,6 +73,7 @@ function flagsToString(flags) {
     }
 }
 
+// creates a string thats describes the active game Mode
 function getConfigurationString(rows, columns, mines) {
     let displayString = "";
     if(rows === 9 && columns === 9 && mines === 10) {

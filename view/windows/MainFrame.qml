@@ -10,6 +10,7 @@ import Backend.Game 1.0
 
 import "qrc:/controls"
 import "qrc:/includes"
+import "qrc:/popups"
 import "qrc:/text"
 
 import "qrc:/scripts/Adapter.js" as Adapter
@@ -20,192 +21,48 @@ ApplicationWindow {
 
     property double sizeFactor: 1.0;
 
-    property bool hideWinScreen: false;
+    property bool hideWinPopup: false;
 
     property bool isGameWon: false;
     property int bestTimeForGameMode: 0;
 
     Component.onCompleted: {
         // check if new size scaling is set (from backend side)
-        Manager.updateSizeScaling();
+        Manager.updateSizeScaling(mainWindow, statusBar);
     }
 
+    //on Game ended: pass if the game is won and the best time for the currently active mode
     Connections {
         target: statisticsController;
         function onGameEnded(bestTime, won) {
-            console.log("game won: " + won);
             isGameWon = won;
-            bestTimeForGameMode = bestTime
+            bestTimeForGameMode = bestTime;
         }
     }
 
-    MenuBar {
+    //winPopup is called when Game ended and isGameWon = true
+    WinPopup {
+        id: winPopup
+
+        parentWindow: mainWindow;
+        topAnchor: boardTopBorder;
+        leftAnchor: boardLeftBorder;
+    }
+
+    //MenuBar to access Game Settings, Statistics and Help windows
+    MinesweeperMenuBar {
         id: menuBar;
 
-        Menu {
-            title: qsTr("&Game");
-
-            MenuItem {
-                icon.source: "qrc:/cellImages/empty.png";
-
-                checkable: true;
-                checked: gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10;
-
-                text: qsTr("&Beginner");
-                onTriggered: {
-                    gameController.setGameMode(9, 9, 10);
-
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    isGameWon = false;
-                    hideWinScreen = false;
-                }
-            }
-            MenuItem {
-                icon.source: "qrc:/cellImages/mine.png";
-
-                checkable: true;
-                checked: gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40;
-
-                text: qsTr("&Intermediate");
-                onTriggered: {
-                    gameController.setGameMode(16, 16, 40);
-
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    isGameWon = false;
-                    hideWinScreen = false;
-                }
-            }
-            MenuItem {
-                icon.source: "qrc:/cellImages/mineRed.png";
-
-                checkable: true;
-                checked: gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99;
-
-                text: qsTr("&Expert");
-                onTriggered: {
-                    gameController.setGameMode(16, 30, 99);
-
-                    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                    isGameWon = false;
-                    hideWinScreen = false;
-                }
-            }
-            MenuItem {
-                text: qsTr("&Custom...")
-
-                onTriggered: {
-                    Manager.openWindow(mainWindow, "qrc:/windows/CustomSettings.qml",  { parentWindow: mainWindow });
-                }
-            }
-
-            MenuSeparator { }
-
-            Menu {
-                title: qsTr("&Size");
-
-                MenuItem {
-                    checkable: true;
-                    checked: gameModel.scaling === SizeScaling.SMALL
-
-                    text: qsTr("&Small")
-                    onTriggered: gameController.setScaling(SizeScaling.SMALL);
-                }
-
-                MenuItem {
-                    checkable: true;
-                    checked: gameModel.scaling === SizeScaling.MEDIUM
-
-                    text: qsTr("&Medium")
-                    onTriggered: gameController.setScaling(SizeScaling.MEDIUM);
-                }
-
-                MenuItem {
-                    checkable: true;
-                    checked: gameModel.scaling === SizeScaling.LARGE
-
-                    text: qsTr("&Large")
-                    onTriggered: gameController.setScaling(SizeScaling.LARGE);
-
-                }
-
-                Connections {
-                    target: gameModel
-                    function onScalingChanged() { Manager.updateSizeScaling(); }
-                }
-            }
-        }
-
-        Menu {
-            title: qsTr("&Extras")
-
-            MenuItem {
-                icon.source: "qrc:/images/flagTransparent.png";
-                text: qsTr("&Statistics");
-
-                onTriggered: {
-                    Manager.openWindow(mainWindow, "qrc:/windows/Statistics.qml");
-                }
-            }
-
-            MenuItem {
-                icon.source: "qrc:/images/questionTransparent.png";
-                text: qsTr("&Help");
-
-                onTriggered: {
-                    Manager.openWindow(mainWindow, "qrc:/windows/HelpWindow.qml");
-                }
-            }
-        }
-
-        Menu {
-            title: qsTr(gameModel.columns + "x" + gameModel.rows + "  " + gameModel.mineCount + " Mines");
-            enabled: false;
-        }
+        parentWindow: mainWindow;
+        passedStatusBar: statusBar;
     }
-
-    property int nWidth: 30;
-    property int mHeight: 16;
-    property int numOfMines: 99;
 
     title: "Minesweeper";
     visible: true;
 
-    width: topOuterBorder.width;
-    height: leftOuterBorder.height;
+    color: Style.windowBackground;
 
-    //Minimum Size
-    minimumWidth: topOuterBorder.width;
-    minimumHeight: leftOuterBorder.height;
-
-    maximumWidth: topOuterBorder.width;
-    maximumHeight: leftOuterBorder.height;
-
-    color: "#c0c0c0";
-
+    //statusBar contains Buttons for new, pause and end game and 2 counters for flags and timer
     Rectangle {
         id: statusBar;
 
@@ -216,7 +73,7 @@ ApplicationWindow {
 
         y: 12;
 
-        color: "#c0c0c0";
+        color: Style.windowBackground;
 
         TextLabel {
             id: flagsLabel;
@@ -226,9 +83,9 @@ ApplicationWindow {
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
 
-            font.pointSize: Style.textSize * sizeFactor;
-            font.family: "Consolas";
-            color: +text < 0 ? "red" : "blue";
+            font.pointSize: Style.largeFontSize * sizeFactor;
+            font.family: Style.counterFont;
+            color: +text < 0 ? Style.counterRed : Style.counterBlue;
 
             text: Adapter.flagsToString(gameModel.flagCount);
         }
@@ -240,8 +97,8 @@ ApplicationWindow {
 
             anchors.verticalCenter: statusBar.verticalCenter;
 
-            width: 16 * sizeFactor
-            height: 16 * sizeFactor
+            width: Style.cellWidth * sizeFactor;
+            height: Style.cellHeight * sizeFactor;
 
             source: "qrc:/images/flagTransparent.png";
         }
@@ -249,12 +106,12 @@ ApplicationWindow {
         ImageButton {
             id: newButton;
 
-            width: 60 * sizeFactor;
-            height: 30 * sizeFactor;
+            width: Style.menuButtonWidth * 2 * sizeFactor;
+            height: Style.menuButtonHeight * sizeFactor;
 
             x: pausePlayButton.x - width - 10;
 
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenter: parent.verticalCenter;
 
             buttonImage: "qrc:/images/newButton.png";
 
@@ -289,15 +146,15 @@ ApplicationWindow {
                     pauseText.visible = false;
                 }
 
-                hideWinScreen = isGameWon = false;
+                hideWinPopup = isGameWon = false;
             }
         }
 
         ImageButton {
             id: pausePlayButton;
 
-            width: 30 * sizeFactor;
-            height: 30 * sizeFactor;
+            width: Style.menuButtonWidth * sizeFactor;
+            height: Style.menuButtonHeight * sizeFactor;
 
             anchors.centerIn: parent;
 
@@ -321,12 +178,12 @@ ApplicationWindow {
         ImageButton {
             id: endButton;
 
-            width: 60 * sizeFactor;
-            height: 30 * sizeFactor;
+            width: Style.menuButtonWidth * 2 * sizeFactor;
+            height: Style.menuButtonHeight * sizeFactor;
 
             x: pausePlayButton.x + pausePlayButton.width + 10;
 
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenter: parent.verticalCenter;
 
             buttonImage: "qrc:/images/endButton.png";
 
@@ -367,8 +224,8 @@ ApplicationWindow {
         Image {
             id: timeImage;
 
-            width: 16 * sizeFactor;
-            height: 16 * sizeFactor;
+            width: Style.cellWidth * sizeFactor;
+            height: Style.cellHeight * sizeFactor;
 
             x: timeLabel.x - width - 2;
             anchors.verticalCenter: statusBar.verticalCenter;
@@ -384,16 +241,62 @@ ApplicationWindow {
             anchors.verticalCenter: statusBar.verticalCenter;
             verticalAlignment: Text.AlignVCenter;
 
-            font.pointSize: Style.textSize * sizeFactor;
-            font.family: "Consolas";
-            color: "blue";
+            font.pointSize: Style.largeFontSize * sizeFactor;
+            font.family: Style.counterFont;
+            color: Style.counterBlue;
 
-            text: Adapter.getMinutesFromSeconds(Math.min(gameModel.timePlayed, 5999));
+            text: Adapter.getMinutesFromSeconds(Math.min(gameModel.timePlayed, 5999));          //timeLabel should visually stop at 99:59, backend timer does not stop
         }
     }
 
+    //Borders around statusBar
+    Rectangle {
+        id: statusBottomBorder;
+
+        width: statusBar.width + 6;
+        height: 3;
+
+        anchors.top: statusBar.bottom;
+        anchors.horizontalCenter: statusBar.horizontalCenter;
+        color: Style.customWindowBorderLight;
+    }
+
+    Rectangle {
+        id: statusRightBorder;
+
+        width: 3;
+        height: statusBar.height + 6;
+
+        anchors.left: statusBar.right;
+        anchors.verticalCenter: statusBar.verticalCenter;
+        color: Style.customWindowBorderLight;
+    }
+
+    Rectangle {
+        id: statusTopBorder;
+
+        width: statusBar.width + 6;
+        height: 3;
+
+        anchors.bottom: statusBar.top;
+        anchors.horizontalCenter: statusBar.horizontalCenter;
+        color: Style.customWindowBorderDark;
+    }
+
+    Rectangle {
+        id: statusLeftBorder;
+
+        width: 3;
+        height: statusBar.height + 6;
+
+        anchors.right: statusBar.left;
+        anchors.verticalCenter: statusBar.verticalCenter;
+        color: Style.customWindowBorderDark;
+    }
+
+    //pauseText is shown after the pauseButton is clicked
     TextLabel {
-        id: pauseText
+        id: pauseText;
 
         width: boardTopBorder.width - 6;
         height: boardLeftBorder.height - 6;
@@ -404,129 +307,23 @@ ApplicationWindow {
         verticalAlignment: Text.AlignVCenter;
         horizontalAlignment: Text.AlignHCenter;
 
-        color: "blue";
+        color: Style.pauseColor;
         fontSizeMode: Text.Fit;
-        font.pointSize: 30;
+        font.pointSize: Style.pauseFontSize;
 
         visible: false;
 
         text: "PAUSED";
     }
 
-    Rectangle {
-        id: winScreen;
-
-        anchors.horizontalCenter: boardTopBorder.horizontalCenter;
-        anchors.verticalCenter: boardLeftBorder.verticalCenter;
-
-        z: 90;
-
-        width: winText.width + viewBoardButton.width + 30;
-        height: winText.height + 20;
-
-        border.width: 1;
-        border.color: "#000000";
-        color: "#c0c0c0";
-
-        visible: isGameWon && !hideWinScreen; //TODO
-
-
-        TextLabel {
-            id: winText
-
-            topPadding: 10;
-            leftPadding: 10;
-
-            font.pointSize: 8.0 * sizeFactor;
-
-            text: (gameModel.timePlayed === bestTimeForGameMode ? "<b>New BEST TIME!</b>" : "<b>You won!</b>") +  "<br><br>" +
-                  "<b>Mode: </b>" + Adapter.getConfigurationString(gameModel.rows, gameModel.columns, gameModel.mineCount) + "<br><br>" +
-                  "<b>Best Time: </b>" + Adapter.getMinutesFromSeconds(bestTimeForGameMode)
-                  + "<br><br>" +
-                  "<b>Your Time: </b>" + Adapter.getMinutesFromSeconds(gameModel.timePlayed);
-        }
-
-        Button {
-            id: viewBoardButton
-
-            anchors.right: winScreen.right;
-            anchors.bottom: winScreen.bottom;
-
-            anchors.rightMargin: 10
-            anchors.bottomMargin: 10;
-
-            width: 100;
-            height: 30;
-
-            text: "View Board";
-
-            background: Rectangle {
-                anchors.fill: parent;
-
-                color: "#f5f5f5";
-            }
-
-            onClicked: {
-                hideWinScreen = true;
-            }
-        }
-    }
-
-    //unten
-    Rectangle {
-        id: statusBottomBorder;
-
-        width: statusBar.width + 6;
-        height: 3;
-
-        anchors.top: statusBar.bottom;
-        anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#ffffff";
-    }     
-
-    //rechts
-    Rectangle {
-        id: statusRightBorder;
-
-        width: 3;
-        height: statusBar.height + 6;
-
-        anchors.left: statusBar.right;
-        anchors.verticalCenter: statusBar.verticalCenter;
-        color: "#ffffff";
-    }
-
-    //oben
-    Rectangle {
-        id: statusTopBorder;
-
-        width: statusBar.width + 6;
-        height: 3;
-
-        anchors.bottom: statusBar.top;
-        anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#808080";
-    }
-
-    //links
-    Rectangle {
-        id: statusLeftBorder;
-
-        width: 3;
-        height: statusBar.height + 6;
-
-        anchors.right: statusBar.left;
-        anchors.verticalCenter: statusBar.verticalCenter;
-        color: "#808080";
-    }
-
+    //the Grid that holds the cells of the game board
     Grid {
         id: board;
 
         columns: gameModel.columns;
         rows: gameModel.rows;
 
-        columnSpacing: 0
+        columnSpacing: 0;
         rowSpacing: 0;
         spacing: 0;
 
@@ -536,7 +333,7 @@ ApplicationWindow {
         Repeater {
             id: cellRepeater;
 
-            model: gameModel.grid
+            model: gameModel.grid;
 
             ImageButton {
                 id: cell;
@@ -544,21 +341,21 @@ ApplicationWindow {
                 width: Style.cellWidth * sizeFactor;
                 height: Style.cellHeight * sizeFactor;
 
-                buttonImage: Adapter.resolveImage(model.modelData)
+                buttonImage: Adapter.resolveImage(model.modelData);
 
                 MouseArea {
-                    id: ma
+                    id: ma;
 
                     anchors.fill: parent;
-                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
-                    enabled: model.modelData.hidden && !isGameWon
+                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton;
+                    enabled: model.modelData.hidden && !isGameWon;
                     onClicked: Manager.clickCell(model, mouse.button, cell);
                 }
             }
         }
     }
 
-    //unten
+    //Borders around the game board
     Rectangle {
         id: boardBottomBorder;
 
@@ -567,10 +364,9 @@ ApplicationWindow {
 
         y: bottomOuterBorder.y - 9;
         anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
     }
 
-    //rechts
     Rectangle {
         id: boardRightBorder;
 
@@ -579,10 +375,9 @@ ApplicationWindow {
 
         anchors.right: boardBottomBorder.right;
         anchors.top: boardTopBorder.top;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
     }
 
-    //oben
     Rectangle {
         id: boardTopBorder;
 
@@ -591,10 +386,9 @@ ApplicationWindow {
 
         y: statusBottomBorder.y + 9;
         anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
-    //links
     Rectangle {
         id: boardLeftBorder;
 
@@ -603,10 +397,10 @@ ApplicationWindow {
 
         anchors.left: boardBottomBorder.left;
         anchors.top: boardTopBorder.top;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
-    //unten rand
+    //Border at the edges of the mainWindow
     Rectangle {
         id: bottomOuterBorder;
 
@@ -615,10 +409,9 @@ ApplicationWindow {
 
         anchors.bottom: leftOuterBorder.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
-    //rechts rand
     Rectangle {
         id: rightOuterBorder;
 
@@ -627,10 +420,9 @@ ApplicationWindow {
 
         x: boardRightBorder.x + 9;
         anchors.top: topOuterBorder.top;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
-    //oben rand
     Rectangle {
         id: topOuterBorder;
 
@@ -639,10 +431,9 @@ ApplicationWindow {
 
         y: statusBar.y - 12;
         anchors.horizontalCenter: parent.horizontalCenter;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
     }
 
-    //links rand
     Rectangle {
         id: leftOuterBorder;
 
@@ -651,9 +442,9 @@ ApplicationWindow {
 
         x: boardLeftBorder.x - 9;
         anchors.top: topOuterBorder.top;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
 
-        Component.onCompleted: {
+        Component.onCompleted: {                                                            //needed so that the window is correctly resized after loading
             mainWindow.height = height;
         }
     }

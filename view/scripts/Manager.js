@@ -1,8 +1,5 @@
 
-function updateSizeScaling() {
-    // ????
-    mainWindow.sizeFactor = 0.5;
-
+function updateSizeScaling(passedWindow, passedStatusBar) {
     // get the new scaling factor
     let newScaling = 1;
     switch(gameModel.scaling) {
@@ -20,22 +17,12 @@ function updateSizeScaling() {
     }
 
     // set new windows scaling
-    mainWindow.sizeFactor = newScaling;
+    passedWindow.sizeFactor = newScaling;
 
-    // TODO may change this vars. to params of this function
-    // set min width and height
-    mainWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-    mainWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-    // set max width and height
-    mainWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-    mainWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-    // set width and height
-    mainWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-    mainWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
+    resizeWindow(passedWindow, passedStatusBar);
 }
 
+// code that is run after a cell is clicked, decides, which buttonImage is shown
 function clickCell(model, mouseButton, cell) {
     gameController.startGame();
     switch(mouseButton)
@@ -57,6 +44,7 @@ function clickCell(model, mouseButton, cell) {
     }
 }
 
+// opens a new window from the parentWindow
 function openWindow(parent, qmlFile, params = undefined)
 {
     let component = Qt.createComponent(qmlFile);
@@ -70,3 +58,22 @@ function openWindow(parent, qmlFile, params = undefined)
     }
 }
 
+// resizes the window to fit the new size of the game board
+function resizeWindow(passedWindow, passedStatusBar)
+{
+    const newWidth = Math.max(gameModel.columns * Style.cellWidth * passedWindow.sizeFactor, 340 * passedWindow.sizeFactor) + 24;
+    const newHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * passedWindow.sizeFactor + passedStatusBar.height + 36;
+
+    passedWindow.minimumWidth = passedWindow.maximumWidth = newWidth;
+    passedWindow.minimumHeight = passedWindow.maximumHeight = newHeight;
+
+    passedWindow.width = newWidth;
+    passedWindow.height = newHeight;
+}
+
+// resets variables to start a new game
+function resetForNewGame(passedWindow)
+{
+    passedWindow.isGameWon = false;
+    passedWindow.hideWinPopup = false;
+}

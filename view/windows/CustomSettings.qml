@@ -2,15 +2,19 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-import "qrc:/text"
+import "qrc:/controls"
 import "qrc:/includes"
+import "qrc:/text"
+
+import "qrc:/scripts/Manager.js" as Manager
 
 Window {
-    id: customSettings
+    id: customSettings;
 
-    property string boardSize;
+    property string difficulty;
 
     property var parentWindow;
+    property var parentStatusBar;
 
     modality: Qt.WindowModal;
 
@@ -27,29 +31,30 @@ Window {
 
     visible: true;
 
-    color: "#c0c0c0";
+    color: Style.windowBackground;
 
+    //check the RadioButton that corresponds to the currently active mode after loading
     Component.onCompleted: {
         if (gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10) {
             beginnerRadio.checked = true;
-            boardSize = "beginner";
+            difficulty = "beginner";
         }
         else if (gameModel.columns === 16 && gameModel.rows === 16 && gameModel.mineCount === 40) {
             intermediateRadio.checked = true;
-            boardSize = "intermediate";
+            difficulty = "intermediate";
         }
         else if (gameModel.columns === 30 && gameModel.rows === 16 && gameModel.mineCount === 99) {
             expertRadio.checked = true;
-            boardSize = "expert";
+            difficulty = "expert";
         }
         else {
             customRadio.checked = true;
-            boardSize = "custom";
+            difficulty = "custom";
         }
     }
 
     Rectangle {
-        id: screenBorder
+        id: screenBorder;
 
         width: customSettings.width - 40;
         height: customSettings.height - 40;
@@ -57,10 +62,10 @@ Window {
         x: 20;
         y: 20;
 
-        border.width: 1;
-        border.color: "#595959";
+        border.width: Style.borderWidth;
+        border.color: Style.popupRectBorder;
 
-        color: "#c0c0c0";
+        color: Style.windowBackground;
 
         TextBox {
             id: headerLabel;
@@ -71,84 +76,35 @@ Window {
             text: "Difficulty Level";
         }
 
-        MouseArea {
+        //CustomMouseAreas are used to be able to click the whole row next to a RadioButton to check this RadioButton
+        CustomMouseArea {
             id: maBeginner;
 
-            width: 430;
-            height: beginnerLabel.height;
-
-            x: beginnerRadio.x
-            y: beginnerLabel.y
-            z: 90;
-
-            onClicked: {
-                if(!beginnerRadio.checked) {
-                    beginnerRadio.toggle();
-                    beginnerRadio.onClicked();
-                    beginnerRadio.forceActiveFocus();
-                }
-            }
+            radioButton: beginnerRadio;
         }
 
-        MouseArea {
+        CustomMouseArea {
             id: maIntermediate;
 
-            width: 430;
-            height: intermediateLabel.height;
-
-            x: intermediateRadio.x
-            y: intermediateLabel.y
-            z: 90;
-
-            onClicked: {
-                if(!intermediateRadio.checked) {
-                    intermediateRadio.toggle();
-                    intermediateRadio.onClicked();
-                    intermediateRadio.forceActiveFocus();
-                }
-            }
+            radioButton: intermediateRadio;
         }
 
-        MouseArea {
+        CustomMouseArea {
             id: maExpert;
 
-            width: 430;
-            height: expertLabel.height;
-
-            x: expertRadio.x
-            y: expertLabel.y
-            z: 90;
-
-            onClicked: {
-                if(!expertRadio.checked) {
-                    expertRadio.toggle();
-                    expertRadio.onClicked();
-                    expertRadio.forceActiveFocus();
-                }
-            }
+            radioButton: expertRadio;
         }
 
-        MouseArea {
+        CustomMouseArea {
             id: maCustom;
 
             width: 110;
-            height: customLabel.height;
-
-            x: customRadio.x
-            y: customLabel.y
-            z: 90;
-
-            onClicked: {
-                if(!customRadio.checked) {
-                    customRadio.toggle();
-                    customRadio.onClicked();
-                    customRadio.forceActiveFocus();
-                }
-            }
+            radioButton: customRadio;
         }
 
+        //Grid with RadioButtons for all 4 Modes: Beginner, Intermediate, Expert and Custom
         Grid {
-            id: topThreeGrid
+            id: topThreeGrid;
 
             topPadding: 25;
             leftPadding: 15;
@@ -159,38 +115,11 @@ Window {
             columnSpacing: 15;
             rowSpacing: 10;
 
-            RadioButton {
-                id: beginnerRadio
-
-                implicitWidth: 20
-                implicitHeight: 20
-
-                checked: true
-                x: 15;
-
-                indicator: Rectangle {
-                    id: indicatorRect
-
-                    anchors.fill: parent;
-
-                    radius: 13
-                    border.width: 1;
-                    border.color: "#595959";
-
-                    Rectangle {
-                        width: 10
-                        height: 10
-
-                        anchors.centerIn: parent;
-
-                        radius: 7
-                        color: "#595959";
-                        visible: beginnerRadio.checked
-                    }
-                }
+            CustomRadioButton {
+                id: beginnerRadio;
 
                 onClicked: {
-                    boardSize = "beginner";
+                    difficulty = "beginner";
                 }
             }
 
@@ -199,7 +128,7 @@ Window {
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "Beginner";
             }
@@ -209,7 +138,7 @@ Window {
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "9x9";
             }
@@ -219,164 +148,92 @@ Window {
 
                 width: 100;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "10 Mines";
             }
 
-            RadioButton {
-                id: intermediateRadio
-
-                implicitWidth: 20
-                implicitHeight: 20
-
-                indicator: Rectangle {
-                    id: indicatorRect2
-
-                    anchors.fill: parent;
-
-                    radius: 13
-                    border.width: 1;
-                    border.color: "#595959";
-
-                    Rectangle {
-                        width: 10
-                        height: 10
-
-                        anchors.centerIn: parent;
-
-                        radius: 7
-                        color: "#595959";
-                        visible: intermediateRadio.checked
-                    }
-                }
+            CustomRadioButton {
+                id: intermediateRadio;
 
                 onClicked: {
-                    boardSize = "intermediate";
+                    difficulty = "intermediate";
                 }
             }
 
             TextLabel {
-                id: intermediateLabel
+                id: intermediateLabel;
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "Intermediate";
             }
 
             TextLabel {
-                id: intermediateSizeLabel
+                id: intermediateSizeLabel;
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "16x16";
             }
 
             TextLabel {
-                id: intermediateMinesLabel
+                id: intermediateMinesLabel;
 
                 width: 100;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "40 Mines";
             }
 
-            RadioButton {
-                id: expertRadio
-
-                implicitWidth: 20
-                implicitHeight: 20
-
-                indicator: Rectangle {
-                    id: indicatorRect3
-
-                    anchors.fill: parent;
-
-                    radius: 13
-                    border.width: 1;
-                    border.color: "#595959";
-
-                    Rectangle {
-                        width: 10
-                        height: 10
-
-                        anchors.centerIn: parent;
-
-                        radius: 7
-                        color: "#595959";
-                        visible: expertRadio.checked
-                    }
-                }
+            CustomRadioButton {
+                id: expertRadio;
 
                 onClicked: {
-                    boardSize = "expert";
+                    difficulty = "expert";
                 }
             }
 
             TextLabel {
-                id: expertLabel
+                id: expertLabel;
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "Expert";
             }
 
             TextLabel {
-                id: expertSizeLabel
+                id: expertSizeLabel;
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "30x16";
             }
 
             TextLabel {
-                id: expertMinesLabel
+                id: expertMinesLabel;
 
                 width: 100;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "99 Mines";
             }
 
-            RadioButton {
-                id: customRadio
-
-                implicitWidth: 20
-                implicitHeight: 20
-
-                indicator: Rectangle {
-                    id: indicatorRect4
-
-                    anchors.fill: parent;
-
-                    radius: 13
-                    border.width: 1;
-                    border.color: "#595959";
-
-                    Rectangle {
-                        width: 10
-                        height: 10
-
-                        anchors.centerIn: parent;
-
-                        radius: 7
-                        color: "#595959";
-                        visible: customRadio.checked
-                    }
-                }
+            CustomRadioButton {
+                id: customRadio;
 
                 onClicked: {
-                    boardSize = "custom";
+                    difficulty = "custom";
                 }
             }
 
@@ -385,13 +242,16 @@ Window {
 
                 width: 150;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "Custom";
             }
         }
 
+        //Grid used to input data for Custom Mode (Columns, Rows and Mines)
         Grid {
+            id: customGrid;
+
             leftPadding: 60;
 
             columnSpacing: 10;
@@ -399,7 +259,7 @@ Window {
 
             anchors.top: topThreeGrid.bottom;
 
-            columns: 2
+            columns: 2;
             rows: 3;
 
             TextLabel {
@@ -420,12 +280,12 @@ Window {
 
                 placeholderText: gameModel.columns;
 
-                validator: IntValidator { bottom: 0 }
+                validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
                 onFocusChanged: {
                     if(focus) {
                         customRadio.checked = true;
-                        boardSize = "custom";
+                        difficulty = "custom";
                     }
                 }
             }
@@ -448,12 +308,12 @@ Window {
 
                 placeholderText: gameModel.rows;
 
-                validator: IntValidator { bottom: 0 }
+                validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
                 onFocusChanged: {
                     if(focus) {
                         customRadio.checked = true;
-                        boardSize = "custom";
+                        difficulty = "custom";
                     }
                 }
             }
@@ -474,41 +334,42 @@ Window {
                 width: 100;
                 height: 30;
 
-                validator: IntValidator { bottom: 0 }
+                validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
                 placeholderText: gameModel.mineCount;
 
                 onFocusChanged: {
                     if(focus) {
                         customRadio.checked = true;
-                        boardSize = "custom";
+                        difficulty = "custom";
                     }
                 }
             }
         }
 
         Button {
-            id: applyButton
+            id: applyButton;
 
             anchors.right: cancelButton.left;
             anchors.bottom: screenBorder.bottom;
 
-            anchors.rightMargin: 10
+            anchors.rightMargin: 10;
             anchors.bottomMargin: 10;
 
-            width: 100;
-            height: 30;
+            width: Style.standardButtonWidth;
+            height: Style.standardButtonHeight;
 
             text: "Apply";
 
             background: Rectangle {
                 anchors.fill: parent;
 
-                color: "#f5f5f5";
+                color: Style.standardButtonBackground;
             }
 
+            //onClicked: set gameMode and resize Window accordingly
             onClicked: {
-                switch (boardSize)
+                switch (difficulty)
                 {
                     case "beginner":
                         gameController.setGameMode(9, 9, 10);
@@ -529,40 +390,31 @@ Window {
                         break;
                 }
 
-                parentWindow.minimumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                parentWindow.minimumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                parentWindow.maximumWidth = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                parentWindow.maximumHeight = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                parentWindow.width = Math.max(gameModel.columns * Style.cellWidth * sizeFactor, 340 * sizeFactor) + 24;
-                parentWindow.height = Math.max(gameModel.rows, 9) * Style.cellHeight * sizeFactor + statusBar.height + 36;
-
-                isGameWon = false;
-                hideWinScreen = false;
+                Manager.resizeWindow(parentWindow, parentStatusBar);
+                Manager.resetForNewGame(mainWindow);
 
                 customSettings.close();
             }
         }
 
         Button {
-            id: cancelButton
+            id: cancelButton;
 
             anchors.right: screenBorder.right;
             anchors.bottom: screenBorder.bottom;
 
-            anchors.rightMargin: 10
+            anchors.rightMargin: 10;
             anchors.bottomMargin: 10;
 
-            width: 100;
-            height: 30;
+            width: Style.standardButtonWidth;
+            height: Style.standardButtonHeight;
 
             text: "Cancel";
 
             background: Rectangle {
                 anchors.fill: parent;
 
-                color: "#f5f5f5";
+                color: Style.standardButtonBackground;
             }
 
             onClicked: {
