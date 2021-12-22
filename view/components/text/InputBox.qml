@@ -5,9 +5,9 @@ import QtQuick.Window 2.15
 import "qrc:/includes"
 
 /* @parameters
- * id: identifier for InputBox                                                              (e.g. id: widthInput)
- * width: width of the InputBox                                                             (e.g. width: 100)
- * placeholderText: text that should be shown in the InputBox if nothing else is entered    (e.g. placeholderText: "Please enter x ...")
+ * id: identifier for InputBox                                                              (e.g. id: widthInput;)
+ * width: width of the InputBox                                                             (e.g. width: 100;)
+ * placeholderText: text that should be shown in the InputBox if nothing else is entered    (e.g. placeholderText: gameModel.columns;)
  */
 TextField {
     height: Style.defaultHeight

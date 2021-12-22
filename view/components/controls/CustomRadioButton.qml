@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 import "qrc:/includes"
 
 /* @parameters
- * id: identifier for CustomRadioButton                                             (e.g. id: beginnerRadio)
+ * id: identifier for CustomRadioButton                                             (e.g. id: beginnerRadio;)
  * onClicked: { } code that should be run, when CustomRadioButton is clicked        (e.g. onClicked: { boardSize = "beginner"; })
  */
 RadioButton {
