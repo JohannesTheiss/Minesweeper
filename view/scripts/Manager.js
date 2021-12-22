@@ -22,6 +22,7 @@ function updateSizeScaling(passedWindow, passedStatusBar) {
     resizeWindow(passedWindow, passedStatusBar);
 }
 
+// code that is run after a cell is clicked, decides, which buttonImage is shown
 function clickCell(model, mouseButton, cell) {
     gameController.startGame();
     switch(mouseButton)
@@ -43,6 +44,7 @@ function clickCell(model, mouseButton, cell) {
     }
 }
 
+// opens a new window from the parentWindow
 function openWindow(parent, qmlFile, params = undefined)
 {
     let component = Qt.createComponent(qmlFile);
@@ -56,6 +58,7 @@ function openWindow(parent, qmlFile, params = undefined)
     }
 }
 
+// resizes the window to fit the new size of the game board
 function resizeWindow(passedWindow, passedStatusBar)
 {
     const newWidth = Math.max(gameModel.columns * Style.cellWidth * passedWindow.sizeFactor, 340 * passedWindow.sizeFactor) + 24;
@@ -68,6 +71,7 @@ function resizeWindow(passedWindow, passedStatusBar)
     passedWindow.height = newHeight;
 }
 
+// resets variables to start a new game
 function resetForNewGame(passedWindow)
 {
     passedWindow.isGameWon = false;
