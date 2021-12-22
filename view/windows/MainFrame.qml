@@ -31,15 +31,25 @@ ApplicationWindow {
         Manager.updateSizeScaling(mainWindow, statusBar);
     }
 
+    //on Game ended: pass if the game is won and the best time for the currently active mode
     Connections {
         target: statisticsController;
         function onGameEnded(bestTime, won) {
-            console.log("game won: " + won);
             isGameWon = won;
-            bestTimeForGameMode = bestTime
+            bestTimeForGameMode = bestTime;
         }
     }
 
+    //winPopup is called when Game ended and isGameWon = true
+    WinPopup {
+        id: winPopup
+
+        parentWindow: mainWindow;
+        topAnchor: boardTopBorder;
+        leftAnchor: boardLeftBorder;
+    }
+
+    //MenuBar to access Game Settings, Statistics and Help windows
     MinesweeperMenuBar {
         id: menuBar;
 
@@ -50,8 +60,9 @@ ApplicationWindow {
     title: "Minesweeper";
     visible: true;
 
-    color: "#c0c0c0";
+    color: Style.windowBackground;
 
+    //statusBar contains Buttons for new, pause and end game and 2 counters for flags and timer
     Rectangle {
         id: statusBar;
 
@@ -62,7 +73,7 @@ ApplicationWindow {
 
         y: 12;
 
-        color: "#c0c0c0";
+        color: Style.windowBackground;
 
         TextLabel {
             id: flagsLabel;
@@ -73,8 +84,8 @@ ApplicationWindow {
             verticalAlignment: Text.AlignVCenter;
 
             font.pointSize: Style.largeFontSize * sizeFactor;
-            font.family: "Consolas";
-            color: +text < 0 ? "red" : "blue";
+            font.family: Style.counterFont;
+            color: +text < 0 ? Style.counterRed : Style.counterBlue;
 
             text: Adapter.flagsToString(gameModel.flagCount);
         }
@@ -86,8 +97,8 @@ ApplicationWindow {
 
             anchors.verticalCenter: statusBar.verticalCenter;
 
-            width: 16 * sizeFactor
-            height: 16 * sizeFactor
+            width: Style.cellWidth * sizeFactor;
+            height: Style.cellHeight * sizeFactor;
 
             source: "qrc:/images/flagTransparent.png";
         }
@@ -95,12 +106,12 @@ ApplicationWindow {
         ImageButton {
             id: newButton;
 
-            width: 60 * sizeFactor;
-            height: 30 * sizeFactor;
+            width: Style.menuButtonWidth * 2 * sizeFactor;
+            height: Style.menuButtonHeight * sizeFactor;
 
             x: pausePlayButton.x - width - 10;
 
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenter: parent.verticalCenter;
 
             buttonImage: "qrc:/images/newButton.png";
 
@@ -142,8 +153,8 @@ ApplicationWindow {
         ImageButton {
             id: pausePlayButton;
 
-            width: 30 * sizeFactor;
-            height: 30 * sizeFactor;
+            width: Style.menuButtonWidth * sizeFactor;
+            height: Style.menuButtonHeight * sizeFactor;
 
             anchors.centerIn: parent;
 
@@ -167,12 +178,12 @@ ApplicationWindow {
         ImageButton {
             id: endButton;
 
-            width: 60 * sizeFactor;
-            height: 30 * sizeFactor;
+            width: Style.menuButtonWidth * 2 * sizeFactor;
+            height: Style.menuButtonHeight * sizeFactor;
 
             x: pausePlayButton.x + pausePlayButton.width + 10;
 
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenter: parent.verticalCenter;
 
             buttonImage: "qrc:/images/endButton.png";
 
@@ -213,8 +224,8 @@ ApplicationWindow {
         Image {
             id: timeImage;
 
-            width: 16 * sizeFactor;
-            height: 16 * sizeFactor;
+            width: Style.cellWidth * sizeFactor;
+            height: Style.cellHeight * sizeFactor;
 
             x: timeLabel.x - width - 2;
             anchors.verticalCenter: statusBar.verticalCenter;
@@ -231,14 +242,14 @@ ApplicationWindow {
             verticalAlignment: Text.AlignVCenter;
 
             font.pointSize: Style.largeFontSize * sizeFactor;
-            font.family: "Consolas";
-            color: "blue";
+            font.family: Style.counterFont;
+            color: Style.counterBlue;
 
-            text: Adapter.getMinutesFromSeconds(Math.min(gameModel.timePlayed, 5999));
+            text: Adapter.getMinutesFromSeconds(Math.min(gameModel.timePlayed, 5999));          //timeLabel should visually stop at 99:59, backend timer does not stop
         }
     }
 
-    //unten
+    //Borders around statusBar
     Rectangle {
         id: statusBottomBorder;
 
@@ -247,10 +258,9 @@ ApplicationWindow {
 
         anchors.top: statusBar.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
     }
 
-    //rechts
     Rectangle {
         id: statusRightBorder;
 
@@ -259,10 +269,9 @@ ApplicationWindow {
 
         anchors.left: statusBar.right;
         anchors.verticalCenter: statusBar.verticalCenter;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
     }
 
-    //oben
     Rectangle {
         id: statusTopBorder;
 
@@ -271,11 +280,23 @@ ApplicationWindow {
 
         anchors.bottom: statusBar.top;
         anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
+    Rectangle {
+        id: statusLeftBorder;
+
+        width: 3;
+        height: statusBar.height + 6;
+
+        anchors.right: statusBar.left;
+        anchors.verticalCenter: statusBar.verticalCenter;
+        color: Style.customWindowBorderDark;
+    }
+
+    //pauseText is shown after the pauseButton is clicked
     TextLabel {
-        id: pauseText
+        id: pauseText;
 
         width: boardTopBorder.width - 6;
         height: boardLeftBorder.height - 6;
@@ -286,40 +307,23 @@ ApplicationWindow {
         verticalAlignment: Text.AlignVCenter;
         horizontalAlignment: Text.AlignHCenter;
 
-        color: "blue";
+        color: Style.pauseColor;
         fontSizeMode: Text.Fit;
-        font.pointSize: 30;
+        font.pointSize: Style.pauseFontSize;
 
         visible: false;
 
         text: "PAUSED";
     }
 
-    WinPopup {
-        parentWindow: mainWindow;
-        topAnchor: boardTopBorder;
-        leftAnchor: boardLeftBorder;
-    }
-
-    //links
-    Rectangle {
-        id: statusLeftBorder;
-
-        width: 3;
-        height: statusBar.height + 6;
-
-        anchors.right: statusBar.left;
-        anchors.verticalCenter: statusBar.verticalCenter;
-        color: "#808080";
-    }
-
+    //the Grid that holds the cells of the game board
     Grid {
         id: board;
 
         columns: gameModel.columns;
         rows: gameModel.rows;
 
-        columnSpacing: 0
+        columnSpacing: 0;
         rowSpacing: 0;
         spacing: 0;
 
@@ -329,7 +333,7 @@ ApplicationWindow {
         Repeater {
             id: cellRepeater;
 
-            model: gameModel.grid
+            model: gameModel.grid;
 
             ImageButton {
                 id: cell;
@@ -337,21 +341,21 @@ ApplicationWindow {
                 width: Style.cellWidth * sizeFactor;
                 height: Style.cellHeight * sizeFactor;
 
-                buttonImage: Adapter.resolveImage(model.modelData)
+                buttonImage: Adapter.resolveImage(model.modelData);
 
                 MouseArea {
-                    id: ma
+                    id: ma;
 
                     anchors.fill: parent;
-                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton;
-                    enabled: model.modelData.hidden && !isGameWon
+                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton;
+                    enabled: model.modelData.hidden && !isGameWon;
                     onClicked: Manager.clickCell(model, mouse.button, cell);
                 }
             }
         }
     }
 
-    //unten
+    //Borders around the game board
     Rectangle {
         id: boardBottomBorder;
 
@@ -360,10 +364,9 @@ ApplicationWindow {
 
         y: bottomOuterBorder.y - 9;
         anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
     }
 
-    //rechts
     Rectangle {
         id: boardRightBorder;
 
@@ -372,10 +375,9 @@ ApplicationWindow {
 
         anchors.right: boardBottomBorder.right;
         anchors.top: boardTopBorder.top;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
     }
 
-    //oben
     Rectangle {
         id: boardTopBorder;
 
@@ -384,10 +386,9 @@ ApplicationWindow {
 
         y: statusBottomBorder.y + 9;
         anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
-    //links
     Rectangle {
         id: boardLeftBorder;
 
@@ -396,10 +397,10 @@ ApplicationWindow {
 
         anchors.left: boardBottomBorder.left;
         anchors.top: boardTopBorder.top;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
-    //unten rand
+    //Border at the edges of the mainWindow
     Rectangle {
         id: bottomOuterBorder;
 
@@ -408,10 +409,9 @@ ApplicationWindow {
 
         anchors.bottom: leftOuterBorder.bottom;
         anchors.horizontalCenter: statusBar.horizontalCenter;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
-    //rechts rand
     Rectangle {
         id: rightOuterBorder;
 
@@ -420,10 +420,9 @@ ApplicationWindow {
 
         x: boardRightBorder.x + 9;
         anchors.top: topOuterBorder.top;
-        color: "#808080";
+        color: Style.customWindowBorderDark;
     }
 
-    //oben rand
     Rectangle {
         id: topOuterBorder;
 
@@ -432,10 +431,9 @@ ApplicationWindow {
 
         y: statusBar.y - 12;
         anchors.horizontalCenter: parent.horizontalCenter;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
     }
 
-    //links rand
     Rectangle {
         id: leftOuterBorder;
 
@@ -444,9 +442,9 @@ ApplicationWindow {
 
         x: boardLeftBorder.x - 9;
         anchors.top: topOuterBorder.top;
-        color: "#ffffff";
+        color: Style.customWindowBorderLight;
 
-        Component.onCompleted: {
+        Component.onCompleted: {                                                            //needed so that the window is correctly resized after loading
             mainWindow.height = height;
         }
     }

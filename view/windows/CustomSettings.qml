@@ -9,7 +9,7 @@ import "qrc:/text"
 import "qrc:/scripts/Manager.js" as Manager
 
 Window {
-    id: customSettings
+    id: customSettings;
 
     property string difficulty;
 
@@ -31,8 +31,9 @@ Window {
 
     visible: true;
 
-    color: "#c0c0c0";
+    color: Style.windowBackground;
 
+    //check the RadioButton that corresponds to the currently active mode after loading
     Component.onCompleted: {
         if (gameModel.columns === 9 && gameModel.rows === 9 && gameModel.mineCount === 10) {
             beginnerRadio.checked = true;
@@ -53,7 +54,7 @@ Window {
     }
 
     Rectangle {
-        id: screenBorder
+        id: screenBorder;
 
         width: customSettings.width - 40;
         height: customSettings.height - 40;
@@ -61,10 +62,10 @@ Window {
         x: 20;
         y: 20;
 
-        border.width: 1;
-        border.color: "#595959";
+        border.width: Style.borderWidth;
+        border.color: Style.popupRectBorder;
 
-        color: "#c0c0c0";
+        color: Style.windowBackground;
 
         TextBox {
             id: headerLabel;
@@ -101,8 +102,9 @@ Window {
             radioButton: customRadio;
         }
 
+        //Grid with RadioButtons for all 4 Modes: Beginner, Intermediate, Expert and Custom
         Grid {
-            id: topThreeGrid
+            id: topThreeGrid;
 
             topPadding: 25;
             leftPadding: 15;
@@ -126,7 +128,7 @@ Window {
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "Beginner";
             }
@@ -136,7 +138,7 @@ Window {
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "9x9";
             }
@@ -146,7 +148,7 @@ Window {
 
                 width: 100;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "10 Mines";
             }
@@ -160,31 +162,31 @@ Window {
             }
 
             TextLabel {
-                id: intermediateLabel
+                id: intermediateLabel;
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "Intermediate";
             }
 
             TextLabel {
-                id: intermediateSizeLabel
+                id: intermediateSizeLabel;
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "16x16";
             }
 
             TextLabel {
-                id: intermediateMinesLabel
+                id: intermediateMinesLabel;
 
                 width: 100;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "40 Mines";
             }
@@ -198,31 +200,31 @@ Window {
             }
 
             TextLabel {
-                id: expertLabel
+                id: expertLabel;
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "Expert";
             }
 
             TextLabel {
-                id: expertSizeLabel
+                id: expertSizeLabel;
 
                 width: 140;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "30x16";
             }
 
             TextLabel {
-                id: expertMinesLabel
+                id: expertMinesLabel;
 
                 width: 100;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "99 Mines";
             }
@@ -240,12 +242,13 @@ Window {
 
                 width: 150;
 
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignLeft;
 
                 text: "Custom";
             }
         }
 
+        //Grid used to input data for Custom Mode (Columns, Rows and Mines)
         Grid {
             id: customGrid;
 
@@ -256,7 +259,7 @@ Window {
 
             anchors.top: topThreeGrid.bottom;
 
-            columns: 2
+            columns: 2;
             rows: 3;
 
             TextLabel {
@@ -277,7 +280,7 @@ Window {
 
                 placeholderText: gameModel.columns;
 
-                validator: IntValidator { bottom: 0 }
+                validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
                 onFocusChanged: {
                     if(focus) {
@@ -305,7 +308,7 @@ Window {
 
                 placeholderText: gameModel.rows;
 
-                validator: IntValidator { bottom: 0 }
+                validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
                 onFocusChanged: {
                     if(focus) {
@@ -331,7 +334,7 @@ Window {
                 width: 100;
                 height: 30;
 
-                validator: IntValidator { bottom: 0 }
+                validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
                 placeholderText: gameModel.mineCount;
 
@@ -345,25 +348,26 @@ Window {
         }
 
         Button {
-            id: applyButton
+            id: applyButton;
 
             anchors.right: cancelButton.left;
             anchors.bottom: screenBorder.bottom;
 
-            anchors.rightMargin: 10
+            anchors.rightMargin: 10;
             anchors.bottomMargin: 10;
 
-            width: 100;
-            height: 30;
+            width: Style.standardButtonWidth;
+            height: Style.standardButtonHeight;
 
             text: "Apply";
 
             background: Rectangle {
                 anchors.fill: parent;
 
-                color: "#f5f5f5";
+                color: Style.standardButtonBackground;
             }
 
+            //onClicked: set gameMode and resize Window accordingly
             onClicked: {
                 switch (difficulty)
                 {
@@ -394,23 +398,23 @@ Window {
         }
 
         Button {
-            id: cancelButton
+            id: cancelButton;
 
             anchors.right: screenBorder.right;
             anchors.bottom: screenBorder.bottom;
 
-            anchors.rightMargin: 10
+            anchors.rightMargin: 10;
             anchors.bottomMargin: 10;
 
-            width: 100;
-            height: 30;
+            width: Style.standardButtonWidth;
+            height: Style.standardButtonHeight;
 
             text: "Cancel";
 
             background: Rectangle {
                 anchors.fill: parent;
 
-                color: "#f5f5f5";
+                color: Style.standardButtonBackground;
             }
 
             onClicked: {

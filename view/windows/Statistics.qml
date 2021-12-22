@@ -9,36 +9,39 @@ import "qrc:/popups"
 import "qrc:/scripts/Adapter.js" as Adapter
 
 Window {
-    id: statisticsWindow
+    id: statisticsWindow;
 
     title: "Minesweeper - Statistics";
 
-    width: screenBorder.width + 40
-    height: screenBorder.height + 40
+    property real calcWidth: screenBorder.width + 40;
+    property real calcHeight: screenBorder.height + 40;
 
-    minimumWidth: screenBorder.width + 40
-    minimumHeight: screenBorder.height + 40
+    width: calcWidth;
+    height: calcHeight;
 
-    maximumWidth: screenBorder.width + 40
-    maximumHeight: screenBorder.height + 40
+    minimumWidth: calcWidth;
+    minimumHeight: calcHeight;
+
+    maximumWidth: calcWidth;
+    maximumHeight: calcHeight;
 
     visible: true;
 
-    color: "#c0c0c0";
+    color: Style.windowBackground;
 
     Rectangle {
-        id: screenBorder
+        id: screenBorder;
 
-        width: headerRow.width + headerRow.anchors.leftMargin*2;
-        height: 325
+        width: headerRow.width + headerRow.anchors.leftMargin * 2;
+        height: 325;
         
         x: 20;
         y: 20;
 
-        border.width: 1;
-        border.color: "#595959";
+        border.width: Style.borderWidth;
+        border.color: Style.popupRectBorder;
 
-        color: "#c0c0c0";
+        color: Style.windowBackground;
 
         TextBox {
             id: headerLabel;
@@ -49,7 +52,7 @@ Window {
             text: "Statistics";
         }
 
-        ResetPopup {
+        ResetPopup {                                        //resetPopup is opened when resetButton is clicked
             id: resetPopup;
 
             passedScrollview: scrollview;
@@ -68,39 +71,39 @@ Window {
             spacing: 15;
 
             TextLabel {
-                id: modeLabel
+                id: modeLabel;
 
-                font.pointSize: 10;
+                font.pointSize: Style.standardFontSize;
                 rightPadding: 100;
-                text: "Mode"
+                text: "Mode";
             }
 
             TextLabel {
-                id: timeLabel
+                id: timeLabel;
 
-                font.pointSize: 10;
-                text: "Best Time"
+                font.pointSize: Style.standardFontSize;
+                text: "Best Time";
             }
 
             TextLabel {
-                id: gamesLabel
+                id: gamesLabel;
 
-                font.pointSize: 10;
-                text: "Games Played"
+                font.pointSize: Style.standardFontSize;
+                text: "Games Played";
             }
 
             TextLabel {
-                id: wonLabel
+                id: wonLabel;
 
-                font.pointSize: 10;
-                text: "Games Won"
+                font.pointSize: Style.standardFontSize;
+                text: "Games Won";
             }
 
             TextLabel {
-                id: lostLabel
+                id: lostLabel;
 
-                font.pointSize: 10;
-                text: "Games Lost"
+                font.pointSize: Style.standardFontSize;
+                text: "Games Lost";
             }
         }
 
@@ -114,7 +117,7 @@ Window {
             anchors.left: headerRow.left;
             anchors.right: headerRow.right;
 
-            color: "#000000";
+            color: Style.statisticsHeaderline;
         }
 
      ScrollView {
@@ -148,29 +151,29 @@ Window {
         }
         
          Button {
-            id: resetButton
+            id: resetButton;
 
             anchors.right: screenBorder.right;
             anchors.bottom: screenBorder.bottom;
 
-            anchors.rightMargin: 10
+            anchors.rightMargin: 10;
             anchors.bottomMargin: 10;
 
-            width: 100;
-            height: 30;
+            width: Style.standardButtonWidth;
+            height: Style.standardButtonHeight;
 
             text: "Reset Stats";
 
             background: Rectangle {
                 anchors.fill: parent;
 
-                color: "#f5f5f5";
+                color: Style.standardButtonBackground;
             }
 
             onClicked: {
-                resetPopup.visible = true;
-                scrollview.enabled = false;
-                resetButton.enabled = false;
+                resetPopup.visible = true;                  //opens resetPopup
+                scrollview.enabled = false;                 //disables scrollview while resetPopup is visible
+                resetButton.enabled = false;                //disables itself while resetPopup is visible
             }
         }
     }

@@ -6,25 +6,29 @@ import "qrc:/text"
 import "qrc:/includes"
 
 Window {
-    id: helpWindow
+    id: helpWindow;
 
     title: "Minesweeper - Game Information";
 
-    width: screenBorder.width + 40;
-    height: screenBorder.height + 40;
+    property real calcWidth: screenBorder.width + 40;
+    property real calcHeight: screenBorder.height + 40;
 
-    minimumWidth: screenBorder.width + 40;
-    minimumHeight: screenBorder.height + 40;
+    width: calcWidth;
+    height: calcHeight;
 
-    maximumWidth: screenBorder.width + 40;
-    maximumHeight: screenBorder.height + 40;
+    //window should not be resizable
+    minimumWidth: calcWidth;
+    minimumHeight: calcHeight;
+
+    maximumWidth: calcWidth;
+    maximumHeight: calcHeight;
 
     visible: true;
 
-    color: "#c0c0c0";
+    color: Style.windowBackground;
 
     Rectangle {
-        id: screenBorder
+        id: screenBorder;
 
         width: numbersGrid.width + 40;
         height: buttonsHeader.topPadding + buttonsHeader.height + buttonsGrid.height + numbersHeader.height + numbersGrid.height + controlsHeader.height + controlsGrid.height;
@@ -32,10 +36,10 @@ Window {
         x: 20;
         y: 20;
 
-        border.width: 1;
-        border.color: "#595959";
+        border.width: Style.borderWidth;
+        border.color: Style.popupRectBorder;
 
-        color: "#c0c0c0";
+        color: Style.windowBackground;
 
         TextBox {
             id: headerLabel;
@@ -47,16 +51,16 @@ Window {
         }
 
         TextLabel {
-            id: buttonsHeader
+            id: buttonsHeader;
 
             topPadding: 15;
             leftPadding: 20;
 
-            text: "Menu-Buttons:"
+            text: "Menu-Buttons:";
         }
 
         Grid {
-            id: buttonsGrid
+            id: buttonsGrid;
 
             columns: 3;
 
@@ -140,18 +144,18 @@ Window {
         }
 
         TextLabel {
-            id: numbersHeader
+            id: numbersHeader;
 
             anchors.top: buttonsGrid.bottom;
 
             topPadding: 15;
             leftPadding: 20;
 
-            text: "Menu-Counters:"
+            text: "Menu-Counters:";
         }
 
         Grid {
-            id: numbersGrid
+            id: numbersGrid;
 
             columns: 3;
 
@@ -211,7 +215,7 @@ Window {
         }
 
         TextLabel {
-            id: controlsHeader
+            id: controlsHeader;
 
             anchors.top: numbersGrid.bottom;
 
@@ -222,7 +226,7 @@ Window {
         }
 
         Grid {
-            id: controlsGrid
+            id: controlsGrid;
 
             columns: 2;
 
