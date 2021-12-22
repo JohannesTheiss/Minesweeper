@@ -82,8 +82,6 @@ void GameController::revealCell(const quint64 index)
     // if the first hit is a bomb
     if(cell->isBomb() && mFirstReveal)
     {
-        qDebug() << "first hit is a bomb";
-
         // move the bomb to a new random place
         addMine();
         removeMine(index);
@@ -235,7 +233,7 @@ void GameController::setGameMode(quint64 numberOfRows,
         numberOfColumns = 1;
     }
 
-    if(numberOfMines >= (numberOfRows * numberOfRows))
+    if(numberOfMines >= (numberOfRows * numberOfColumns))
     {
         numberOfMines = (numberOfRows * numberOfColumns) - 1;
     }
