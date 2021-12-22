@@ -6,7 +6,7 @@ import "qrc:/includes"
 /* @parameters
  * id: identifier for ImageButton                                           (e.g. id: newButton;)
  * buttonImage: relative path to .png-File                                  (e.g. buttonImage: "qrc:/images/newButton.png";)
- * onClicked: { } code that should be run, when ImageButton is clicked      (e.g. onClicked: { icon.color = "purple"; })
+ * onClicked: { } code that should be run, when ImageButton is clicked      (e.g. onClicked: { gameController.initGame(); })
  */
 Button {
     property alias buttonImage: image.source;
