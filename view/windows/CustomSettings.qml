@@ -269,16 +269,18 @@ Window {
 
                 verticalAlignment: Text.AlignVCenter;
 
-                text: "Width:";
+                text: "Width";
             }
 
             InputBox {
                 id: widthInput;
 
-                width: 100;
+                width: 55;
                 height: 30;
 
                 placeholderText: gameModel.columns;
+
+                horizontalAlignment: TextInput.AlignRight;
 
                 validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
@@ -297,16 +299,18 @@ Window {
 
                 verticalAlignment: Text.AlignVCenter;
 
-                text: "Height:";
+                text: "Height";
             }
 
             InputBox {
                 id: heightInput;
 
-                width: 100;
+                width: 55;
                 height: 30;
 
                 placeholderText: gameModel.rows;
+
+                horizontalAlignment: TextInput.AlignRight;
 
                 validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
@@ -325,18 +329,20 @@ Window {
 
                 verticalAlignment: Text.AlignVCenter;
 
-                text: "Mines:";
+                text: "Mines";
             }
 
             InputBox {
                 id: minesInput;
 
-                width: 100;
+                width: 55;
                 height: 30;
 
                 validator: IntValidator { bottom: 0; }                  //restrict input to non-negative numbers
 
                 placeholderText: gameModel.mineCount;
+
+                horizontalAlignment: TextInput.AlignRight;
 
                 onFocusChanged: {
                     if(focus) {
