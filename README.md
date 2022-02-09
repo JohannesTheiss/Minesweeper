@@ -1,5 +1,4 @@
 # Minesweeper
-This is a Qt QML Minesweeper.
 
 ## Requirements :clipboard:
  * g++ (GCC) 9.3.0 or higher
