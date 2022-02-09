@@ -13,7 +13,7 @@ QT += qml     \
 ###### view, scripts and images ###### 
 RESOURCES += resourceCollection.qrc
 
-RC_ICONS  += view/images/logo-hs.ico
+RC_ICONS  += view/images/flagTransparent.ico
 
 ###### C++ ######
 HEADERS = $$files(inc/*.h, true)

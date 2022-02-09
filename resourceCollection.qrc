@@ -28,10 +28,9 @@
         <file alias="endButton.png">view/images/endButton.png</file>
         <file alias="endButtonPressed.png">view/images/endButtonPressed.png</file>
         <file alias="flagTransparent.png">view/images/flagTransparent.png</file>
+        <file alias="flagTransparent.ico">view/images/flagTransparent.ico</file>
         <file alias="helpFlag.png">view/images/helpFlag.png</file>
         <file alias="helpTime.png">view/images/helpTime.png</file>
-        <file alias="logo-hs.ico">view/images/logo-hs.ico</file>
-        <file alias="logo-hs.png">view/images/logo-hs.png</file>
         <file alias="newButton.png">view/images/newButton.png</file>
         <file alias="newButtonPressed.png">view/images/newButtonPressed.png</file>
         <file alias="pauseButton.png">view/images/pauseButton.png</file>
