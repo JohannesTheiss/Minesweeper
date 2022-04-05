@@ -20,6 +20,9 @@ HEADERS = $$files(inc/*.h, true)
 SOURCES = $$files(src/*.cpp, true)
 
 ###### build ###### 
+CONFIG  += release \
+           qtquickcompiler 
+
 # path to executable
 DESTDIR = bin
 
